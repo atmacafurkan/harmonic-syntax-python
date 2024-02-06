@@ -6,15 +6,29 @@ from typing import List
 agree_dict = {'case': 0, 'wh' : 0, 'foc' : 0}
 neutral_dict = {'case': 0, 'wh' : 0, 'foc' : 0}
 
+constraints_dict = {'case': 0, 'wh' : 0, 'foc' : 0, 'case_agr': 0, 'wh_agr' : 0, 'foc_agr' : 0}
+
 # Custom node class with a named list field
 class SyntaxNode(Node):
-    def __init__(self, name, label = None, merge_feat = None, neutral_feats = None, agree_feats = None, domination_count = None, parent = None, children = None):
+    def __init__(self, name, label = None, merge_feat = None, neutral_feats = None, agree_feats = None, parent = None, children = None):
         super(SyntaxNode, self).__init__(name, parent, children)
         self.label = label if label is not None else {}
         self.merge_feat = merge_feat if merge_feat is not None and merge_feat != '' else {}
-        self.domination_count = domination_count if domination_count is not None else 0
+        #self.domination_count = domination_count if domination_count is not None else 0
         self.agree_feats = agree_feats if agree_feats is not None else agree_dict
         self.neutral_feats = neutral_feats if neutral_feats is not None else neutral_dict
+    def domination_count(self):
+        # Get all distinct parent labels recursively
+        parent_labels = set()
+        current_parent = self.parent
+
+        while current_parent:
+            if current_parent.label != self.label:
+                parent_labels.add(current_parent.label)
+            current_parent = current_parent.parent
+
+        # Return the count of distinct parent labels
+        return len(parent_labels)
 
 # clone a node to avoid myltiple assignment
 def clone_tree(node):
@@ -120,7 +134,10 @@ my_nodes = read_nodes_csv("./unaccusative_numeration.csv")
 # carry out first Merge
 my_result = Merge(my_nodes[0], my_nodes[1:])
 
-trial = Agree(my_result[2])
+trial = Label(my_result[2])
+trial[0].children[1].domination_count()
+
+#trial = Agree(my_result[2])
 
 # Visualize the tree using ASCII art
 for pre, _, node in RenderTree(trial[0], style=AsciiStyle()):
