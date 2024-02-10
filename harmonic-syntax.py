@@ -5,7 +5,7 @@ from typing import List
 
 agree_dict = {'case_agr': 0, 'wh_agr' : 0, 'foc_agr' : 0}
 neutral_dict = {'case': 0, 'wh' : 0, 'foc' : 0}
-constraints_dict = {'label_cons': 0, 'case_agr': 0, 'wh_agr' : 0, 'foc_agr' : 0, 'case': 0, 'wh' : 0, 'foc' : 0}
+constraints_dict = {'label_cons': 1, 'case_agr': 0, 'wh_agr' : 0, 'foc_agr' : 0, 'case': 0, 'wh' : 0, 'foc' : 0}
 
 # Custom node class with a named list field
 class SyntaxNode(Node):
@@ -32,30 +32,43 @@ class SyntaxNode(Node):
         # Return the count of distinct parent labels
         return len(parent_labels)
 
-    def evaluate_constraints(self):
+    def evaluate_constraints(self, encountered_nodes=None, default_state = None):
         # Initialize a result dictionary for both agree_feats and neutral_feats
-        result_feats = constraints_dict.copy()
+        result_feats = constraints_dict.copy() if default_state is None else default_state
 
-        # Check if any ancestor has the same name
-        current_ancestor = self.parent
-        while current_ancestor:
-            if current_ancestor.name == self.name:
-                return result_feats
-            current_ancestor = current_ancestor.parent
-        
-        # add labelling constraint
-        if not self.name:
+        # Initialize encountered_nodes if not provided
+        encountered_nodes = set() if encountered_nodes is None else encountered_nodes
+
+        # Add the current node's name to the set of encountered nodes
+        encountered_nodes.add(self.name)
+
+        # Add labelling constraint
+        if self.name:
             result_feats['label_cons'] = 0
 
-        # Multiply agree_feats and neutral_feats with domination_count for the root node
-        root_domination_count = self.domination_count()
+        # Multiply agree_feats and neutral_feats with domination_count for the current node
+        domination_count = self.domination_count()
 
-        # Update result_feats with the values for the root node
+        # agree feature violations
         for key, value in self.agree_feats.items():
-            result_feats[key] = int(value) * root_domination_count
+            result_feats[key] = int(value) * domination_count
 
+        # neutral feature violations
         for key, value in self.neutral_feats.items():
-            result_feats[key] = int(value) * root_domination_count
+            result_feats[key] = int(value) * domination_count
+
+        # If encountered before, reset evaluation
+        if self.name in encountered_nodes:
+            result_feats = constraints_dict.copy()
+        
+        # Recursive call for each child node
+        for child in self.children:
+            # Recursive call for the child node with the updated set of encountered nodes
+            child_result = child.evaluate_constraints(encountered_nodes.copy(), result_feats)
+        
+            # Sum the values for each key in result_feats and child_result
+            for key in result_feats:
+                result_feats[key] += child_result.get(key, 0)
 
         return result_feats
     
@@ -72,6 +85,9 @@ class SyntaxNode(Node):
     
 # clone a node to avoid myltiple assignment
 def clone_tree(node):
+    if node is None:
+        return None
+    
     cloned_node = SyntaxNode(
         name=node.name,
         label=node.label,
@@ -85,19 +101,23 @@ def clone_tree(node):
         cloned_child.parent = cloned_node
     return cloned_node 
 
-def traverse_and_clone(node, cloned_nodes):
-    # Base case: If the node is None or has already been cloned, return
-    if node is None or node in cloned_nodes:
-        return
+def traverse_and_clone(node, cloned_nodes, cloned_node_names=None):
+    # Initialize cloned_node_names if not provided
+    if cloned_node_names is None:
+        cloned_node_names = set()
 
-    # Clone the current node
-    cloned_node = clone_tree(node)
-    # Add the cloned node to the list of cloned nodes
-    cloned_nodes.add(cloned_node)
+    # Base case: If the node is not None and has not already been cloned
+    if node is not None and node.name not in cloned_node_names:
+        # Clone the current node
+        cloned_node = clone_tree(node)
+        # Add the cloned node to the list of cloned nodes
+        cloned_nodes.append(cloned_node)
+        # Add the name of the cloned node to the set of cloned node names
+        cloned_node_names.add(cloned_node.name)
 
     # Recursively traverse and clone the children of the current node
     for child in node.children or []:
-        traverse_and_clone(child, cloned_nodes)   
+        traverse_and_clone(child, cloned_nodes, cloned_node_names)
 
 def parse_feats(feat_str):
     if feat_str is not None and feat_str.strip():
@@ -134,7 +154,7 @@ def Merge(my_arg):
     node_list = my_arg.other_nodes
 
     # Set to keep track of cloned nodes to avoid duplicates
-    cloned_nodes = set()
+    cloned_nodes = []
 
     # Traverse and clone every distinct node of my_arg
     if len(my_arg.children) > 1:
@@ -240,10 +260,8 @@ def Agree(my_node):
 
 # import numeration
 my_nodes = read_nodes_csv("./unaccusative_numeration.csv")
-my_result = Merge(Label(Merge(my_nodes[0])[0])[2])[4]
+my_result = Merge(Label(Merge(Label(Merge(Label(Merge(my_nodes[0])[0])[0])[0])[0])[0])[0])[4]
 
 # Visualize the tree using ASCII art
 for pre, _, node in RenderTree(my_result, style=AsciiStyle()):
-    print(f"{pre}{node.name} - {node.agree_feats} - {node.neutral_feats} - {node.merge_condition()} - {node.evaluate_constraints()} - {node.merge_feat} - {node.label}")
-
-
+    print(f"{pre}{node.name} - {node.agree_feats} - {node.neutral_feats}")
