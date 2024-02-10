@@ -1,10 +1,11 @@
 # Using anytree in Python
-from anytree import Node, RenderTree, AsciiStyle, PreOrderIter, PostOrderIter
+from anytree import Node, RenderTree, AsciiStyle
 import csv
 from typing import List
 
 agree_dict = {'case_agr': 0, 'wh_agr' : 0, 'foc_agr' : 0}
 neutral_dict = {'case': 0, 'wh' : 0, 'foc' : 0}
+used_feats_dict = {'case': 0, 'wh' : 0, 'foc' : 0}
 constraints_dict = {'label_cons': 1, 'case_agr': 0, 'wh_agr' : 0, 'foc_agr' : 0, 'case': 0, 'wh' : 0, 'foc' : 0}
 
 # Custom node class with a named list field
@@ -233,35 +234,39 @@ def Label(my_node):
 
 # Agree function, only under sisterhood
 def Agree(my_node):
-    if not my_node.name and len(my_node.children) > 1: # if the root node is not labeled and has more than one child
-        new_node = clone_tree(my_node)
-        # agree left
-        my_left_agr = my_node.children[0].agree_feats
-        my_right_feats = my_node.children[1].neutral_feats
-        for key in my_right_feats:
-            if key in my_left_agr and my_right_feats[key] == my_left_agr[key]:
-                my_right_feats[key] = my_left_agr[key] = 0
-        new_node.children[0].agree_feats = my_left_agr     
-        new_node.children[1].neutral_feats = my_right_feats
+    # Check if the node has sisters and no label
+    if my_node.name or len(my_node.children) < 2:
+        return []
 
-        # agree right
-        my_right_agr =  my_node.children[1].agree_feats
-        my_left_feats = my_node.children[0].neutral_feats
-        for key in my_left_feats:
-            if key in my_right_agr and my_left_feats[key] == my_right_agr[key]:
-                my_left_feats[key] = my_right_agr[key] = 0
-        new_node.children[1].agree_feats = my_right_agr     
-        new_node.children[0].neutral_feats = my_left_feats
+    # Create a new node
+    new_node = clone_tree(my_node)
+    new_node.other_nodes = my_node.other_nodes
 
-        # return a list
-        return([new_node])
-    else: # if the root node is labeled or has less than two children
-        new_node = []
+    # Agree left
+    my_left_agr = my_node.children[0].agree_feats
+    my_right_feats = my_node.children[1].neutral_feats
+    for key, value in my_right_feats.items():
+        if key + "_agr" in my_left_agr and value == my_left_agr[key + "_agr"]:
+            my_left_agr[key + "_agr"] = 0
+
+    new_node.children[0].agree_feats = my_left_agr
+
+    # Agree right
+    my_right_agr = my_node.children[1].agree_feats
+    my_left_feats = my_node.children[0].neutral_feats
+    for key, value in my_left_feats.items():
+        if key + "_agr" in my_right_agr and value == my_right_agr[key + "_agr"]:
+            my_right_agr[key + "_agr"] = 0
+
+    # Only update the right child's agree_feats
+    new_node.children[1].agree_feats = my_right_agr
+
+    return [new_node]
 
 # import numeration
 my_nodes = read_nodes_csv("./unaccusative_numeration.csv")
-my_result = Merge(Label(Merge(Label(Merge(Label(Merge(my_nodes[0])[0])[0])[0])[0])[0])[0])[4]
+my_result = Label(Merge(Label(Agree(Merge(Label(Merge(Label(Merge(Label(Merge(my_nodes[0])[0])[0])[0])[0])[0])[0])[4])[0])[1])[0])[0]
 
 # Visualize the tree using ASCII art
 for pre, _, node in RenderTree(my_result, style=AsciiStyle()):
-    print(f"{pre}{node.name} - {node.agree_feats} - {node.neutral_feats}")
+    print(f"{pre}{node.name} - {node.agree_feats} - {node.neutral_feats} - {node.evaluate_constraints()}")
