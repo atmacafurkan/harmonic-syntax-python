@@ -214,7 +214,7 @@ def Label(my_node):
         # take from left
         new_1 = clone_tree(my_node)
         new_1.other_nodes = my_node.other_nodes
-        new_1.merge_feat = {}
+        new_1.merge_feat = {} # update this to check for merge_cond
         new_1.name = new_1.children[0].name
         new_1.label = new_1.children[0].label
         new_1.agree_feats = new_1.children[0].agree_feats
@@ -244,6 +244,7 @@ def Agree(my_node):
 
     # Agree left
     my_left_agr = my_node.children[0].agree_feats
+    old_left_agr = my_node.children[0].agree_feats
     my_right_feats = my_node.children[1].neutral_feats
     for key, value in my_right_feats.items():
         if key + "_agr" in my_left_agr and value == my_left_agr[key + "_agr"]:
@@ -253,6 +254,7 @@ def Agree(my_node):
 
     # Agree right
     my_right_agr = my_node.children[1].agree_feats
+    old_right_agr = my_node.children[1].agree_feats
     my_left_feats = my_node.children[0].neutral_feats
     for key, value in my_left_feats.items():
         if key + "_agr" in my_right_agr and value == my_right_agr[key + "_agr"]:
@@ -260,7 +262,13 @@ def Agree(my_node):
 
     # Only update the right child's agree_feats
     new_node.children[1].agree_feats = my_right_agr
-
+    
+    # If no agreement took place (comparing old and new agr dictionaries)
+    # return an empty list element
+    if old_right_agr == my_right_agr and old_left_agr == my_left_agr:
+    	return []
+        
+    # Return the new node
     return [new_node]
 
 # import numeration
