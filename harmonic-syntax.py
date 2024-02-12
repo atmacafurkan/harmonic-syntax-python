@@ -33,7 +33,7 @@ class SyntaxNode(Node):
         # Return the count of distinct parent labels
         return len(parent_labels)
 
-    def evaluate_constraints(self, encountered_nodes=None, default_state = None):
+    def markedness_constraints(self, encountered_nodes=None, default_state = None):
         # Initialize a result dictionary for both agree_feats and neutral_feats
         result_feats = constraints_dict.copy() if default_state is None else default_state
 
@@ -43,7 +43,7 @@ class SyntaxNode(Node):
         # Add the current node's name to the set of encountered nodes
         encountered_nodes.add(self.name)
 
-        # Add labelling constraint
+        # Add labelling constraint # TURN INTO A SEPARATE FUNCTION!!!
         if self.name:
             result_feats['label_cons'] = 0
 
@@ -65,7 +65,7 @@ class SyntaxNode(Node):
         # Recursive call for each child node
         for child in self.children:
             # Recursive call for the child node with the updated set of encountered nodes
-            child_result = child.evaluate_constraints(encountered_nodes.copy(), result_feats)
+            child_result = child.markedness_constraints(encountered_nodes.copy(), result_feats)
         
             # Sum the values for each key in result_feats and child_result
             for key in result_feats:
@@ -278,3 +278,18 @@ my_result = Label(Merge(Label(Agree(Merge(Label(Merge(Label(Merge(Label(Merge(my
 # Visualize the tree using ASCII art
 for pre, _, node in RenderTree(my_result, style=AsciiStyle()):
     print(f"{pre}{node.name} - {node.agree_feats} - {node.neutral_feats} - {node.evaluate_constraints()}")
+    
+# Add a cycle function that takes a node, 
+# applies all possible operstions and returns a list of trees
+# numbers the outputs according to the derivation history
+# keeps a record of constraint evaluations for each cycle
+
+    
+    
+# Add a display function for tree visualisation
+# see if clickable tree generation is possible for easy navigation
+
+
+# Add an optimizer function to calculate constraint weights
+# try to see if gradient symbolic representations can be implemented
+
