@@ -4,6 +4,7 @@ import csv
 from typing import List
 from anytree.exporter import DotExporter
 import graphviz
+import os
 
 agree_dict = {'case_agr': 0, 'wh_agr' : 0, 'foc_agr' : 0}
 neutral_dict = {'case': 0, 'wh' : 0, 'foc' : 0}
@@ -262,7 +263,9 @@ def Agree(my_node):
 
     # Only update the right child's agree_feats
     new_node.children[1].agree_feats = my_right_agr
-    return [new_node]
+    new_list = [new_node]
+    return new_list
+
 
 # function to form outputs from an input
 def proceed_cycle(my_node):
@@ -278,9 +281,6 @@ my_result = Label(Merge(Label(Agree(Merge(Label(Merge(Label(Merge(Label(Merge(my
 for pre, _, node in RenderTree(my_result, style=AsciiStyle()):
     print(f"{pre}{node.name} - {node.agree_feats} - {node.neutral_feats} - {node.evaluate_constraints()}")
 
-# Export tree to DOT format and render it using graphviz
-DotExporter(my_result).to_picture("tree.png")
-
-# Display the tree using graphviz
-from IPython.display import Image
-Image("tree.png")
+# Check if Graphviz is installed and in PATH
+if not any(os.access(os.path.join(path, 'dot'), os.X_OK) for path in os.environ["PATH"].split(os.pathsep)):
+    raise FileNotFoundError("Graphviz is not installed or not found in PATH. Please install Graphviz from http://www.graphviz.org/download/ and ensure its bin directory is in your PATH.")
