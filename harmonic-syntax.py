@@ -2,6 +2,8 @@
 from anytree import Node, RenderTree, AsciiStyle
 import csv
 from typing import List
+from anytree.exporter import DotExporter
+import graphviz
 
 agree_dict = {'case_agr': 0, 'wh_agr' : 0, 'foc_agr' : 0}
 neutral_dict = {'case': 0, 'wh' : 0, 'foc' : 0}
@@ -84,7 +86,7 @@ class SyntaxNode(Node):
 
         return merge_condition_results
     
-# clone a node to avoid myltiple assignment
+# clone a node to avoid multiple assignment
 def clone_tree(node):
     if node is None:
         return None
@@ -121,13 +123,13 @@ def traverse_and_clone(node, cloned_nodes, cloned_node_names=None):
         traverse_and_clone(child, cloned_nodes, cloned_node_names)
 
 def parse_feats(feat_str):
+    empty_dict = {} # for some f*cked up reason return {} throws an indentation error
     if feat_str is not None and feat_str.strip():
-        # Split the string by '-' and then create a dictionary from key-value pairs
         return dict(pair.split(':') for pair in feat_str.split('-'))
-    else:
-        return {}
+    else: 
+        return empty_dict
 
-# read nodes from a csv file
+# read the csv file for nodes
 def read_nodes_csv(csv_file_path: str) -> List[SyntaxNode]:
     nodes = []
     with open(csv_file_path, 'r') as csvfile:
@@ -260,8 +262,13 @@ def Agree(my_node):
 
     # Only update the right child's agree_feats
     new_node.children[1].agree_feats = my_right_agr
-
     return [new_node]
+
+# function to form outputs from an input
+def proceed_cycle(my_node):
+    input_node = clone_tree(my_node)
+    output_nodes = [].extend(Merge(input_node)).extend(Label(input_node)).extend(Agree(input_node))
+    return output_nodes
 
 # import numeration
 my_nodes = read_nodes_csv("./unaccusative_numeration.csv")
@@ -270,3 +277,10 @@ my_result = Label(Merge(Label(Agree(Merge(Label(Merge(Label(Merge(Label(Merge(my
 # Visualize the tree using ASCII art
 for pre, _, node in RenderTree(my_result, style=AsciiStyle()):
     print(f"{pre}{node.name} - {node.agree_feats} - {node.neutral_feats} - {node.evaluate_constraints()}")
+
+# Export tree to DOT format and render it using graphviz
+DotExporter(my_result).to_picture("tree.png")
+
+# Display the tree using graphviz
+from IPython.display import Image
+Image("tree.png")
