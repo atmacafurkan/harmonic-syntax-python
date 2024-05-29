@@ -36,7 +36,7 @@ class SyntaxNode(Node):
         # Return the count of distinct parent labels
         return len(parent_labels)
 
-    def evaluate_constraints(self, encountered_nodes=None, default_state = None):
+    def markedness_constraints(self, encountered_nodes=None, default_state = None):
         # Initialize a result dictionary for both agree_feats and neutral_feats
         result_feats = constraints_dict.copy() if default_state is None else default_state
 
@@ -46,7 +46,7 @@ class SyntaxNode(Node):
         # Add the current node's name to the set of encountered nodes
         encountered_nodes.add(self.name)
 
-        # Add labelling constraint
+        # Add labelling constraint # TURN INTO A SEPARATE FUNCTION!!!
         if self.name:
             result_feats['label_cons'] = 0
 
@@ -68,7 +68,7 @@ class SyntaxNode(Node):
         # Recursive call for each child node
         for child in self.children:
             # Recursive call for the child node with the updated set of encountered nodes
-            child_result = child.evaluate_constraints(encountered_nodes.copy(), result_feats)
+            child_result = child.markedness_constraints(encountered_nodes.copy(), result_feats)
         
             # Sum the values for each key in result_feats and child_result
             for key in result_feats:
@@ -217,7 +217,7 @@ def Label(my_node):
         # take from left
         new_1 = clone_tree(my_node)
         new_1.other_nodes = my_node.other_nodes
-        new_1.merge_feat = {}
+        new_1.merge_feat = {} # update this to check for merge_cond
         new_1.name = new_1.children[0].name
         new_1.label = new_1.children[0].label
         new_1.agree_feats = new_1.children[0].agree_feats
@@ -247,6 +247,7 @@ def Agree(my_node):
 
     # Agree left
     my_left_agr = my_node.children[0].agree_feats
+    old_left_agr = my_node.children[0].agree_feats
     my_right_feats = my_node.children[1].neutral_feats
     for key, value in my_right_feats.items():
         if key + "_agr" in my_left_agr and value == my_left_agr[key + "_agr"]:
@@ -256,6 +257,7 @@ def Agree(my_node):
 
     # Agree right
     my_right_agr = my_node.children[1].agree_feats
+    old_right_agr = my_node.children[1].agree_feats
     my_left_feats = my_node.children[0].neutral_feats
     for key, value in my_left_feats.items():
         if key + "_agr" in my_right_agr and value == my_right_agr[key + "_agr"]:
