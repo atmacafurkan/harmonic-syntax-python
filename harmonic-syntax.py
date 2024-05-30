@@ -2,9 +2,11 @@
 from anytree import Node, RenderTree, AsciiStyle
 import csv
 from typing import List
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QPushButton, QDialog
+from PyQt5.QtWebEngineWidgets import QWebEngineView
 from anytree.exporter import DotExporter
-import graphviz
 import os
+import sys
 
 agree_dict = {'case_agr': 0, 'wh_agr' : 0, 'foc_agr' : 0}
 neutral_dict = {'case': 0, 'wh' : 0, 'foc' : 0}
@@ -36,7 +38,7 @@ class SyntaxNode(Node):
         # Return the count of distinct parent labels
         return len(parent_labels)
 
-    def markedness_constraints(self, encountered_nodes=None, default_state = None):
+    def evaluate_constraints(self, encountered_nodes=None, default_state = None):
         # Initialize a result dictionary for both agree_feats and neutral_feats
         result_feats = constraints_dict.copy() if default_state is None else default_state
 
@@ -45,10 +47,6 @@ class SyntaxNode(Node):
 
         # Add the current node's name to the set of encountered nodes
         encountered_nodes.add(self.name)
-
-        # Add labelling constraint # TURN INTO A SEPARATE FUNCTION!!!
-        if self.name:
-            result_feats['label_cons'] = 0
 
         # Multiply agree_feats and neutral_feats with domination_count for the current node
         domination_count = self.domination_count()
@@ -64,11 +62,15 @@ class SyntaxNode(Node):
         # If encountered before, reset evaluation
         if self.name in encountered_nodes:
             result_feats = constraints_dict.copy()
+
+        # Add labelling constraint # TURN INTO A SEPARATE FUNCTION!!!
+        if self.name:
+            result_feats['label_cons'] = 0
         
         # Recursive call for each child node
         for child in self.children:
             # Recursive call for the child node with the updated set of encountered nodes
-            child_result = child.markedness_constraints(encountered_nodes.copy(), result_feats)
+            child_result = child.evaluate_constraints(encountered_nodes.copy(), result_feats)
         
             # Sum the values for each key in result_feats and child_result
             for key in result_feats:
@@ -268,7 +270,6 @@ def Agree(my_node):
     new_list = [new_node]
     return new_list
 
-
 # function to form outputs from an input
 def proceed_cycle(my_node):
     input_node = clone_tree(my_node)
@@ -279,10 +280,74 @@ def proceed_cycle(my_node):
 my_nodes = read_nodes_csv("./unaccusative_numeration.csv")
 my_result = Label(Merge(Label(Agree(Merge(Label(Merge(Label(Merge(Label(Merge(my_nodes[0])[0])[0])[0])[0])[0])[0])[4])[0])[1])[0])[0]
 
+my_result.evaluate_constraints()
+
 # Visualize the tree using ASCII art
 for pre, _, node in RenderTree(my_result, style=AsciiStyle()):
-    print(f"{pre}{node.name} - {node.agree_feats} - {node.neutral_feats} - {node.evaluate_constraints()}")
+    print(f"{pre}{node.name} - {node.agree_feats} - {node.neutral_feats} - {node.evaluate_constraints()} - {node.domination_count()}")
 
-# Check if Graphviz is installed and in PATH
-if not any(os.access(os.path.join(path, 'dot'), os.X_OK) for path in os.environ["PATH"].split(os.pathsep)):
-    raise FileNotFoundError("Graphviz is not installed or not found in PATH. Please install Graphviz from http://www.graphviz.org/download/ and ensure its bin directory is in your PATH.")
+# Function to create labels with desired attributes
+def node_label(node):
+    return node.name
+
+# Function to create unique names for DOT export
+def unique_name(node):
+    # Use a combination of node name and unique identifier
+    return f'{node.name}_{id(node)}'
+
+# export the dot_file
+dot_filename = "tree.dot"
+DotExporter(my_result, nodeattrfunc=lambda node: f'label="{node_label(node)}"', nodenamefunc=unique_name).to_dotfile(dot_filename)
+# Convert DOT to SVG using Graphviz
+svg_filename = "tree.svg"
+os.system(f"dot -Tsvg {dot_filename} -o {svg_filename}")
+
+# Define the PyQt5 application and main window
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+
+        # Set the title and size of the main window
+        self.setWindowTitle("Tree Visualization")
+        self.setGeometry(100, 100, 400, 200)  # Adjusted main window size
+
+        # Create a central widget and a layout for it
+        central_widget = QWidget()
+        self.setCentralWidget(central_widget)
+        layout = QVBoxLayout(central_widget)
+
+        # Create a button to trigger tree display
+        self.button = QPushButton("Click here to show the tree")
+        self.button.clicked.connect(self.show_tree_popup)
+        layout.addWidget(self.button)
+
+    def show_tree_popup(self):
+        # Create a QDialog for the tree popup
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Tree Visualization")
+        dialog.setGeometry(200, 200, 800, 600)  # Set the size and position of the dialog
+        layout = QVBoxLayout(dialog)
+
+        # Create a web view widget to display the graph
+        graph_view = QWebEngineView(dialog)
+        layout.addWidget(graph_view)
+
+        # Load the SVG file and display it in the web view
+        with open(svg_filename, "r", encoding="utf-8") as f:
+            svg_content = f.read()
+
+        # Display the SVG content in the web view
+        graph_view.setHtml(svg_content)
+
+        # Show the dialog
+        dialog.exec_()
+
+# Main function to run the application
+def main():
+    app = QApplication(sys.argv)
+    main_window = MainWindow()
+    main_window.show()
+    sys.exit(app.exec_())
+
+if __name__ == "__main__":
+    main()
