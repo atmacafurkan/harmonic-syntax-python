@@ -4,23 +4,26 @@ import csv
 from typing import List
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QPushButton, QDialog
 from PyQt5.QtWebEngineWidgets import QWebEngineView
-from anytree.exporter import DotExporter
-import os
+from anytree.exporter import UniqueDotExporter
 import sys
+from graphviz import Source
+import tempfile
 
 agree_dict = {'case_agr': 0, 'wh_agr' : 0, 'foc_agr' : 0}
 neutral_dict = {'case': 0, 'wh' : 0, 'foc' : 0}
+empty_dict = {'case_mt': 0, 'wh_mt': 0, 'foc_mt': 0}
 used_feats_dict = {'case': 0, 'wh' : 0, 'foc' : 0}
-constraints_dict = {'label_cons': 1, 'case_agr': 0, 'wh_agr' : 0, 'foc_agr' : 0, 'case': 0, 'wh' : 0, 'foc' : 0}
+constraints_dict = {'label_cons': 1, 'case_agr': 0, 'wh_agr' : 0, 'foc_agr' : 0, 'case': 0, 'wh' : 0, 'foc' : 0, 'case_mt' : 0, 'wh_mt': 0, 'foc_mt': 0}
 
 # Custom node class with a named list field
 class SyntaxNode(Node):
-    def __init__(self, name, label = None, merge_feat = None, neutral_feats = None, agree_feats = None, parent = None, children = None):
+    def __init__(self, name, label = None, merge_feat = None, neutral_feats = None, empty_agr = None, agree_feats = None, parent = None, children = None):
         super(SyntaxNode, self).__init__(name, parent, children)
         self.label = label if label is not None else None
         self.merge_feat = merge_feat if merge_feat is not None and merge_feat != '' else None
         self.agree_feats = agree_feats if agree_feats is not None else agree_dict
         self.neutral_feats = neutral_feats if neutral_feats is not None else neutral_dict
+        self.empty_agr = empty_agr if empty_agr is not None else empty_dict
         self.other_nodes = []
 
     def add_other_node(self, other_node):
@@ -34,6 +37,8 @@ class SyntaxNode(Node):
         while current_parent:
             if current_parent.label and current_parent.label != self.label:
                 parent_labels.add(current_parent.label)
+            elif current_parent.label == self.label: # if the parent label and the current label are the same
+                return 0
             current_parent = current_parent.parent
         # Return the count of distinct parent labels
         return len(parent_labels)
@@ -58,6 +63,10 @@ class SyntaxNode(Node):
         # neutral feature violations
         for key, value in self.neutral_feats.items():
             result_feats[key] = int(value) * domination_count
+
+        # for empty agree violations
+        for key, value in self.empty_agr.items():
+            result_feats[key] = int(value) * domination_count     
 
         # If encountered before, reset evaluation
         if self.name in encountered_nodes:
@@ -99,6 +108,7 @@ def clone_tree(node):
         label=node.label,
         merge_feat = node.merge_feat,
         agree_feats=node.agree_feats,
+        empty_agr=node.empty_agr,
         neutral_feats=node.neutral_feats
         # Add other attributes as needed
     )
@@ -143,6 +153,7 @@ def read_nodes_csv(csv_file_path: str) -> List[SyntaxNode]:
                 merge_feat=(row['mc']),
                 agree_feats=parse_feats(row['ac']),
                 neutral_feats=parse_feats(row['ft']),
+                empty_agr = None,
                 label=row['lb']
             )
             nodes.append(node)
@@ -223,6 +234,7 @@ def Label(my_node):
         new_1.name = new_1.children[0].name
         new_1.label = new_1.children[0].label
         new_1.agree_feats = new_1.children[0].agree_feats
+        new_1.empty_agr = new_1.children[0].empty_agr
         new_1.neutral_feats = new_1.children[0].neutral_feats
         my_nodes.append(new_1)
 
@@ -233,6 +245,7 @@ def Label(my_node):
         new_2.name = new_2.children[1].name
         new_2.label = new_2.children[1].label
         new_2.agree_feats = new_2.children[1].agree_feats
+        new_2.empty_agr = new_2.children[0].empty_agr
         new_2.neutral_feats = new_2.children[1].neutral_feats
         my_nodes.append(new_2)
     return(my_nodes)
@@ -240,8 +253,24 @@ def Label(my_node):
 # Agree function, only under sisterhood
 def Agree(my_node):
     # Check if the node has sisters and no label
-    if my_node.name or len(my_node.children) < 2:
-        return []
+    # if len(my_node.children) < 2:
+    #     return []
+    
+    # empty agreement
+    if len(my_node.name)>0:
+        new_node = clone_tree(my_node)
+        new_node.other_nodes = my_node.other_nodes
+
+        my_agr = my_node.agree_feats.copy()  # Create a copy to avoid modifying the original node's attributes
+        my_empty = my_node.empty_agr.copy()
+        for key, value in my_agr.items():
+            if my_agr[key] == '1':
+                my_agr[key] = 0
+                my_empty[key.replace('_agr', '') + '_mt'] = 1
+        
+        new_node.agree_feats = my_agr
+        new_node.empty_agr = my_empty
+        return [new_node]        
 
     # Create a new node
     new_node = clone_tree(my_node)
@@ -249,7 +278,6 @@ def Agree(my_node):
 
     # Agree left
     my_left_agr = my_node.children[0].agree_feats
-    old_left_agr = my_node.children[0].agree_feats
     my_right_feats = my_node.children[1].neutral_feats
     for key, value in my_right_feats.items():
         if key + "_agr" in my_left_agr and value == my_left_agr[key + "_agr"]:
@@ -259,7 +287,6 @@ def Agree(my_node):
 
     # Agree right
     my_right_agr = my_node.children[1].agree_feats
-    old_right_agr = my_node.children[1].agree_feats
     my_left_feats = my_node.children[0].neutral_feats
     for key, value in my_left_feats.items():
         if key + "_agr" in my_right_agr and value == my_right_agr[key + "_agr"]:
@@ -272,35 +299,39 @@ def Agree(my_node):
 
 # function to form outputs from an input
 def proceed_cycle(my_node):
-    input_node = clone_tree(my_node)
-    output_nodes = [].extend(Merge(input_node)).extend(Label(input_node)).extend(Agree(input_node))
+    output_nodes = []
+
+    output_nodes.extend(Merge(my_node)) # carry out merge
+    output_nodes.extend(Label(my_node)) # carry out label
+    output_nodes.extend(Agree(my_node)) # carry out agree
+
     return output_nodes
 
 # import numeration
 my_nodes = read_nodes_csv("./unaccusative_numeration.csv")
-my_result = Label(Merge(Label(Agree(Merge(Label(Merge(Label(Merge(Label(Merge(my_nodes[0])[0])[0])[0])[0])[0])[0])[4])[0])[1])[0])[0]
+my_trial = Label(Merge(Label(Merge(my_nodes[0])[0])[0])[0])[0]
 
-my_result.evaluate_constraints()
+# visualise
+for pre, _, node in RenderTree(my_nodes[0], style=AsciiStyle()):
+    print(f"{pre}{node.name} - {node.agree_feats} - {node.neutral_feats} - {node.domination_count()}")
 
-# Visualize the tree using ASCII art
-for pre, _, node in RenderTree(my_result, style=AsciiStyle()):
-    print(f"{pre}{node.name} - {node.agree_feats} - {node.neutral_feats} - {node.evaluate_constraints()} - {node.domination_count()}")
+# Function to generate SVG content in memory
+def generate_svg_content(root_node):
+    # Create a UniqueDotExporter
+    with tempfile.NamedTemporaryFile(delete=False) as tmp_dot_file:
+        # Export DOT data to the temporary file
+        UniqueDotExporter(root_node).to_dotfile(tmp_dot_file.name)
 
-# Function to create labels with desired attributes
-def node_label(node):
-    return node.name
+        # Read DOT data from the temporary file
+        with open(tmp_dot_file.name, 'r') as f:
+            dot_data = f.read()
 
-# Function to create unique names for DOT export
-def unique_name(node):
-    # Use a combination of node name and unique identifier
-    return f'{node.name}_{id(node)}'
-
-# export the dot_file
-dot_filename = "tree.dot"
-DotExporter(my_result, nodeattrfunc=lambda node: f'label="{node_label(node)}"', nodenamefunc=unique_name).to_dotfile(dot_filename)
-# Convert DOT to SVG using Graphviz
-svg_filename = "tree.svg"
-os.system(f"dot -Tsvg {dot_filename} -o {svg_filename}")
+    # Convert DOT to SVG in memory using Graphviz
+    src = Source(dot_data)
+    svg_bytes = src.pipe(format='svg')
+    svg_content = svg_bytes.decode('utf-8')
+    
+    return svg_content
 
 # Define the PyQt5 application and main window
 class MainWindow(QMainWindow):
@@ -322,6 +353,9 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.button)
 
     def show_tree_popup(self):
+        # Generate SVG content in memory
+        svg_content = generate_svg_content(my_trial)
+
         # Create a QDialog for the tree popup
         dialog = QDialog(self)
         dialog.setWindowTitle("Tree Visualization")
@@ -331,10 +365,6 @@ class MainWindow(QMainWindow):
         # Create a web view widget to display the graph
         graph_view = QWebEngineView(dialog)
         layout.addWidget(graph_view)
-
-        # Load the SVG file and display it in the web view
-        with open(svg_filename, "r", encoding="utf-8") as f:
-            svg_content = f.read()
 
         # Display the SVG content in the web view
         graph_view.setHtml(svg_content)
