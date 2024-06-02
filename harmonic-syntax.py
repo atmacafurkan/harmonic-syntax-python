@@ -1,10 +1,10 @@
 # Using anytree in Python
-from anytree import Node, RenderTree, AsciiStyle
+from anytree import Node
 import csv
 from typing import List
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QPushButton, QDialog, QLabel, QFileDialog, QGridLayout, QTableWidget, QTableWidgetItem
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QPushButton, QLabel, QFileDialog, QTableWidget, QTableWidgetItem, QHBoxLayout, QMessageBox, QScrollArea, QSizePolicy, QApplication, QDialog
 from PyQt5.QtSvg import QSvgWidget
-from PyQt5.QtWebEngineWidgets import QWebEngineView
 from anytree.exporter import UniqueDotExporter
 import sys
 from graphviz import Source
@@ -15,10 +15,24 @@ neutral_dict = {'case': 0, 'wh' : 0, 'foc' : 0}
 empty_dict = {'case_mt': 0, 'wh_mt': 0, 'foc_mt': 0}
 used_feats_dict = {'case': 0, 'wh' : 0, 'foc' : 0}
 constraints_dict = {'merge_cond': 0, 'label_cons': 0, 'case_agr': 0, 'wh_agr' : 0, 'foc_agr' : 0, 'case': 0, 'wh' : 0, 'foc' : 0, 'case_mt' : 0, 'wh_mt': 0, 'foc_mt': 0}
+explanations_dict = {'operation': 'The operation name given for easy intrepretation. xMerge, iMerge, and rMerge are all one operation Merge.',
+                     'output': 'A linear representation of the output. You can click on it to view the visual representation.',
+                     'merge_cond': 'Merge condition constraint, a constraint tied to the operation Merge. It is violated when the merge feature of one item does not match the label of the other.',
+                     'label_cons': 'Labelling constraint, a constraint tied to the operation Merge. It is violated when the result of the merge does not have a label.',
+                     'case_agr': 'Markedness constraint for case agreement feature.',
+                     'wh_agr': 'Markedness constraint for wh agreement feature.',
+                     'foc_agr': 'Markedness constraint for focus agreement feature.',
+                     'case': 'Markedness constraint for case feature.',
+                     'wh': 'Markedness constraint for wh feature.',
+                     'foc': 'Markedness constraint for focus feature.',
+                     'case_mt': 'Empty agreement constraint for case, a constraint tied to the operation Agree. It is violated when the agreement features of the root node is satisfied unilaterally.',
+                     'foc_mt': 'Empty agreement constraint for focus, a constraint tied to the operation Agree. It is violated when the agreement features of the root node is satisfied unilaterally.',
+                     'wh_mt': 'Empty agreement constraint for wh, a constraint tied to the operation Agree. It is violated when the agreement features of the root node is satisfied unilaterally.'
+                     }
 
 # Custom node class with a named list field
 class SyntaxNode(Node):
-    def __init__(self, name, label = None, merge_feat = None, neutral_feats = None, empty_agr = None, result_feats = None, agree_feats = None, parent = None, children = None):
+    def __init__(self, name, label = None, merge_feat = None, neutral_feats = None, empty_agr = None, result_feats = None, agree_feats = None, operation = None, parent = None, children = None):
         super(SyntaxNode, self).__init__(name, parent, children)
         self.label = label if label is not None else None
         self.merge_feat = merge_feat if merge_feat is not None and merge_feat != '' else None
@@ -26,6 +40,7 @@ class SyntaxNode(Node):
         self.neutral_feats = neutral_feats if neutral_feats is not None else neutral_dict
         self.empty_agr = empty_agr if empty_agr is not None else empty_dict
         self.result_feats = result_feats if result_feats is not None else constraints_dict
+        self.operation = operation if operation is not None else ""
         self.other_nodes = []
 
     def add_other_node(self, other_node):
@@ -47,7 +62,7 @@ class SyntaxNode(Node):
 
     def evaluate_constraints(self, encountered_nodes=None, default_state = None):
         # Initialize a result dictionary for both agree_feats and neutral_feats
-        result_feats = constraints_dict.copy() #if default_state is None else default_state
+        result_feats = constraints_dict.copy() if default_state is None else default_state
 
         # Initialize encountered_nodes if not provided
         encountered_nodes = set() if encountered_nodes is None else encountered_nodes
@@ -223,6 +238,7 @@ def Merge(my_arg):
         if original_node.label == new_right.label:
             new_node.label = original_node.label
 
+        new_node.operation = "xMerge"
         output_nodes.append(new_node)
 
     # Separate loop over cloned nodes
@@ -244,7 +260,8 @@ def Merge(my_arg):
         # Set label if conditions are met
         if new_left.label == new_right.label:
             new_node.label = new_left.label
-
+        
+        new_node.operation = "iMerge"
         output_nodes.append(new_node)
 
     return output_nodes
@@ -262,6 +279,7 @@ def Label(my_node):
         new_1.agree_feats = new_1.children[0].agree_feats
         new_1.empty_agr = new_1.children[0].empty_agr
         new_1.neutral_feats = new_1.children[0].neutral_feats
+        new_1.operation = "Label"
         my_nodes.append(new_1)
 
         # take from right
@@ -273,6 +291,7 @@ def Label(my_node):
         new_2.agree_feats = new_2.children[1].agree_feats
         new_2.empty_agr = new_2.children[0].empty_agr
         new_2.neutral_feats = new_2.children[1].neutral_feats
+        new_2.operation = "Label"
         my_nodes.append(new_2)
     return(my_nodes)
 
@@ -292,6 +311,7 @@ def Agree(my_node):
         
         new_node.agree_feats = my_agr
         new_node.empty_agr = my_empty
+        new_node.operation = "Agree"
         return [new_node]        
 
     # Create a new node
@@ -316,6 +336,7 @@ def Agree(my_node):
 
     # Only update the right child's agree_feats
     new_node.children[1].agree_feats = my_right_agr
+    new_node.operation = "Agree"
     new_list = [new_node]
     return new_list
 
@@ -355,38 +376,63 @@ class MainWindow(QMainWindow):
         # Set the title and size of the main window
         self.setWindowTitle("Harmonic Syntax Tabulator")
 
-        # Create a central widget and a layout for it
-        layout = QGridLayout()
+        # Create the central widget
+        centralWidget = QWidget()
+        self.setCentralWidget(centralWidget)
+
+        # main layout
+        mainLayout = QVBoxLayout()
+
+        # left side boxes
+        left_side = QVBoxLayout()
+
+        # right side boxes
+        right_side = QVBoxLayout()
 
         # selecting the numeration
-        self.selected_numeration = QLabel('Selected Numeration: ')
+        self.label_optimal = QLabel("Double Click on the row name to select it as the optimal output.")
+        self.label_numeration = QLabel('Selected Numeration: ')
         self.select_numeration = QPushButton('Select Numeration')
         self.select_numeration.clicked.connect(self.import_numeration)
-        layout.addWidget(self.selected_numeration,1,0)
-        layout.addWidget(self.select_numeration,0,0)
-
+        left_side.addWidget(self.label_optimal)
+        left_side.addWidget(self.label_numeration)
+        left_side.addWidget(self.select_numeration)
 
         # displaying the input tree
         self.input_tree = QSvgWidget(self)
-        layout.addWidget(self.input_tree,2,0)
+        left_side.addWidget(self.input_tree)
 
         # displaying eval
         # Create a QTableWidget
         self.table_eval = QTableWidget(self)
         self.table_eval.setColumnCount(len(constraints_dict) + 1)
         self.headers = list(constraints_dict.keys())
-        layout.addWidget(self.table_eval, 0, 1)
+        self.table_eval.cellClicked.connect(self.on_cell_clicked) # when the output is clicked, port to tree visualisation
+        self.table_eval.horizontalHeader().sectionClicked.connect(self.on_header_clicked) # when the column names are clicked, connect to explanations
+        self.table_eval.verticalHeader().sectionDoubleClicked.connect(self.next_cycle)# when the rows are clicked, connect to proceed cycle
+        right_side.addWidget(self.table_eval)
 
-        widget = QWidget()
-        widget.setLayout(layout)
-        self.setCentralWidget(widget)
+        # Adding both QVBoxLayouts to a QHBoxLayout
+        hLayout = QHBoxLayout()
+        hLayout.addLayout(left_side)
+        hLayout.addLayout(right_side)
+
+        # Main layout
+        mainLayout.addLayout(hLayout)
+
+        # Set the main layout on the central widget
+        centralWidget.setLayout(mainLayout)
+
+        # Calculate the minimum size based on the table's size hint
+        minSize = self.table_eval.sizeHint()
+        self.setMinimumSize(minSize)
 
     def import_numeration(self):
         self.numeration_path, _ = QFileDialog.getOpenFileName(self, 'Select Numeration', '.', 'Csv Files (*.csv)')
         self.numeration = read_nodes_csv(self.numeration_path)
         if self.numeration_path:
             # change the selected filename
-            self.selected_numeration.setText(self.numeration_path)
+            self.label_numeration.setText(self.numeration_path)
 
             # update the input tree
             my_input = generate_svg_content(self.numeration[0])
@@ -407,49 +453,99 @@ class MainWindow(QMainWindow):
         self.table_eval.setColumnCount(len(self.headers) + 1)
     
             # Set the headers for the table
-        headers = ['output'] + self.headers
+        headers = ['operation'] + ['output'] + self.headers
         self.table_eval.setHorizontalHeaderLabels(headers)
     
         # Populate the table
         for row, node in enumerate(self.outputs):
             # Populate the first column with the node name
+            name_operation = QTableWidgetItem(node.operation)
+            name_operation.setFlags(name_operation.flags() & ~Qt.ItemIsEditable)  # Make the item non-editable
+
+            self.table_eval.setItem(row, 0, name_operation)
+
             name_item = QTableWidgetItem(node.to_linear())  # Assuming node.name is the attribute for the node's name
-            self.table_eval.setItem(row, 0, name_item)
-        
-            new_node = clone_tree(node)
-            # Populate the rest of the columns with the node's data
+            name_item.setFlags(name_item.flags() & ~Qt.ItemIsEditable)
+            self.table_eval.setItem(row, 1, name_item)
             
-            data_dict = new_node.result_feats
+            new_node = clone_tree(node)
+            data_dict = new_node.evaluate_constraints()
             data_dict['merge_cond'] = merge_condition(new_node) # check for merge condition
             data_dict['label_cons'] = label_constraint(new_node) # check for label constraint
             data_dict = empty_agreement(new_node, data_dict) # check for empty agreement
-            for col, key in enumerate(self.headers, start=1):  # Start from column 1 to skip the first column
+            for col, key in enumerate(self.headers, start=2):  # Start from column 1 to skip the first column
                 value = data_dict.get(key, '')
                 item = QTableWidgetItem(str(value))
+                item.setFlags(item.flags() & ~Qt.ItemIsEditable)
                 self.table_eval.setItem(row, col, item)
     
         # Resize columns to content
         self.table_eval.resizeColumnsToContents()
 
-    def show_tree_popup(self):
-        # Generate SVG content in memory
-        svg_content = generate_svg_content()
+    def next_cycle(self, logicalIndex):
+        # get the selected output
+        selected_output = self.outputs[logicalIndex]
+        
+        # produce the new outputs
+        self.outputs = proceed_cycle(selected_output)
 
-        # Create a QDialog for the tree popup
-        dialog = QDialog(self)
-        dialog.setWindowTitle("Tree Visualization")
-        dialog.setGeometry(200, 200, 800, 600)  # Set the size and position of the dialog
-        layout = QVBoxLayout(dialog)
+        # update the input tree
+        my_input = generate_svg_content(selected_output)
+        # Load the SVG into QSvgWidget
+        self.input_tree.load(my_input.encode('utf-8'))
 
-        # Create a web view widget to display the graph
-        graph_view = QWebEngineView(dialog)
-        layout.addWidget(graph_view)
+        # update the evaluation table
+        self.update_eval()
 
-        # Display the SVG content in the web view
-        graph_view.setHtml(svg_content)
+    def on_cell_clicked(self, row, column):
+        # Custom function to be executed when a cell is clicked
+        if column == 1:
+            svg_content = generate_svg_content(self.outputs[row])
 
-        # Show the dialog
-        dialog.exec_()
+            # Create a clickable popup dialog
+            dialog = QDialog(self)
+            dialog.setWindowTitle("Tree Visualization")
+
+            # Create a QSvgWidget to display the graph
+            svg_widget = QSvgWidget()
+            svg_widget.renderer().load(svg_content.encode('utf-8'))
+
+            # Optionally add scroll area for large SVGs
+            scroll_area = QScrollArea()
+            scroll_area.setWidgetResizable(True)
+            scroll_area.setWidget(svg_widget)
+
+            # Set size policy and layout
+            svg_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+            layout = QVBoxLayout(dialog)
+            layout.addWidget(scroll_area)
+
+            # Resize the dialog based on SVG dimensions
+            dialog.resize(svg_widget.sizeHint())
+            dialog.setLayout(layout)
+
+            # Show the dialog
+            dialog.show()
+
+            # Move the dialog to the center of the main window
+            dialog.move(self.mapToGlobal(self.rect().center()))
+
+            # Install event filter to detect clicks outside the dialog
+            dialog.installEventFilter(dialog)
+
+    def on_header_clicked(self, logicalIndex):
+        header_label = self.table_eval.horizontalHeaderItem(logicalIndex).text()
+        message = f"{explanations_dict[header_label]}"
+        self.show_message(message)
+
+    def show_message(self, message):
+        # Show a message box with the given message
+        msgBox = QMessageBox()
+        msgBox.setIcon(QMessageBox.Information)
+        msgBox.setText(message)
+        msgBox.setWindowTitle("Explanation")
+        msgBox.setStandardButtons(QMessageBox.Ok)
+        msgBox.exec_()
 
 # Main function to run the application
 def main():
