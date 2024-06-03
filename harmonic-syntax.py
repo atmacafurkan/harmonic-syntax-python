@@ -14,7 +14,7 @@ agree_dict = {'case_agr': 0, 'wh_agr' : 0, 'foc_agr' : 0}
 neutral_dict = {'case': 0, 'wh' : 0, 'foc' : 0}
 empty_dict = {'case_mt': 0, 'wh_mt': 0, 'foc_mt': 0}
 used_feats_dict = {'case': 0, 'wh' : 0, 'foc' : 0}
-constraints_dict = {'merge_cond': 0, 'label_cons': 0, 'case_agr': 0, 'wh_agr' : 0, 'foc_agr' : 0, 'case': 0, 'wh' : 0, 'foc' : 0, 'case_mt' : 0, 'wh_mt': 0, 'foc_mt': 0}
+constraints_dict = {'merge_cond': 0, 'exhaust_ws': 0,'label_cons': 0, 'case_agr': 0, 'wh_agr' : 0, 'foc_agr' : 0, 'case': 0, 'wh' : 0, 'foc' : 0, 'case_mt' : 0, 'wh_mt': 0, 'foc_mt': 0}
 explanations_dict = {'operation': 'The operation name given for easy intrepretation. xMerge, iMerge, and rMerge are all one operation Merge.',
                      'output': 'A linear representation of the output. You can click on it to view the visual representation.',
                      'merge_cond': 'Merge condition constraint, a constraint tied to the operation Merge. It is violated when the merge feature of one item does not match the label of the other.',
@@ -32,7 +32,7 @@ explanations_dict = {'operation': 'The operation name given for easy intrepretat
 
 # Custom node class with a named list field
 class SyntaxNode(Node):
-    def __init__(self, name, label = None, merge_feat = None, neutral_feats = None, empty_agr = None, result_feats = None, agree_feats = None, operation = None, parent = None, children = None):
+    def __init__(self, name, label = None, merge_feat = None, neutral_feats = None, empty_agr = None, result_feats = None, agree_feats = None, operation = None, exhaust_ws = None, parent = None, children = None):
         super(SyntaxNode, self).__init__(name, parent, children)
         self.label = label if label is not None else None
         self.merge_feat = merge_feat if merge_feat is not None and merge_feat != '' else None
@@ -40,7 +40,8 @@ class SyntaxNode(Node):
         self.neutral_feats = neutral_feats if neutral_feats is not None else neutral_dict
         self.empty_agr = empty_agr if empty_agr is not None else empty_dict
         self.result_feats = result_feats if result_feats is not None else constraints_dict
-        self.operation = operation if operation is not None else ""
+        self.operation = operation if operation is not None else None
+        self.exhaust_ws = exhaust_ws if exhaust_ws is not None else None
         self.other_nodes = []
 
     def add_other_node(self, other_node):
@@ -67,35 +68,24 @@ class SyntaxNode(Node):
         # Initialize encountered_nodes if not provided
         encountered_nodes = set() if encountered_nodes is None else encountered_nodes
 
-        # Add the current node's name to the set of encountered nodes
-        encountered_nodes.add(self.name)
-
-        # Multiply agree_feats and neutral_feats with domination_count for the current node
-        domination_count = self.domination_count()
-
-        # agree feature violations
-        for key, value in self.agree_feats.items():
-            result_feats[key] = int(value) * domination_count
-
-        # neutral feature violations
-        for key, value in self.neutral_feats.items():
-            result_feats[key] = int(value) * domination_count     
-
-        # If encountered before, reset evaluation
+        # If encountered before, set domination count to 0
         if self.name in encountered_nodes:
-            result_feats = constraints_dict.copy()
-        
+            domination_count = 0
+        else:
+            domination_count = self.domination_count()
+            encountered_nodes.add(self.name)
+
+        # Update feature violations
+        for key, value in {**self.agree_feats, **self.neutral_feats}.items():
+            result_feats[key] += int(value) * domination_count     
+
         # Recursive call for each child node
         for child in self.children:
             # Recursive call for the child node with the updated set of encountered nodes
-            child_result = child.evaluate_constraints(encountered_nodes.copy(), result_feats)
-        
-            # Sum the values for each key in result_feats and child_result
-            for key in result_feats:
-                result_feats[key] += child_result.get(key, 0)
+            child.evaluate_constraints(encountered_nodes, result_feats)
 
         return result_feats
-    
+  
     # function to draw linear representation of the tree
     def to_linear(self):
         if not self:
@@ -126,12 +116,13 @@ def merge_condition(node):
 
 # for labelling constraint, only checked at the root node (latest operation)
 def label_constraint(node):
-    if node.name:
-        return 0
-    else:
+    # if the node does not have a name and the operation is Merge, return 1
+    if not node.name and node.operation in ["xMerge","iMerge"]:
         return 1
+    else:
+        return 0
 
-    # for empty agreement, only checked at the root node (since Agree would be the latest operation)
+# for empty agreement, only checked at the root node (since Agree would be the latest operation)
 def empty_agreement(node, result_dict):
     empty_dict = node.empty_agr
     for key, value in empty_dict.items():
@@ -150,7 +141,9 @@ def clone_tree(node):
         agree_feats=node.agree_feats,
         empty_agr=node.empty_agr,
         neutral_feats=node.neutral_feats,
-        result_feats = node.result_feats
+        exhaust_ws=node.exhaust_ws,
+        operation=node.operation,
+        result_feats=node.result_feats
         # Add other attributes as needed
     )
     for child in node.children:
@@ -239,11 +232,12 @@ def Merge(my_arg):
             new_node.label = original_node.label
 
         new_node.operation = "xMerge"
+        new_node.exhaust_ws = 0
         output_nodes.append(new_node)
 
     # Separate loop over cloned nodes
     # internal merge
-    for cloned_node in cloned_nodes:
+    for cloned_node in cloned_nodes[1:]:
         new_left = clone_tree(cloned_node)
         new_right = clone_tree(my_arg)
         new_node = SyntaxNode("")
@@ -262,7 +256,14 @@ def Merge(my_arg):
             new_node.label = new_left.label
         
         new_node.operation = "iMerge"
+        new_node.exhaust_ws = 1
         output_nodes.append(new_node)
+
+    # add the reflexive merge as the final candidate
+    #reflexive_merge = clone_tree(cloned_nodes[1])
+    #reflexive_merge.operation = "rMerge"
+    #reflexive_merge.exhaust_ws = 1
+    #output_nodes.append(reflexive_merge)
 
     return output_nodes
 
@@ -280,6 +281,7 @@ def Label(my_node):
         new_1.empty_agr = new_1.children[0].empty_agr
         new_1.neutral_feats = new_1.children[0].neutral_feats
         new_1.operation = "Label"
+        new_1.exhaust_ws = 0
         my_nodes.append(new_1)
 
         # take from right
@@ -292,13 +294,15 @@ def Label(my_node):
         new_2.empty_agr = new_2.children[0].empty_agr
         new_2.neutral_feats = new_2.children[1].neutral_feats
         new_2.operation = "Label"
+        new_2.exhaust_ws = 0
         my_nodes.append(new_2)
     return(my_nodes)
 
 # Agree function, only under sisterhood
-def Agree(my_node):    
-    # empty agreement
-    if len(my_node.name) > 0:
+def Agree(my_node):
+    new_list = []    
+    # empty agreement if it is a labelled node and has agreement features
+    if len(my_node.name) > 0 and "1" in my_node.agree_feats.values():
         new_node = clone_tree(my_node)
         new_node.other_nodes = my_node.other_nodes
 
@@ -312,32 +316,37 @@ def Agree(my_node):
         new_node.agree_feats = my_agr
         new_node.empty_agr = my_empty
         new_node.operation = "Agree"
-        return [new_node]        
+        new_node.exhaust_ws = 0
+        new_list.append(new_node)      
 
-    # Create a new node
-    new_node = clone_tree(my_node)
-    new_node.other_nodes = my_node.other_nodes
+    if len(my_node.children) > 0 and len(my_node.name) == 0:
+        # Create a new node
+        new_node = clone_tree(my_node)
+        new_node.other_nodes = my_node.other_nodes
 
-    # Agree left
-    my_left_agr = my_node.children[0].agree_feats
-    my_right_feats = my_node.children[1].neutral_feats
-    for key, value in my_right_feats.items():
-        if key + "_agr" in my_left_agr and value == my_left_agr[key + "_agr"]:
-            my_left_agr[key + "_agr"] = 0
+        # Agree left
+        my_left_agr = my_node.children[0].agree_feats
+        my_right_feats = my_node.children[1].neutral_feats
+        for key, value in my_right_feats.items():
+            if key + "_agr" in my_left_agr and value == my_left_agr[key + "_agr"]:
+                my_left_agr[key + "_agr"] = 0
 
-    new_node.children[0].agree_feats = my_left_agr
+        new_node.children[0].agree_feats = my_left_agr
 
-    # Agree right
-    my_right_agr = my_node.children[1].agree_feats
-    my_left_feats = my_node.children[0].neutral_feats
-    for key, value in my_left_feats.items():
-        if key + "_agr" in my_right_agr and value == my_right_agr[key + "_agr"]:
-            my_right_agr[key + "_agr"] = 0
+        # Agree right
+        my_right_agr = my_node.children[1].agree_feats
+        my_left_feats = my_node.children[0].neutral_feats
+        for key, value in my_left_feats.items():
+            if key + "_agr" in my_right_agr and value == my_right_agr[key + "_agr"]:
+                my_right_agr[key + "_agr"] = 0
 
-    # Only update the right child's agree_feats
-    new_node.children[1].agree_feats = my_right_agr
-    new_node.operation = "Agree"
-    new_list = [new_node]
+        # Only update the right child's agree_feats
+        new_node.children[1].agree_feats = my_right_agr
+        new_node.operation = "Agree follows"
+        new_node.exhaust_ws = 0
+
+        #if new_node.children[1].agree_feats != my_node.children[1].agree_feats or new_node.children[0].agree_feats != my_node.children[0].agree_feats:
+        new_list.append(new_node) #if there has been a change in agree_feats values, append the new_node to the list
     return new_list
 
 # function to form outputs from an input
@@ -472,6 +481,7 @@ class MainWindow(QMainWindow):
             data_dict = new_node.evaluate_constraints()
             data_dict['merge_cond'] = merge_condition(new_node) # check for merge condition
             data_dict['label_cons'] = label_constraint(new_node) # check for label constraint
+            data_dict['exhaust_ws'] = new_node.exhaust_ws
             data_dict = empty_agreement(new_node, data_dict) # check for empty agreement
             for col, key in enumerate(self.headers, start=2):  # Start from column 1 to skip the first column
                 value = data_dict.get(key, '')
