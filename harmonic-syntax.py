@@ -1,5 +1,5 @@
 # Using anytree in Python
-from anytree import Node
+from anytree import Node, RenderTree, AsciiStyle
 import csv
 from typing import List
 from PyQt5.QtCore import Qt
@@ -80,9 +80,12 @@ class SyntaxNode(Node):
             result_feats[key] += int(value) * domination_count     
 
         # Recursive call for each child node
-        for child in self.children:
-            # Recursive call for the child node with the updated set of encountered nodes
-            child.evaluate_constraints(encountered_nodes, result_feats)
+        if len(self.children):
+            # go left
+            self.children[0].evaluate_constraints(encountered_nodes, result_feats)
+
+            # go right
+            self.children[1].evaluate_constraints(encountered_nodes, result_feats)
 
         return result_feats
   
@@ -138,7 +141,7 @@ def clone_tree(node):
         name=node.name,
         label=node.label,
         merge_feat = node.merge_feat,
-        agree_feats=node.agree_feats,
+        agree_feats = node.agree_feats,
         empty_agr=node.empty_agr,
         neutral_feats=node.neutral_feats,
         exhaust_ws=node.exhaust_ws,
@@ -278,7 +281,6 @@ def Label(my_node):
         new_1.name = new_1.children[0].name
         new_1.label = new_1.children[0].label
         new_1.agree_feats = new_1.children[0].agree_feats
-        new_1.empty_agr = new_1.children[0].empty_agr
         new_1.neutral_feats = new_1.children[0].neutral_feats
         new_1.operation = "Label"
         new_1.exhaust_ws = 0
@@ -291,7 +293,6 @@ def Label(my_node):
         new_2.name = new_2.children[1].name
         new_2.label = new_2.children[1].label
         new_2.agree_feats = new_2.children[1].agree_feats
-        new_2.empty_agr = new_2.children[0].empty_agr
         new_2.neutral_feats = new_2.children[1].neutral_feats
         new_2.operation = "Label"
         new_2.exhaust_ws = 0
@@ -321,8 +322,8 @@ def Agree(my_node):
 
     if len(my_node.children) > 0 and len(my_node.name) == 0:
         # Create a new node
-        new_node = clone_tree(my_node)
-        new_node.other_nodes = my_node.other_nodes
+        newer_node = clone_tree(my_node)
+        newer_node.other_nodes = my_node.other_nodes
 
         # Agree left
         my_left_agr = my_node.children[0].agree_feats
@@ -331,7 +332,7 @@ def Agree(my_node):
             if key + "_agr" in my_left_agr and value == my_left_agr[key + "_agr"]:
                 my_left_agr[key + "_agr"] = 0
 
-        new_node.children[0].agree_feats = my_left_agr
+        newer_node.children[0].agree_feats = my_left_agr
 
         # Agree right
         my_right_agr = my_node.children[1].agree_feats
@@ -341,12 +342,12 @@ def Agree(my_node):
                 my_right_agr[key + "_agr"] = 0
 
         # Only update the right child's agree_feats
-        new_node.children[1].agree_feats = my_right_agr
-        new_node.operation = "Agree follows"
-        new_node.exhaust_ws = 0
+        newer_node.children[1].agree_feats = my_right_agr
+        newer_node.operation = "Agree follows"
+        newer_node.exhaust_ws = 0
 
         #if new_node.children[1].agree_feats != my_node.children[1].agree_feats or new_node.children[0].agree_feats != my_node.children[0].agree_feats:
-        new_list.append(new_node) #if there has been a change in agree_feats values, append the new_node to the list
+        new_list.append(newer_node) #if there has been a change in agree_feats values, append the new_node to the list
     return new_list
 
 # function to form outputs from an input
@@ -400,16 +401,15 @@ class MainWindow(QMainWindow):
 
         # selecting the numeration
         self.label_optimal = QLabel("Double Click on the row name to select it as the optimal output.")
-        self.label_numeration = QLabel('Selected Numeration: ')
         self.select_numeration = QPushButton('Select Numeration')
         self.select_numeration.clicked.connect(self.import_numeration)
-        left_side.addWidget(self.label_optimal)
-        left_side.addWidget(self.label_numeration)
-        left_side.addWidget(self.select_numeration)
-
+        
         # displaying the input tree
         self.input_tree = QSvgWidget(self)
+
         left_side.addWidget(self.input_tree)
+        left_side.addWidget(self.select_numeration)
+        left_side.addWidget(self.label_optimal)
 
         # displaying eval
         # Create a QTableWidget
@@ -432,19 +432,13 @@ class MainWindow(QMainWindow):
         # Set the main layout on the central widget
         centralWidget.setLayout(mainLayout)
 
-        # Calculate the minimum size based on the table's size hint
-        minSize = self.table_eval.sizeHint()
-        self.setMinimumSize(minSize)
-
     def import_numeration(self):
         self.numeration_path, _ = QFileDialog.getOpenFileName(self, 'Select Numeration', '.', 'Csv Files (*.csv)')
         self.numeration = read_nodes_csv(self.numeration_path)
         if self.numeration_path:
-            # change the selected filename
-            self.label_numeration.setText(self.numeration_path)
-
             # update the input tree
             my_input = generate_svg_content(self.numeration[0])
+
             # Load the SVG into QSvgWidget
             self.input_tree.load(my_input.encode('utf-8'))
 
@@ -525,23 +519,35 @@ class MainWindow(QMainWindow):
             scroll_area.setWidgetResizable(True)
             scroll_area.setWidget(svg_widget)
 
+            # Create a QTableWidget to display the node attributes
+            table_widget = QTableWidget()
+            table_widget.setColumnCount(4)
+            table_widget.setHorizontalHeaderLabels(['node', 'agr_feats', 'neut_feats', 'dominators'])
+
+            # Fetch tree structure and node attributes
+            root_node = self.outputs[row]
+            for pre, _, node in RenderTree(root_node, style=AsciiStyle()):
+                row_position = table_widget.rowCount()
+                table_widget.insertRow(row_position)
+                table_widget.setItem(row_position, 0, QTableWidgetItem(pre + node.name))
+                table_widget.setItem(row_position, 1, QTableWidgetItem(str(node.agree_feats)))
+                table_widget.setItem(row_position, 2, QTableWidgetItem(str(node.neutral_feats)))
+                table_widget.setItem(row_position, 3, QTableWidgetItem(str(node.domination_count())))
+
+            # Resize columns to content
+            table_widget.resizeColumnsToContents()
             # Set size policy and layout
             svg_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
             layout = QVBoxLayout(dialog)
             layout.addWidget(scroll_area)
+            layout.addWidget(table_widget)
 
             # Resize the dialog based on SVG dimensions
-            dialog.resize(svg_widget.sizeHint())
+            dialog.resize(800,800)
             dialog.setLayout(layout)
 
             # Show the dialog
             dialog.show()
-
-            # Move the dialog to the center of the main window
-            dialog.move(self.mapToGlobal(self.rect().center()))
-
-            # Install event filter to detect clicks outside the dialog
-            dialog.installEventFilter(dialog)
 
     def on_header_clicked(self, logicalIndex):
         header_label = self.table_eval.horizontalHeaderItem(logicalIndex).text()
