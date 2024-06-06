@@ -1,5 +1,6 @@
 # Using anytree in Python
 from anytree import Node, RenderTree, AsciiStyle
+import copy
 import csv
 from typing import List
 from PyQt5.QtCore import Qt
@@ -32,7 +33,7 @@ explanations_dict = {'operation': 'The operation name given for easy intrepretat
 
 # Custom node class with a named list field
 class SyntaxNode(Node):
-    def __init__(self, name, label = None, merge_feat = None, neutral_feats = None, empty_agr = None, result_feats = None, agree_feats = None, operation = None, exhaust_ws = None, parent = None, children = None):
+    def __init__(self, name, label = None, merge_feat = None, neutral_feats = None, empty_agr = None, result_feats = None, agree_feats = None, other_nodes = None, operation = None, exhaust_ws = None, parent = None, children = None):
         super(SyntaxNode, self).__init__(name, parent, children)
         self.label = label if label is not None else None
         self.merge_feat = merge_feat if merge_feat is not None and merge_feat != '' else None
@@ -42,7 +43,7 @@ class SyntaxNode(Node):
         self.result_feats = result_feats if result_feats is not None else constraints_dict
         self.operation = operation if operation is not None else None
         self.exhaust_ws = exhaust_ws if exhaust_ws is not None else None
-        self.other_nodes = []
+        self.other_nodes = other_nodes if other_nodes is not None else []
 
     def add_other_node(self, other_node):
         self.other_nodes.append(other_node)
@@ -146,7 +147,8 @@ def clone_tree(node):
         neutral_feats=node.neutral_feats,
         exhaust_ws=node.exhaust_ws,
         operation=node.operation,
-        result_feats=node.result_feats
+        result_feats=node.result_feats,
+        other_nodes=node.other_nodes
         # Add other attributes as needed
     )
     for child in node.children:
@@ -263,7 +265,7 @@ def Merge(my_arg):
         output_nodes.append(new_node)
 
     # add the reflexive merge as the final candidate
-    #reflexive_merge = clone_tree(cloned_nodes[1])
+    #reflexive_merge = copy.deepcopy(cloned_nodes[1])
     #reflexive_merge.operation = "rMerge"
     #reflexive_merge.exhaust_ws = 1
     #output_nodes.append(reflexive_merge)
@@ -318,8 +320,9 @@ def Agree(my_node):
         new_node.empty_agr = my_empty
         new_node.operation = "Agree"
         new_node.exhaust_ws = 0
-        new_list.append(new_node)      
-
+        if my_node.agree_feats != new_node.agree_feats:
+            new_list.append(new_node)
+                  
     if len(my_node.children) > 0 and len(my_node.name) == 0:
         # Create a new node
         newer_node = clone_tree(my_node)
@@ -343,20 +346,25 @@ def Agree(my_node):
 
         # Only update the right child's agree_feats
         newer_node.children[1].agree_feats = my_right_agr
-        newer_node.operation = "Agree follows"
+        newer_node.operation = "Agree children"
         newer_node.exhaust_ws = 0
 
-        #if new_node.children[1].agree_feats != my_node.children[1].agree_feats or new_node.children[0].agree_feats != my_node.children[0].agree_feats:
-        new_list.append(newer_node) #if there has been a change in agree_feats values, append the new_node to the list
+        if newer_node.children[0].agree_feats != my_node.children[0].agree_feats:
+            new_list.append(newer_node) #if there has been a change in agree_feats values, append the new_node to the list
     return new_list
 
 # function to form outputs from an input
-def proceed_cycle(my_node):
+def proceed_cycle(input_node):
     output_nodes = []
+     
+    for_merge = copy.deepcopy(input_node)
+    output_nodes.extend(Merge(for_merge)) # carry out merge
 
-    output_nodes.extend(Merge(my_node)) # carry out merge
-    output_nodes.extend(Label(my_node)) # carry out label
-    output_nodes.extend(Agree(my_node)) # carry out agree
+    for_label = copy.deepcopy(input_node)
+    output_nodes.extend(Label(for_label)) # carry out label
+
+    for_agree = copy.deepcopy(input_node)
+    output_nodes.extend(Agree(for_agree)) # carry out agree
 
     return output_nodes
 
