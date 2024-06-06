@@ -2,6 +2,7 @@
 from anytree import Node, RenderTree, AsciiStyle
 import copy
 import csv
+import pandas as pd
 from typing import List
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QPushButton, QLabel, QFileDialog, QTableWidget, QTableWidgetItem, QHBoxLayout, QMessageBox, QScrollArea, QSizePolicy, QApplication, QDialog
@@ -137,24 +138,9 @@ def empty_agreement(node, result_dict):
 def clone_tree(node):
     if node is None:
         return None
-    
-    cloned_node = SyntaxNode(
-        name=node.name,
-        label=node.label,
-        merge_feat = node.merge_feat,
-        agree_feats = node.agree_feats,
-        empty_agr=node.empty_agr,
-        neutral_feats=node.neutral_feats,
-        exhaust_ws=node.exhaust_ws,
-        operation=node.operation,
-        result_feats=node.result_feats,
-        other_nodes=node.other_nodes
-        # Add other attributes as needed
-    )
-    for child in node.children:
-        cloned_child = clone_tree(child)
-        cloned_child.parent = cloned_node
-    return cloned_node 
+    else:
+        cloned_node = copy.deepcopy(node)
+        return cloned_node 
 
 def traverse_and_clone(node, cloned_nodes, cloned_node_names=None):
     # Initialize cloned_node_names if not provided
@@ -386,6 +372,34 @@ def generate_svg_content(root_node):
     
     return svg_content
 
+# function to generate data frame fro widget
+def table_to_dataframe(table_widget):
+    # Initialize a list to store the data
+    data = []
+
+    # Loop over all rows in the table
+    for row in range(table_widget.rowCount()):
+        # Initialize a list to store the row data
+        row_data = []
+        # Loop over all columns in the table
+        for column in range(table_widget.columnCount()):
+            # Get the QTableWidgetItem for the cell
+            item = table_widget.item(row, column)
+            # Check if the item is not None and append its text, otherwise append an empty string
+            row_data.append(item.text() if item is not None else '')
+        # Append the row data to the main data list
+        data.append(row_data)
+
+    # Get the column headers
+    headers = []
+    for column in range(table_widget.columnCount()):
+        header_item = table_widget.horizontalHeaderItem(column)
+        headers.append(header_item.text() if header_item is not None else '')
+
+    # Create a pandas DataFrame from the data and set the column headers
+    df = pd.DataFrame(data, columns=headers)
+    return df
+
 # Define the PyQt5 application and main window
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -411,13 +425,21 @@ class MainWindow(QMainWindow):
         self.label_optimal = QLabel("Double Click on the row name to select it as the optimal output.")
         self.select_numeration = QPushButton('Select Numeration')
         self.select_numeration.clicked.connect(self.import_numeration)
+
+        # export the cumulative eval
+        self.eval_export = QPushButton('Export the cumulative eval')
+        self.eval_export.setEnabled(False)
+        self.eval_export.clicked.connect(self.export_eval)
         
         # displaying the input tree
         self.input_tree = QSvgWidget(self)
+        self.input_tree.setFixedSize(500, 700)  # Set fixed size
+        self.input_tree.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
 
         left_side.addWidget(self.input_tree)
         left_side.addWidget(self.select_numeration)
         left_side.addWidget(self.label_optimal)
+        left_side.addWidget(self.eval_export)
 
         # displaying eval
         # Create a QTableWidget
@@ -428,6 +450,10 @@ class MainWindow(QMainWindow):
         self.table_eval.horizontalHeader().sectionClicked.connect(self.on_header_clicked) # when the column names are clicked, connect to explanations
         self.table_eval.verticalHeader().sectionDoubleClicked.connect(self.next_cycle)# when the rows are clicked, connect to proceed cycle
         right_side.addWidget(self.table_eval)
+
+        # create empty eval table
+        my_columns = list(constraints_dict.keys()) + ['input', 'winner']
+        self.cumulative_eval = pd.DataFrame(columns = my_columns)
 
         # Adding both QVBoxLayouts to a QHBoxLayout
         hLayout = QHBoxLayout()
@@ -440,12 +466,21 @@ class MainWindow(QMainWindow):
         # Set the main layout on the central widget
         centralWidget.setLayout(mainLayout)
 
+    def export_eval(self):
+        # Write DataFrame to CSV file
+        self.cumulative_eval.to_csv('output.csv', index=False)
+        self.label_optimal.setText('Eval exported!')
+        self.label_optimal.setStyleSheet('color : green')
+
     def import_numeration(self):
         self.numeration_path, _ = QFileDialog.getOpenFileName(self, 'Select Numeration', '.', 'Csv Files (*.csv)')
         self.numeration = read_nodes_csv(self.numeration_path)
         if self.numeration_path:
             # update the input tree
             my_input = generate_svg_content(self.numeration[0])
+
+            # update the input
+            self.the_input = copy.deepcopy(self.numeration[0])
 
             # Load the SVG into QSvgWidget
             self.input_tree.load(my_input.encode('utf-8'))
@@ -495,14 +530,30 @@ class MainWindow(QMainWindow):
         self.table_eval.resizeColumnsToContents()
 
     def next_cycle(self, logicalIndex):
+        # save the eval table to a data frame
+        eval_df = table_to_dataframe(self.table_eval)
+        eval_df['input'] = self.the_input.to_linear()
+        eval_df['winner'] = 0
+        eval_df.loc[logicalIndex, 'winner'] = 1
+
+        # enable eval export
+        self.eval_export.setEnabled(True)
+
+        # update cumulative eval
+        self.cumulative_eval = pd.concat([self.cumulative_eval, eval_df], axis=0, ignore_index=True)
+
         # get the selected output
         selected_output = self.outputs[logicalIndex]
+
+        # update the input
+        self.the_input = copy.deepcopy(selected_output)
         
         # produce the new outputs
         self.outputs = proceed_cycle(selected_output)
 
         # update the input tree
         my_input = generate_svg_content(selected_output)
+
         # Load the SVG into QSvgWidget
         self.input_tree.load(my_input.encode('utf-8'))
 
