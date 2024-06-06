@@ -11,6 +11,10 @@ from anytree.exporter import UniqueDotExporter
 import sys
 from graphviz import Source
 import tempfile
+import pandas as pd
+import numpy as np
+from scipy.special import softmax
+from scipy.stats import entropy
 
 agree_dict = {'case_agr': 0, 'wh_agr' : 0, 'foc_agr' : 0}
 neutral_dict = {'case': 0, 'wh' : 0, 'foc' : 0}
@@ -91,7 +95,7 @@ class SyntaxNode(Node):
 
         return result_feats
   
-    # function to draw linear representation of the tree
+# function to draw linear representation of the tree
     def to_linear(self):
         if not self:
             return ""
@@ -101,6 +105,16 @@ class SyntaxNode(Node):
         else:
             my_name = ".."
 
+        # add agree features
+        agree_feats = [key for key, value in self.agree_feats.items() if value == "1"]
+        if agree_feats:
+            my_name += " " + ", ".join(agree_feats)
+
+        # add neutral features
+        neutral_feats = [key for key, value in self.neutral_feats.items() if value == "1"]
+        if neutral_feats:
+            my_name += " " + ", ".join(neutral_feats)
+                
         result = "[" + my_name
         if self.children:
             result += " " + " ".join(child.to_linear() for child in self.children)
@@ -314,12 +328,16 @@ def Agree(my_node):
         newer_node = clone_tree(my_node)
         newer_node.other_nodes = my_node.other_nodes
 
+        # Preserve original agree_feats for comparison
+        original_left_agr = copy.deepcopy(my_node.children[0].agree_feats)
+        original_right_agr = copy.deepcopy(my_node.children[1].agree_feats)
+
         # Agree left
         my_left_agr = my_node.children[0].agree_feats
         my_right_feats = my_node.children[1].neutral_feats
         for key, value in my_right_feats.items():
             if key + "_agr" in my_left_agr and value == my_left_agr[key + "_agr"]:
-                my_left_agr[key + "_agr"] = 0
+                my_left_agr[key + "_agr"] = "0"
 
         newer_node.children[0].agree_feats = my_left_agr
 
@@ -328,15 +346,16 @@ def Agree(my_node):
         my_left_feats = my_node.children[0].neutral_feats
         for key, value in my_left_feats.items():
             if key + "_agr" in my_right_agr and value == my_right_agr[key + "_agr"]:
-                my_right_agr[key + "_agr"] = 0
+                my_right_agr[key + "_agr"] = "0"
 
         # Only update the right child's agree_feats
         newer_node.children[1].agree_feats = my_right_agr
         newer_node.operation = "Agree children"
         newer_node.exhaust_ws = 0
 
-        if newer_node.children[0].agree_feats != my_node.children[0].agree_feats:
-            new_list.append(newer_node) #if there has been a change in agree_feats values, append the new_node to the list
+         # Check if there were changes in agree_feats
+        if original_left_agr != my_left_agr or original_right_agr != my_right_agr:
+            new_list.append(newer_node)
     return new_list
 
 # function to form outputs from an input
