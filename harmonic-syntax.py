@@ -16,11 +16,11 @@ import numpy as np
 from scipy.special import softmax
 from scipy.stats import entropy
 
-agree_dict = {'case_agr': 0, 'wh_agr' : 0, 'foc_agr' : 0}
-neutral_dict = {'case': 0, 'wh' : 0, 'foc' : 0}
-empty_dict = {'case_mt': 0, 'wh_mt': 0, 'foc_mt': 0}
-used_feats_dict = {'case': 0, 'wh' : 0, 'foc' : 0}
-constraints_dict = {'merge_cond': 0, 'exhaust_ws': 0,'label_cons': 0, 'case_agr': 0, 'wh_agr' : 0, 'foc_agr' : 0, 'case': 0, 'wh' : 0, 'foc' : 0, 'case_mt' : 0, 'wh_mt': 0, 'foc_mt': 0}
+agree_dict = {'case_agr': 0, 'wh_agr': 0, 'foc_agr': 0, 'cl_agr':0}
+neutral_dict = {'case': 0, 'wh': 0, 'foc' : 0,'cl':0}
+empty_dict = {'case_mt': 0, 'wh_mt': 0, 'foc_mt': 0, 'cl_mt':0}
+used_feats_dict = {'case': 0, 'wh': 0, 'foc': 0, 'cl':0}
+constraints_dict = {'merge_cond': 0, 'exhaust_ws': 0,'label_cons': 0, 'case_agr': 0, 'wh_agr' : 0, 'foc_agr' : 0, 'cl_agr':0, 'case': 0, 'wh' : 0, 'foc' : 0, 'cl':0, 'case_mt' : 0, 'wh_mt': 0, 'foc_mt': 0, 'cl_mt':0}
 explanations_dict = {'operation': 'The operation name given for easy intrepretation. xMerge, iMerge, and rMerge are all one operation Merge.',
                      'output': 'A linear representation of the output. You can click on it to view the visual representation.',
                      'merge_cond': 'Merge condition constraint, a constraint tied to the operation Merge. It is violated when the merge feature of one item does not match the label of the other.',
@@ -28,22 +28,26 @@ explanations_dict = {'operation': 'The operation name given for easy intrepretat
                      'case_agr': 'Markedness constraint for case agreement feature.',
                      'wh_agr': 'Markedness constraint for wh agreement feature.',
                      'foc_agr': 'Markedness constraint for focus agreement feature.',
+                     'cl_mt': 'Markedness constraint for classifier agreement feature.',
                      'case': 'Markedness constraint for case feature.',
                      'wh': 'Markedness constraint for wh feature.',
                      'foc': 'Markedness constraint for focus feature.',
+                     'cl': 'Markedness constraint for classifier feature',
                      'case_mt': 'Empty agreement constraint for case, a constraint tied to the operation Agree. It is violated when the agreement features of the root node is satisfied unilaterally.',
                      'foc_mt': 'Empty agreement constraint for focus, a constraint tied to the operation Agree. It is violated when the agreement features of the root node is satisfied unilaterally.',
-                     'wh_mt': 'Empty agreement constraint for wh, a constraint tied to the operation Agree. It is violated when the agreement features of the root node is satisfied unilaterally.'
+                     'wh_mt': 'Empty agreement constraint for wh, a constraint tied to the operation Agree. It is violated when the agreement features of the root node is satisfied unilaterally.',
+                     'cl_mt': 'Empty agreement constraint for classifier, a constraint tied to the operation Agree. It is violated when the agreement features of the root node is satisfied unilaterally.'
                      }
 
 # Custom node class with a named list field
 class SyntaxNode(Node):
-    def __init__(self, name, label = None, merge_feat = None, neutral_feats = None, empty_agr = None, result_feats = None, agree_feats = None, other_nodes = None, operation = None, exhaust_ws = None, parent = None, children = None):
+    def __init__(self, name, label = None, merge_feat = None, neutral_feats = None, empty_agr = None, result_feats = None, agree_feats = None, used_feats = None, other_nodes = None, operation = None, exhaust_ws = None, parent = None, children = None):
         super(SyntaxNode, self).__init__(name, parent, children)
         self.label = label if label is not None else None
         self.merge_feat = merge_feat if merge_feat is not None and merge_feat != '' else None
         self.agree_feats = agree_feats if agree_feats is not None else agree_dict
         self.neutral_feats = neutral_feats if neutral_feats is not None else neutral_dict
+        self.used_feats = used_feats if used_feats is not None else used_feats_dict
         self.empty_agr = empty_agr if empty_agr is not None else empty_dict
         self.result_feats = result_feats if result_feats is not None else constraints_dict
         self.operation = operation if operation is not None else None
@@ -136,7 +140,7 @@ def merge_condition(node):
 # for labelling constraint, only checked at the root node (latest operation)
 def label_constraint(node):
     # if the node does not have a name and the operation is Merge, return 1
-    if not node.name and node.operation in ["xMerge","iMerge"]:
+    if not node.name and node.operation in ["xMerge","iMerge","rMerge"]:
         return 1
     else:
         return 0
@@ -265,10 +269,10 @@ def Merge(my_arg):
         output_nodes.append(new_node)
 
     # add the reflexive merge as the final candidate
-    #reflexive_merge = copy.deepcopy(cloned_nodes[1])
-    #reflexive_merge.operation = "rMerge"
-    #reflexive_merge.exhaust_ws = 1
-    #output_nodes.append(reflexive_merge)
+    reflexive_merge = clone_tree(my_arg)
+    reflexive_merge.operation = "rMerge"
+    reflexive_merge.exhaust_ws = 1
+    output_nodes.append(reflexive_merge)
 
     return output_nodes
 
@@ -278,24 +282,36 @@ def Label(my_node):
     if not my_node.name and len(my_node.children) == 2:
         # take from left
         new_1 = clone_tree(my_node)
-        new_1.other_nodes = my_node.other_nodes
         new_1.merge_feat = {} # update this to check for merge_cond
         new_1.name = new_1.children[0].name
         new_1.label = new_1.children[0].label
         new_1.agree_feats = new_1.children[0].agree_feats
-        new_1.neutral_feats = new_1.children[0].neutral_feats
+
+        # check agreement
+        new_1_neutral = new_1.children[0].neutral_feats.copy()  # Make a copy to modify
+        for key, value in new_1_neutral.items():
+            if value == "1" and new_1.children[0].used_feats[key] == "1":
+                new_1_neutral[key] = "0"  # Reset to 0
+        new_1.neutral_feats = new_1_neutral
+
         new_1.operation = "Label"
         new_1.exhaust_ws = 0
         my_nodes.append(new_1)
 
         # take from right
         new_2 = clone_tree(my_node)
-        new_2.other_nodes = my_node.other_nodes
         new_2.merge_feat = {}
         new_2.name = new_2.children[1].name
         new_2.label = new_2.children[1].label
         new_2.agree_feats = new_2.children[1].agree_feats
-        new_2.neutral_feats = new_2.children[1].neutral_feats
+
+        new_2_neutral = new_2.children[1].neutral_feats.copy()  # Make a copy to modify
+        for key, value in new_2_neutral.items():
+            if value == "1" and new_2.children[1].used_feats[key] == "1":
+                new_2_neutral[key] = "0"  # Reset to 0
+        new_2.neutral_feats = new_2_neutral
+
+        new_2.neutral_feats = new_2_neutral
         new_2.operation = "Label"
         new_2.exhaust_ws = 0
         my_nodes.append(new_2)
@@ -307,7 +323,6 @@ def Agree(my_node):
     # empty agreement if it is a labelled node and has agreement features
     if len(my_node.name) > 0 and "1" in my_node.agree_feats.values():
         new_node = clone_tree(my_node)
-        new_node.other_nodes = my_node.other_nodes
 
         my_agr = my_node.agree_feats.copy()  # Create a copy to avoid modifying the original node's attributes
         my_empty = my_node.empty_agr.copy()
@@ -318,7 +333,7 @@ def Agree(my_node):
         
         new_node.agree_feats = my_agr
         new_node.empty_agr = my_empty
-        new_node.operation = "Agree"
+        new_node.operation = "mtAgree"
         new_node.exhaust_ws = 0
         if my_node.agree_feats != new_node.agree_feats:
             new_list.append(new_node)
@@ -335,22 +350,32 @@ def Agree(my_node):
         # Agree left
         my_left_agr = my_node.children[0].agree_feats
         my_right_feats = my_node.children[1].neutral_feats
+        my_used_right = my_node.children[1].used_feats
         for key, value in my_right_feats.items():
             if key + "_agr" in my_left_agr and value == my_left_agr[key + "_agr"]:
                 my_left_agr[key + "_agr"] = "0"
-
+                if value == "1":
+                    my_used_right[key] = "1"
+                
         newer_node.children[0].agree_feats = my_left_agr
+        newer_node.children[1].used_feats = my_used_right
 
         # Agree right
         my_right_agr = my_node.children[1].agree_feats
         my_left_feats = my_node.children[0].neutral_feats
+        my_used_left = my_node.children[0].used_feats
+
         for key, value in my_left_feats.items():
             if key + "_agr" in my_right_agr and value == my_right_agr[key + "_agr"]:
                 my_right_agr[key + "_agr"] = "0"
+                if value == "1":
+                    my_used_left[key] = "1"
 
         # Only update the right child's agree_feats
         newer_node.children[1].agree_feats = my_right_agr
-        newer_node.operation = "Agree children"
+        newer_node.children[0].used_feats = my_used_left
+
+        newer_node.operation = "Agree"
         newer_node.exhaust_ws = 0
 
          # Check if there were changes in agree_feats
@@ -361,15 +386,15 @@ def Agree(my_node):
 # function to form outputs from an input
 def proceed_cycle(input_node):
     output_nodes = []
-     
-    for_merge = copy.deepcopy(input_node)
-    output_nodes.extend(Merge(for_merge)) # carry out merge
+
+    for_agree = copy.deepcopy(input_node)
+    output_nodes.extend(Agree(for_agree)) # carry out agree
 
     for_label = copy.deepcopy(input_node)
     output_nodes.extend(Label(for_label)) # carry out label
 
-    for_agree = copy.deepcopy(input_node)
-    output_nodes.extend(Agree(for_agree)) # carry out agree
+    for_merge = copy.deepcopy(input_node)
+    output_nodes.extend(Merge(for_merge)) # carry out merge
 
     return output_nodes
 
@@ -599,8 +624,8 @@ class MainWindow(QMainWindow):
 
             # Create a QTableWidget to display the node attributes
             table_widget = QTableWidget()
-            table_widget.setColumnCount(4)
-            table_widget.setHorizontalHeaderLabels(['node', 'agr_feats', 'neut_feats', 'dominators'])
+            table_widget.setColumnCount(5)
+            table_widget.setHorizontalHeaderLabels(['node', 'agr_feats', 'neut_feats', 'dominators', 'used_feats'])
 
             # Fetch tree structure and node attributes
             root_node = self.outputs[row]
@@ -611,6 +636,7 @@ class MainWindow(QMainWindow):
                 table_widget.setItem(row_position, 1, QTableWidgetItem(str(node.agree_feats)))
                 table_widget.setItem(row_position, 2, QTableWidgetItem(str(node.neutral_feats)))
                 table_widget.setItem(row_position, 3, QTableWidgetItem(str(node.domination_count())))
+                table_widget.setItem(row_position, 4, QTableWidgetItem(str(node.used_feats)))
 
             # Resize columns to content
             table_widget.resizeColumnsToContents()
