@@ -12,9 +12,6 @@ import sys
 from graphviz import Source
 import tempfile
 import pandas as pd
-import numpy as np
-from scipy.special import softmax
-from scipy.stats import entropy
 
 agree_dict = {'case_agr': 0, 'wh_agr': 0, 'foc_agr': 0, 'cl_agr':0}
 neutral_dict = {'case': 0, 'wh': 0, 'foc' : 0,'cl':0}
