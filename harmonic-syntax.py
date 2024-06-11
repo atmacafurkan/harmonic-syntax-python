@@ -16,8 +16,8 @@ import pandas as pd
 agree_dict = {'case_agr': 0, 'wh_agr': 0, 'foc_agr': 0, 'cl_agr':0}
 neutral_dict = {'case': 0, 'wh': 0, 'foc' : 0,'cl':0}
 empty_dict = {'case_mt': 0, 'wh_mt': 0, 'foc_mt': 0, 'cl_mt':0}
-used_feats_dict = {'case': 0, 'wh': 0, 'foc': 0, 'cl':0}
-constraints_dict = {'merge_cond': 0, 'exhaust_ws': 0,'label_cons': 0, 'case_agr': 0, 'wh_agr' : 0, 'foc_agr' : 0, 'cl_agr':0, 'case': 0, 'wh' : 0, 'foc' : 0, 'cl':0, 'case_mt' : 0, 'wh_mt': 0, 'foc_mt': 0, 'cl_mt':0}
+used_feats_dict = neutral_dict
+constraints_dict = {'merge_cond' : 0, 'exhaust_ws': 0, 'label_cons': 0, **agree_dict, **neutral_dict, **empty_dict}
 explanations_dict = {'operation': 'The operation name given for easy intrepretation. xMerge, iMerge, and rMerge are all one operation Merge.',
                      'output': 'A linear representation of the output. You can click on it to view the visual representation.',
                      'merge_cond': 'Merge condition constraint, a constraint tied to the operation Merge. It is violated when the merge feature of one item does not match the label of the other.',
@@ -134,7 +134,7 @@ def merge_condition(node):
             violation += 1
     return violation
 
-# for labelling constraint, only checked at the root node (latest operation)
+# for label constraint, only checked at the root node (latest operation)
 def label_constraint(node):
     # if the node does not have a name and the operation is Merge, return 1
     if not node.name and node.operation in ["xMerge","iMerge","rMerge"]:
@@ -201,7 +201,7 @@ def read_nodes_csv(csv_file_path: str) -> List[SyntaxNode]:
     # Update the other_nodes field for each node by cloning the other nodes
     for i, node in enumerate(nodes):
         node.other_nodes = [clone_tree(other_node) for j, other_node in enumerate(nodes) if i != j]
-
+    
     return nodes
 
 #### GEN FUNCTIONS ####
@@ -486,7 +486,7 @@ class MainWindow(QMainWindow):
         # Create a QTableWidget
         self.table_eval = QTableWidget(self)
         self.table_eval.setColumnCount(len(constraints_dict) + 1)
-        self.headers = list(constraints_dict.keys())
+        self.headers = list(constraints_dict.keys()) # get the keys from constraints dict and available names
         self.table_eval.cellClicked.connect(self.on_cell_clicked) # when the output is clicked, port to tree visualisation
         self.table_eval.horizontalHeader().sectionClicked.connect(self.on_header_clicked) # when the column names are clicked, connect to explanations
         self.table_eval.verticalHeader().sectionDoubleClicked.connect(self.next_cycle)# when the rows are clicked, connect to proceed cycle
@@ -516,6 +516,11 @@ class MainWindow(QMainWindow):
     def import_numeration(self):
         self.numeration_path, _ = QFileDialog.getOpenFileName(self, 'Select Numeration', '.', 'Csv Files (*.csv)')
         self.numeration = read_nodes_csv(self.numeration_path)
+
+        # update headers once for labelling constraints
+        self.available_names = [node.name for node in self.numeration]
+        self.headers += ['LB_' + s for s in self.available_names] 
+
         if self.numeration_path:
             # update the input tree
             my_input = generate_svg_content(self.numeration[0])
@@ -539,9 +544,13 @@ class MainWindow(QMainWindow):
         # Set the number of columns in the table
         self.table_eval.setColumnCount(len(self.headers) + 1)
     
-            # Set the headers for the table
+        # Set the headers for the table
         headers = ['operation'] + ['output'] + self.headers
         self.table_eval.setHorizontalHeaderLabels(headers)
+
+        # Ensure all columns are visible
+        for col in range(self.table_eval.columnCount()):
+            self.table_eval.setColumnHidden(col, False)
     
         # Populate the table
         for row, node in enumerate(self.outputs):
@@ -559,14 +568,29 @@ class MainWindow(QMainWindow):
             data_dict = new_node.evaluate_constraints()
             data_dict['merge_cond'] = merge_condition(new_node) # check for merge condition
             data_dict['label_cons'] = label_constraint(new_node) # check for label constraint
-            data_dict['exhaust_ws'] = new_node.exhaust_ws
+            data_dict['exhaust_ws'] = new_node.exhaust_ws #exhaust workspace constraint
             data_dict = empty_agreement(new_node, data_dict) # check for empty agreement
-            for col, key in enumerate(self.headers, start=2):  # Start from column 1 to skip the first column
-                value = data_dict.get(key, '')
+
+            if new_node.operation == "Label": # labelling constraint
+                data_dict['LB_' + new_node.name] = 1
+            
+            for col, key in enumerate(self.headers, start=2):  # Start from column 3 to skip the first two columns
+                value = data_dict.get(key, 0)
                 item = QTableWidgetItem(str(value))
                 item.setFlags(item.flags() & ~Qt.ItemIsEditable)
                 self.table_eval.setItem(row, col, item)
-    
+
+        # Check for columns to hide
+        columns_to_hide = []
+        for col in range(2, self.table_eval.columnCount()):  # Start from the 3rd column
+            column_has_1 = any(self.table_eval.item(row, col).text() == "1" for row in range(self.table_eval.rowCount()))
+            if not column_has_1:
+                columns_to_hide.append(col)
+        
+        # Hide columns that should be hidden
+        for col in columns_to_hide:
+            self.table_eval.setColumnHidden(col, True)
+
         # Resize columns to content
         self.table_eval.resizeColumnsToContents()
 
