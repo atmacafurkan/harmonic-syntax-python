@@ -581,7 +581,7 @@ class MainWindow(QMainWindow):
                 self.table_eval.setItem(row, col, item)
 
         # copy table_eval for export purposes (since unused constraints are later omitted, it might cause problems)
-        self.my_eval = table_to_dataframe(self.my_eval)
+        self.my_eval = table_to_dataframe(self.table_eval)
 
         # Check for columns to hide
         columns_to_hide = []
