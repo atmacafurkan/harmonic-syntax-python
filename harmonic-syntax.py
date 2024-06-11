@@ -12,6 +12,8 @@ import sys
 from graphviz import Source
 import tempfile
 import pandas as pd
+import numpy as np
+from scipy.special import softmax
 
 agree_dict = {'case_agr': 0, 'wh_agr': 0, 'foc_agr': 0, 'cl_agr':0}
 neutral_dict = {'case': 0, 'wh': 0, 'foc' : 0,'cl':0}
@@ -35,6 +37,53 @@ explanations_dict = {'operation': 'The operation name given for easy intrepretat
                      'wh_mt': 'Empty agreement constraint for wh, a constraint tied to the operation Agree. It is violated when the agreement features of the root node is satisfied unilaterally.',
                      'cl_mt': 'Empty agreement constraint for classifier, a constraint tied to the operation Agree. It is violated when the agreement features of the root node is satisfied unilaterally.'
                      }
+
+# Kullback-Leibler divergence 
+def KL(p, q): 
+    mask = p != 0  # Create a mask to avoid log(0)
+    kl_divergence = np.sum(p[mask] * np.log(p[mask] / q[mask]))
+    return kl_divergence
+
+# objective function to optimize
+def objective_KL(x, my_tableaux):
+    # get weights
+    constraint_weights = x[np.newaxis,:]
+
+    # order the data frame
+    columns_to_move = ['input','winner','operation','output']
+    remaining_columns = [col for col in my_tableaux.columns if col not in columns_to_move]
+
+    # Create the new column order
+    new_order = columns_to_move + remaining_columns
+    
+    # Reorder the DataFrame
+    df_reordered = my_tableaux[new_order]
+
+    # group the cumulative eval in a data frame
+    df = df_reordered.drop(columns = ['output', 'operation']).groupby('input') 
+    divergences = []
+    for name, group in df:
+        # Convert the group to a matrix (2D numpy array)
+        matrix = group.drop(columns = ['input']).to_numpy()
+
+        # Slice the matrix to exclude the first column
+        matrix_to_multiply = matrix[:, 1:]
+
+        # Multiply each row of the sliced matrix by corresponding elements of x
+        multiplied = matrix_to_multiply * (-constraint_weights)
+
+        # Sum all values in each row
+        harmony_values = np.sum(multiplied, axis=1, keepdims=True)
+
+        # Compute softmax of row_sums
+        probabilities = np.exp(harmony_values)/np.sum(np.exp(harmony_values))
+
+        # get the frequencies from the winner
+        frequencies = matrix[:,0].astype(np.float64)
+
+        # calculate divergence
+        divergences.append(KL(frequencies, probabilities))
+    return np.sum(divergences)
 
 # Custom node class with a named list field
 class SyntaxNode(Node):
