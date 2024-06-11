@@ -581,8 +581,8 @@ class MainWindow(QMainWindow):
                 self.table_eval.setItem(row, col, item)
 
         # copy table_eval for export purposes (since unused constraints are later omitted, it might cause problems)
-        self.my_eval = copy.deepcopy(self.table_eval)
-        
+        self.my_eval = table_to_dataframe(self.my_eval)
+
         # Check for columns to hide
         columns_to_hide = []
         for col in range(2, self.table_eval.columnCount()):  # Start from the 3rd column
@@ -599,7 +599,7 @@ class MainWindow(QMainWindow):
 
     def next_cycle(self, logicalIndex):
         # save the eval table to a data frame
-        eval_df = table_to_dataframe(self.my_eval)
+        eval_df = self.my_eval
         eval_df['input'] = self.the_input.to_linear()
         eval_df['winner'] = 0
         eval_df.loc[logicalIndex, 'winner'] = 1
