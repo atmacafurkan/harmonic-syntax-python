@@ -14,6 +14,7 @@ import tempfile
 import pandas as pd
 import numpy as np
 from scipy.special import softmax
+from scipy.optimize import minimize
 
 agree_dict = {'case_agr': 0, 'wh_agr': 0, 'foc_agr': 0, 'cl_agr':0}
 neutral_dict = {'case': 0, 'wh': 0, 'foc' : 0,'cl':0}
@@ -45,24 +46,12 @@ def KL(p, q):
     return kl_divergence
 
 # objective function to optimize
-def objective_KL(x, my_tableaux):
+def objective_KL(x, df):
     # get weights
     constraint_weights = x[np.newaxis,:]
 
-    # order the data frame
-    columns_to_move = ['input','winner','operation','output']
-    remaining_columns = [col for col in my_tableaux.columns if col not in columns_to_move]
-
-    # Create the new column order
-    new_order = columns_to_move + remaining_columns
-    
-    # Reorder the DataFrame
-    df_reordered = my_tableaux[new_order]
-
-    # group the cumulative eval in a data frame
-    df = df_reordered.drop(columns = ['output', 'operation']).groupby('input') 
     divergences = []
-    for name, group in df:
+    for name, group in df.groupby('input'):
         # Convert the group to a matrix (2D numpy array)
         matrix = group.drop(columns = ['input']).to_numpy()
 
@@ -84,6 +73,40 @@ def objective_KL(x, my_tableaux):
         # calculate divergence
         divergences.append(KL(frequencies, probabilities))
     return np.sum(divergences)
+
+# optimizing function
+def weight_optimize(my_tableaux):
+    # order the data frame
+    columns_to_move = ['input','winner','operation','output']
+    remaining_columns = [col for col in my_tableaux.columns if col not in columns_to_move]
+
+    # Create the new column order
+    new_order = columns_to_move + remaining_columns
+    
+    # Reorder the DataFrame
+    df_reordered = my_tableaux[new_order]
+
+    # group the cumulative eval in a data frame
+    df = df_reordered.drop(columns = ['output', 'operation'])
+    
+    # number of constraints
+    n_constraint = len(remaining_columns)
+
+    # Initial guess for the weights
+    initial_weights = np.zeros(n_constraint)
+    
+    # Define the bounds for the weights (0 to 100)
+    bounds = [(0, 100) for _ in range(n_constraint)]
+
+    # Define the objective function that takes only the weights as input
+    def objective(weights):
+        return objective_KL(weights, df)
+    
+    # Perform the optimization using L-BFGS-B method
+    result = minimize(objective, initial_weights, method='L-BFGS-B', bounds=bounds)
+    
+    # Return the resulting optimization
+    return result
 
 # Custom node class with a named list field
 class SyntaxNode(Node):
@@ -558,6 +581,15 @@ class MainWindow(QMainWindow):
 
     def export_eval(self):
         # Write DataFrame to CSV file
+        # order the data frame
+        columns_to_move = ['input','winner','operation','output']
+        remaining_columns = [col for col in self.cumulative_eval.columns if col not in columns_to_move]
+
+        # Create the new column order
+        new_order = columns_to_move + remaining_columns
+    
+        # Reorder the DataFrame
+        self.cumulative_eval = self.cumulative_eval[new_order]
         self.cumulative_eval.to_csv('output.csv', index=False)
         self.label_optimal.setText('Eval exported!')
         self.label_optimal.setStyleSheet('color : green')
