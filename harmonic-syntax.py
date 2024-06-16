@@ -13,8 +13,8 @@ from graphviz import Source
 import tempfile
 import pandas as pd
 import numpy as np
-from scipy.special import softmax
 from scipy.optimize import minimize
+import traceback
 
 agree_dict = {'case_agr': 0, 'wh_agr': 0, 'foc_agr': 0, 'cl_agr':0}
 neutral_dict = {'case': 0, 'wh': 0, 'foc' : 0,'cl':0}
@@ -82,21 +82,14 @@ def objective_KL(x, df):
 
 # optimizing function
 def weight_optimize(my_tableaux):
-    # order the data frame
-    columns_to_move = ['input','winner','operation','output']
-    remaining_columns = [col for col in my_tableaux.columns if col not in columns_to_move]
-
-    # Create the new column order
-    new_order = columns_to_move + remaining_columns
-    
     # Reorder the DataFrame
-    df_reordered = my_tableaux[new_order]
+    df_reordered = reorder_table(my_tableaux)
 
     # group the cumulative eval in a data frame
     df = df_reordered.drop(columns = ['output', 'operation'])
     
     # number of constraints
-    n_constraint = len(remaining_columns)
+    n_constraint = len(df.columns) - 2
 
     # Initial guess for the weights
     initial_weights = np.zeros(n_constraint)
@@ -514,7 +507,18 @@ def table_to_dataframe(table_widget):
 
     # Create a pandas DataFrame from the data and set the column headers
     df = pd.DataFrame(data, columns=headers)
+    df.reset_index(drop=True, inplace = True)
     return df
+
+def reorder_table(df, columns_to_move = ['input','winner','operation','output']):
+    # order the data frame
+    remaining_columns = [col for col in df.columns if col not in columns_to_move]
+
+    # Create the new column order
+    new_order = columns_to_move + remaining_columns
+    
+    # Reorder the DataFrame
+    return df[new_order]
 
 # Define the PyQt5 application and main window
 class MainWindow(QMainWindow):
@@ -547,6 +551,11 @@ class MainWindow(QMainWindow):
         self.eval_export.setEnabled(False)
         self.eval_export.clicked.connect(self.export_eval)
 
+        # export the derivation with weights
+        self.der_export = QPushButton('Export the cumulative eval with weights')
+        self.der_export.setEnabled(False)
+        self.der_export.clicked.connect(self.export_derivation)
+
         # run the weight optimizer
         self.find_weights = QPushButton('Run the weight optimizer')
         self.find_weights.setEnabled(False)
@@ -562,20 +571,16 @@ class MainWindow(QMainWindow):
         left_side.addWidget(self.label_optimal)
         left_side.addWidget(self.eval_export)
         left_side.addWidget(self.find_weights)
+        left_side.addWidget(self.der_export)
 
         # displaying eval
         # Create a QTableWidget
         self.table_eval = QTableWidget(self)
         self.table_eval.setColumnCount(len(constraints_dict) + 1)
-        self.headers = list(constraints_dict.keys()) # get the keys from constraints dict and available names
         self.table_eval.cellClicked.connect(self.on_cell_clicked) # when the output is clicked, port to tree visualisation
         self.table_eval.horizontalHeader().sectionClicked.connect(self.on_header_clicked) # when the column names are clicked, connect to explanations
         self.table_eval.verticalHeader().sectionDoubleClicked.connect(self.next_cycle)# when the rows are clicked, connect to proceed cycle
         right_side.addWidget(self.table_eval)
-
-        # create empty eval table
-        my_columns = list(constraints_dict.keys()) + ['input', 'winner']
-        self.cumulative_eval = pd.DataFrame(columns = my_columns)
 
         # Adding both QVBoxLayouts to a QHBoxLayout
         hLayout = QHBoxLayout()
@@ -587,6 +592,11 @@ class MainWindow(QMainWindow):
 
         # Set the main layout on the central widget
         centralWidget.setLayout(mainLayout)
+
+    def clear_table_widget(self, table_widget):
+        table_widget.clear()
+        table_widget.setRowCount(0)
+        table_widget.setColumnCount(0) 
 
     def run_minimazing_KL(self):
         self.optimization = weight_optimize(self.cumulative_eval)
@@ -603,17 +613,36 @@ class MainWindow(QMainWindow):
         # Resize columns to content
         self.table_eval.resizeColumnsToContents()
 
+        # enable derivation export
+        self.der_export.setEnabled(True)
+
+    def export_derivation(self):
+        # Open a file dialog to ask for file name and location to save
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        file_name, _ = QFileDialog.getSaveFileName(self, "Save the derivation with weights", "", "CSV Files (*.csv)", options=options)
+        if file_name:
+            # Ensure the file has a .csv extension
+            if not file_name.endswith('.csv'):
+                file_name += '.csv'
+            self.save_table_as_csv(file_name)
+
+    def save_table_as_csv(self, file_name):
+        # Save the table data as a CSV file
+        with open(file_name, 'w', newline='') as file:
+            writer = csv.writer(file)
+            # Write the headers
+            headers = [self.table_eval.horizontalHeaderItem(col).text() for col in range(self.table_eval.columnCount())]
+            writer.writerow(headers)
+            # Write the data
+            for row in range(self.table_eval.rowCount()):
+                row_data = [self.table_eval.item(row, col).text() if self.table_eval.item(row, col) else '' for col in range(self.table_eval.columnCount())]
+                writer.writerow(row_data)
+
     def export_eval(self):
         # Write DataFrame to CSV file
-        # order the data frame
-        columns_to_move = ['input','winner','operation','output']
-        remaining_columns = [col for col in self.cumulative_eval.columns if col not in columns_to_move]
-
-        # Create the new column order
-        new_order = columns_to_move + remaining_columns
-    
         # Reorder the DataFrame
-        self.cumulative_eval = self.cumulative_eval[new_order]
+        self.cumulative_eval = reorder_table(self.cumulative_eval)
         self.cumulative_eval.to_csv('output.csv', index=False)
         self.label_optimal.setText('Eval exported!')
         self.label_optimal.setStyleSheet('color : green')
@@ -625,7 +654,12 @@ class MainWindow(QMainWindow):
         self.table_eval.setColumnCount(0)
 
         # Clear my eval
-        self.my_eval = table_to_dataframe(self.table_eval)
+        self.my_eval = None
+
+        # create empty eval table
+        my_columns = list(constraints_dict.keys()) + ['input', 'winner']
+
+        self.cumulative_eval = pd.DataFrame(columns = my_columns)
 
         # enable header and output selection
         self.cycle_enabled = True
@@ -633,11 +667,17 @@ class MainWindow(QMainWindow):
         # disable weight optimizer
         self.find_weights.setEnabled(False)
 
+        # disable derivation export
+        self.der_export.setEnabled(False)
+
         self.numeration_path, _ = QFileDialog.getOpenFileName(self, 'Select Numeration', '.', 'Csv Files (*.csv)')
         self.numeration = read_nodes_csv(self.numeration_path)
 
         # update headers once for labelling constraints
+        self.available_names = None
         self.available_names = [node.name for node in self.numeration]
+        
+        self.headers = list(constraints_dict.keys()) # get the keys from constraints dict and available names
         self.headers += ['LB_' + s for s in self.available_names] 
 
         if self.numeration_path:
@@ -658,9 +698,7 @@ class MainWindow(QMainWindow):
 
     def update_eval(self):
         # Clear the table
-        self.table_eval.clear()
-        self.table_eval.setRowCount(0)
-        self.table_eval.setColumnCount(0)
+        self.clear_table_widget(self.table_eval)
 
         # Set the number of rows in the table
         self.table_eval.setRowCount(len(self.outputs))
@@ -726,6 +764,7 @@ class MainWindow(QMainWindow):
     def next_cycle(self, logicalIndex):
         if self.cycle_enabled == False:
             return None
+        
         # save the eval table to a data frame
         eval_df = self.my_eval
         eval_df['input'] = self.the_input.to_linear()
@@ -762,9 +801,7 @@ class MainWindow(QMainWindow):
 
     def display_derivation(self):
         # Clear the table
-        self.table_eval.clear()
-        self.table_eval.setRowCount(0)
-        self.table_eval.setColumnCount(0)
+        self.clear_table_widget(self.table_eval)
 
         # get the cumulative eval
         my_tableaux = self.cumulative_eval
