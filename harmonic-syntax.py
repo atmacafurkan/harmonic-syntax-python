@@ -51,10 +51,40 @@ def KL(p, q):
     kl_divergence = np.sum(p[mask] * np.log(p[mask] / q[mask]))
     return kl_divergence
 
-# objective function to optimize
-def objective_KL(x, df):
+def KL_divergence(p, q):
+    """
+    Compute Kullback-Leibler (KL) divergence between two distributions p and q.
+
+    Parameters:
+    p, q : array-like
+        Arrays representing the distributions. They must have the same shape.
+
+    Returns:
+    float
+        KL divergence value.
+    """
+    # Convert inputs to numpy arrays to ensure compatibility
+    p = np.asarray(p, dtype=np.float64)
+    q = np.asarray(q, dtype=np.float64)
+
+    # Ensure distributions sum to 1 (normalization)
+    p = p / np.sum(p)
+    q = q / np.sum(q)
+
+    # Mask to handle cases where p[i] == 0
+    mask = p != 0
+
+    # Compute KL divergence
+    kl_divergence = np.sum(p[mask] * np.log(p[mask] / q[mask]))
+
+    return kl_divergence
+
+def frequency_and_probabilities(x, df):
     # get weights
     constraint_weights = x[np.newaxis,:]
+
+    # new df
+    new_df = df.copy()
 
     divergences = []
     for name, group in df.groupby('input'):
@@ -76,9 +106,18 @@ def objective_KL(x, df):
         # get the frequencies from the winner
         frequencies = matrix[:,0].astype(np.float64)
 
+        # Add probabilities and harmony values to the group
+        group['probabilities'] = probabilities.flatten()
+        group['harmony_score'] = harmony_values.flatten()
+
+        # Append the modified group back to the new DataFrame
+        new_df.loc[group.index, 'probabilities'] = group['probabilities']
+        new_df.loc[group.index, 'harmony_score'] = group['harmony_score']
+
         # calculate divergence
-        divergences.append(KL(frequencies, probabilities))
-    return np.sum(divergences)
+        divergences.append((frequencies,probabilities))
+
+    return divergences, new_df
 
 # optimizing function
 def weight_optimize(my_tableaux):
@@ -99,7 +138,9 @@ def weight_optimize(my_tableaux):
 
     # Define the objective function that takes only the weights as input
     def objective(weights):
-        return objective_KL(weights, df)
+        my_divergences, _ = frequency_and_probabilities(weights, df)
+        total_KL_divergence = sum(KL_divergence(freq, prob) for freq, prob in my_divergences)
+        return total_KL_divergence
     
     # Perform the optimization using L-BFGS-B method
     result = minimize(objective, initial_weights, method='L-BFGS-B', bounds=bounds)
@@ -600,7 +641,7 @@ class MainWindow(QMainWindow):
 
     def run_minimazing_KL(self):
         self.optimization = weight_optimize(self.cumulative_eval)
-        self.label_optimal.setText(f'Was minimzaing function successful? {self.optimization.success}')
+        self.label_optimal.setText(f'Was minimazing function successful? {self.optimization.success}')
         headers = [self.table_eval.horizontalHeaderItem(i).text() for i in range(self.table_eval.columnCount())]
         # Update headers starting from the specified column index
         for i, value in enumerate(self.optimization.x, start=4):
@@ -609,6 +650,30 @@ class MainWindow(QMainWindow):
 
         # Set updated headers back to the table
         self.table_eval.setHorizontalHeaderLabels(headers)
+
+        # update the table with the new probabilities
+        my_solution = table_to_dataframe(self.table_eval)
+
+        # add the probabilities
+        _, new_solution = frequency_and_probabilities(self.optimization.x, reorder_table(my_solution).drop(columns = ['output', 'operation']))
+
+        probabilities = new_solution['probabilities']
+        harmonies = new_solution['harmony_score']
+        
+        self.table_eval.insertColumn(2)
+        self.table_eval.setHorizontalHeaderItem(2, QTableWidgetItem('probability'))
+
+        self.table_eval.insertColumn(3)
+        self.table_eval.setHorizontalHeaderItem(4, QTableWidgetItem('harmony'))
+
+        for row in range(len(probabilities)):
+            my_probability = QTableWidgetItem(str(probabilities[row]))
+            my_probability.setFlags(my_probability.flags() & ~Qt.ItemIsEditable)
+            self.table_eval.setItem(row, 2, my_probability)
+
+            my_harmony = QTableWidgetItem(str(harmonies[row]))
+            my_harmony.setFlags(my_harmony.flags() & ~Qt.ItemIsEditable)
+            self.table_eval.setItem(row, 3, my_harmony)
 
         # Resize columns to content
         self.table_eval.resizeColumnsToContents()
