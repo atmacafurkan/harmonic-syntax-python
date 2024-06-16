@@ -21,7 +21,9 @@ neutral_dict = {'case': 0, 'wh': 0, 'foc' : 0,'cl':0}
 empty_dict = {'case_mt': 0, 'wh_mt': 0, 'foc_mt': 0, 'cl_mt':0}
 used_feats_dict = neutral_dict
 constraints_dict = {'merge_cond' : 0, 'exhaust_ws': 0, 'label_cons': 0, **agree_dict, **neutral_dict, **empty_dict}
-explanations_dict = {'operation': 'The operation name given for easy intrepretation. xMerge, iMerge, and rMerge are all one operation Merge.',
+explanations_dict = {'input':'The input for the derivation cycle',
+                     'winner':'The optimal output of the derivation cycle',
+                     'operation': 'The operation name given for easy intrepretation. xMerge, iMerge, and rMerge are all one operation Merge.',
                      'output': 'A linear representation of the output. You can click on it to view the visual representation.',
                      'merge_cond': 'Merge condition constraint, a constraint tied to the operation Merge. It is violated when the merge feature of one item does not match the label of the other.',
                      'label_cons': 'Labelling constraint, a constraint tied to the operation Merge. It is violated when the result of the merge does not have a label.',
