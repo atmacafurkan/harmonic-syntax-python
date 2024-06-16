@@ -41,6 +41,10 @@ explanations_dict = {'input':'The input for the derivation cycle',
                      'cl_mt': 'Empty agreement constraint for classifier, a constraint tied to the operation Agree. It is violated when the agreement features of the root node is satisfied unilaterally.'
                      }
 
+# function to import multiple evaluations
+def import_multiple_derivations(self):
+    return None
+
 # Kullback-Leibler divergence 
 def KL(p, q): 
     mask = p != 0  # Create a mask to avoid log(0)
