@@ -53,7 +53,7 @@ def objective_KL(x, df):
     divergences = []
     for name, group in df.groupby('input'):
         # Convert the group to a matrix (2D numpy array)
-        matrix = group.drop(columns = ['input']).to_numpy()
+        matrix = group.drop(columns = ['input']).to_numpy(dtype=np.float64)
 
         # Slice the matrix to exclude the first column
         matrix_to_multiply = matrix[:, 1:]
@@ -543,6 +543,11 @@ class MainWindow(QMainWindow):
         self.eval_export = QPushButton('Export the cumulative eval')
         self.eval_export.setEnabled(False)
         self.eval_export.clicked.connect(self.export_eval)
+
+        # run the weight optimizer
+        self.find_weights = QPushButton('Run the weight optimizer')
+        self.find_weights.setEnabled(False)
+        self.find_weights.clicked.connect(self.run_minimazing_KL)
         
         # displaying the input tree
         self.input_tree = QSvgWidget(self)
@@ -553,6 +558,7 @@ class MainWindow(QMainWindow):
         left_side.addWidget(self.select_numeration)
         left_side.addWidget(self.label_optimal)
         left_side.addWidget(self.eval_export)
+        left_side.addWidget(self.find_weights)
 
         # displaying eval
         # Create a QTableWidget
@@ -579,6 +585,21 @@ class MainWindow(QMainWindow):
         # Set the main layout on the central widget
         centralWidget.setLayout(mainLayout)
 
+    def run_minimazing_KL(self):
+        self.optimization = weight_optimize(self.cumulative_eval)
+        self.label_optimal.setText(f'Was minimzaing function successful? {self.optimization.success}')
+        headers = [self.table_eval.horizontalHeaderItem(i).text() for i in range(self.table_eval.columnCount())]
+        # Update headers starting from the specified column index
+        for i, value in enumerate(self.optimization.x, start=4):
+            if i < len(headers):
+                headers[i] += f"_({value:.2f})"
+
+        # Set updated headers back to the table
+        self.table_eval.setHorizontalHeaderLabels(headers)
+
+        # Resize columns to content
+        self.table_eval.resizeColumnsToContents()
+
     def export_eval(self):
         # Write DataFrame to CSV file
         # order the data frame
@@ -595,6 +616,17 @@ class MainWindow(QMainWindow):
         self.label_optimal.setStyleSheet('color : green')
 
     def import_numeration(self):
+        # Clear the table
+        self.table_eval.clear()
+        self.table_eval.setRowCount(0)
+        self.table_eval.setColumnCount(0)
+
+        # enable header and output selection
+        self.cycle_enabled = True
+
+        # disable weight optimizer
+        self.find_weights.setEnabled(False)
+
         self.numeration_path, _ = QFileDialog.getOpenFileName(self, 'Select Numeration', '.', 'Csv Files (*.csv)')
         self.numeration = read_nodes_csv(self.numeration_path)
 
@@ -619,6 +651,11 @@ class MainWindow(QMainWindow):
             self.update_eval()
 
     def update_eval(self):
+        # Clear the table
+        self.table_eval.clear()
+        self.table_eval.setRowCount(0)
+        self.table_eval.setColumnCount(0)
+
         # Set the number of rows in the table
         self.table_eval.setRowCount(len(self.outputs))
 
@@ -679,6 +716,8 @@ class MainWindow(QMainWindow):
         self.table_eval.resizeColumnsToContents()
 
     def next_cycle(self, logicalIndex):
+        if self.cycle_enabled == False:
+            return None
         # save the eval table to a data frame
         eval_df = self.my_eval
         eval_df['input'] = self.the_input.to_linear()
@@ -694,24 +733,72 @@ class MainWindow(QMainWindow):
         # get the selected output
         selected_output = self.outputs[logicalIndex]
 
-        # update the input
-        self.the_input = copy.deepcopy(selected_output)
+        # check derivation convergence
+        if selected_output.operation == "rMerge":
+            self.display_derivation()
+        else: 
+            # update the input
+            self.the_input = copy.deepcopy(selected_output)
         
-        # produce the new outputs
-        self.outputs = proceed_cycle(selected_output)
+            # produce the new outputs
+            self.outputs = proceed_cycle(selected_output)
 
-        # update the input tree
-        my_input = generate_svg_content(selected_output)
+            # update the input tree
+            my_input = generate_svg_content(selected_output)
 
-        # Load the SVG into QSvgWidget
-        self.input_tree.load(my_input.encode('utf-8'))
+            # Load the SVG into QSvgWidget
+            self.input_tree.load(my_input.encode('utf-8'))
 
-        # update the evaluation table
-        self.update_eval()
+            # update the evaluation table
+            self.update_eval()
+
+    def display_derivation(self):
+        # Clear the table
+        self.table_eval.clear()
+        self.table_eval.setRowCount(0)
+        self.table_eval.setColumnCount(0)
+
+        # get the cumulative eval
+        my_tableaux = self.cumulative_eval
+
+        # order the data frame
+        columns_to_move = ['input','winner','operation','output']
+        remaining_columns = [col for col in my_tableaux.columns if col not in columns_to_move]
+
+        # Create the new column order
+        new_order = columns_to_move + remaining_columns
+    
+        # Reorder the DataFrame
+        df = my_tableaux[new_order]
+
+        # Set column count
+        self.table_eval.setColumnCount(len(df.columns))
+
+        # Set row count
+        self.table_eval.setRowCount(len(df.index))
+        
+        # Set the table headers
+        self.table_eval.setHorizontalHeaderLabels(df.columns)
+        
+        # Populate the table with data
+        for i in range(len(df.index)):
+            for j in range(len(df.columns)):
+                item = QTableWidgetItem(str(df.iat[i, j]))
+                item.setFlags(item.flags() & ~Qt.ItemIsEditable)  # Make cell not editable
+                self.table_eval.setItem(i, j, item)
+
+        # Resize columns to content
+        self.table_eval.resizeColumnsToContents()
+
+        # disable header or output selection
+        self.cycle_enabled = False
+
+        # enable weight optimizer
+        self.find_weights.setEnabled(True)
 
     def on_cell_clicked(self, row, column):
         # Custom function to be executed when a cell is clicked
-        if column == 1:
+        if column == 1 and self.cycle_enabled == True:
             svg_content = generate_svg_content(self.outputs[row])
 
             # Create a clickable popup dialog
@@ -759,9 +846,10 @@ class MainWindow(QMainWindow):
             dialog.show()
 
     def on_header_clicked(self, logicalIndex):
-        header_label = self.table_eval.horizontalHeaderItem(logicalIndex).text()
-        message = f"{explanations_dict[header_label]}"
-        self.show_message(message)
+        if self.cycle_enabled == True:
+            header_label = self.table_eval.horizontalHeaderItem(logicalIndex).text()
+            message = f"{explanations_dict[header_label]}"
+            self.show_message(message)
 
     def show_message(self, message):
         # Show a message box with the given message
