@@ -79,7 +79,7 @@ def KL_divergence(p, q):
 
     return kl_divergence
 
-def frequency_and_probabilities(x, df):
+def frequency_and_probabilities(x, df, update_table = False):
     # get weights
     constraint_weights = x[np.newaxis,:]
 
@@ -106,13 +106,14 @@ def frequency_and_probabilities(x, df):
         # get the frequencies from the winner
         frequencies = matrix[:,0].astype(np.float64)
 
-        # Add probabilities and harmony values to the group
-        group['probabilities'] = probabilities.flatten()
-        group['harmony_score'] = harmony_values.flatten()
+        if update_table: # only do this when updating the table, not when calculating optimization.
+            # Add probabilities and harmony values to the group
+            group['probabilities'] = probabilities.flatten()
+            group['harmony_score'] = harmony_values.flatten()
 
-        # Append the modified group back to the new DataFrame
-        new_df.loc[group.index, 'probabilities'] = group['probabilities']
-        new_df.loc[group.index, 'harmony_score'] = group['harmony_score']
+            # Append the modified group back to the new DataFrame
+            new_df.loc[group.index, 'probabilities'] = group['probabilities']
+            new_df.loc[group.index, 'harmony_score'] = group['harmony_score']
 
         # calculate divergence
         divergences.append((frequencies,probabilities))
@@ -655,7 +656,7 @@ class MainWindow(QMainWindow):
         my_solution = table_to_dataframe(self.table_eval)
 
         # add the probabilities
-        _, new_solution = frequency_and_probabilities(self.optimization.x, reorder_table(my_solution).drop(columns = ['output', 'operation']))
+        _, new_solution = frequency_and_probabilities(self.optimization.x, reorder_table(my_solution).drop(columns = ['output', 'operation']), update_table= True)
 
         probabilities = new_solution['probabilities']
         harmonies = new_solution['harmony_score']
