@@ -1,6 +1,6 @@
-it,mc,ac,ft,lb
-DP,,case_agr:1-foc_agr:0-wh_agr:0,case:0-foc:0-wh:0,1
-V,1,case_agr:0-foc_agr:0-wh_agr:0,case:0-foc:0-wh:0,2
-v,2,case_agr:0-foc_agr:0-wh_agr:0,case:0-foc:0-wh:0,3
-T,3,case_agr:0-foc_agr:0-wh_agr:0,case:1-foc:0-wh:0,5
-C,5,case_agr:0-foc_agr:0-wh_agr:0,case:0-foc:0-wh:0,6
+it,mc,ac,ft
+DP,,case_agr:1,
+V,DP,,
+v,V,,
+T,v,,case:1
+C,T,,

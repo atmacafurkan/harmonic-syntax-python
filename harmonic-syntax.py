@@ -138,9 +138,9 @@ class SyntaxNode(Node):
         current_parent = self.parent
 
         while current_parent:
-            if current_parent.label and current_parent.label != self.label:
-                parent_labels.add(current_parent.label)
-            elif current_parent.label == self.label: # if the parent label and the current label are the same
+            if current_parent.name and current_parent.name != self.name:
+                parent_labels.add(current_parent.name)
+            elif current_parent.name == self.name: # if the parent label and the current label are the same
                 return 0
             current_parent = current_parent.parent
         # Return the count of distinct parent labels
@@ -201,14 +201,14 @@ class SyntaxNode(Node):
     
         return result
         
-    # merge condition, only checked at the root node (latest operation)
+# merge condition, only checked at the root node (latest operation)
 def merge_condition(node):
     violation = 0
     if len(node.children) > 1:
-        if node.children[0].merge_feat and node.children[0].merge_feat != node.children[1].label:
+        if node.children[0].merge_feat and node.children[0].merge_feat != node.children[1].name:
             violation += 1
 
-        if node.children[1].merge_feat and node.children[1].merge_feat != node.children[0].label:
+        if node.children[1].merge_feat and node.children[1].merge_feat != node.children[0].name:
             violation += 1
     return violation
 
@@ -271,8 +271,7 @@ def read_nodes_csv(csv_file_path: str) -> List[SyntaxNode]:
                 merge_feat= str(row['mc']),
                 agree_feats=parse_feats(row['ac']),
                 neutral_feats=parse_feats(row['ft']),
-                empty_agr = None,
-                label= str(row['lb'])
+                empty_agr = None
             )
             nodes.append(node)
 
@@ -312,8 +311,8 @@ def Merge(my_arg):
         new_node.children = [clone_tree(original_node), new_right]
         
         # Set label if conditions are met
-        if original_node.label == new_right.label:
-            new_node.label = original_node.label
+        if original_node.name == new_right.name:
+            new_node.name = original_node.name
 
         new_node.operation = "xMerge"
         new_node.exhaust_ws = 0
@@ -336,8 +335,8 @@ def Merge(my_arg):
         new_node.children = [new_left, new_right]
 
         # Set label if conditions are met
-        if new_left.label == new_right.label:
-            new_node.label = new_left.label
+        if new_left.name == new_right.name:
+            new_node.name = new_left.name
         
         new_node.operation = "iMerge"
         new_node.exhaust_ws = 1
@@ -359,7 +358,6 @@ def Label(my_node):
         new_1 = clone_tree(my_node)
         new_1.merge_feat = {} # update this to check for merge_cond
         new_1.name = new_1.children[0].name
-        new_1.label = new_1.children[0].label
         new_1.agree_feats = new_1.children[0].agree_feats
 
         # check agreement
@@ -377,7 +375,6 @@ def Label(my_node):
         new_2 = clone_tree(my_node)
         new_2.merge_feat = {}
         new_2.name = new_2.children[1].name
-        new_2.label = new_2.children[1].label
         new_2.agree_feats = new_2.children[1].agree_feats
 
         new_2_neutral = new_2.children[1].neutral_feats.copy()  # Make a copy to modify
@@ -627,6 +624,9 @@ class MainWindow(QMainWindow):
         self.table_eval.setRowCount(0)
         self.table_eval.setColumnCount(0)
 
+        # Clear my eval
+        self.my_eval = table_to_dataframe(self.table_eval)
+
         # enable header and output selection
         self.cycle_enabled = True
 
@@ -665,11 +665,13 @@ class MainWindow(QMainWindow):
         # Set the number of rows in the table
         self.table_eval.setRowCount(len(self.outputs))
 
-        # Set the number of columns in the table
-        self.table_eval.setColumnCount(len(self.headers) + 1)
-    
         # Set the headers for the table
         headers = ['operation'] + ['output'] + self.headers
+
+        # Set the number of columns in the table
+        self.table_eval.setColumnCount(len(headers))
+        
+        # set new headers
         self.table_eval.setHorizontalHeaderLabels(headers)
 
         # Ensure all columns are visible
@@ -822,8 +824,8 @@ class MainWindow(QMainWindow):
 
             # Create a QTableWidget to display the node attributes
             table_widget = QTableWidget()
-            table_widget.setColumnCount(5)
-            table_widget.setHorizontalHeaderLabels(['node', 'agr_feats', 'neut_feats', 'dominators', 'used_feats'])
+            table_widget.setColumnCount(7)
+            table_widget.setHorizontalHeaderLabels(['node', 'name', 'agr_feats', 'neut_feats', 'dominators', 'used_feats', 'operation'])
 
             # Fetch tree structure and node attributes
             root_node = self.outputs[row]
@@ -831,10 +833,12 @@ class MainWindow(QMainWindow):
                 row_position = table_widget.rowCount()
                 table_widget.insertRow(row_position)
                 table_widget.setItem(row_position, 0, QTableWidgetItem(pre + node.name))
-                table_widget.setItem(row_position, 1, QTableWidgetItem(str(node.agree_feats)))
-                table_widget.setItem(row_position, 2, QTableWidgetItem(str(node.neutral_feats)))
-                table_widget.setItem(row_position, 3, QTableWidgetItem(str(node.domination_count())))
-                table_widget.setItem(row_position, 4, QTableWidgetItem(str(node.used_feats)))
+                table_widget.setItem(row_position, 1, QTableWidgetItem(node.name))
+                table_widget.setItem(row_position, 2, QTableWidgetItem(str(node.agree_feats)))
+                table_widget.setItem(row_position, 3, QTableWidgetItem(str(node.neutral_feats)))
+                table_widget.setItem(row_position, 4, QTableWidgetItem(str(node.domination_count())))
+                table_widget.setItem(row_position, 5, QTableWidgetItem(str(node.used_feats)))
+                table_widget.setItem(row_position, 6, QTableWidgetItem(str(node.operation)))
 
             # Resize columns to content
             table_widget.resizeColumnsToContents()

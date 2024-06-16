@@ -1,0 +1,7 @@
+it,mc,ac,ft
+DP1,,case_agr:1,
+V,DP1,,
+v,V,,case:1
+DP2,v,case_agr:1,
+T,DP2,,case:1
+C,T,,
