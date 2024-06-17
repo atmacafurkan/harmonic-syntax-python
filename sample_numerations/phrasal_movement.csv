@@ -1,7 +1,7 @@
 it,mc,ac,ft
-DP1,,case_agr:1,
-V,1,,
-v,2,,case:1-foc:1
-DP2,3,case_agr:1,
-T,4,,case:1
-C,5,,
+DP,,case_agr:1,
+V,DP,,
+v,V,,case:1-foc:1
+DP2,v,case_agr:1,
+T,DP2,,case:1
+C,T,,
