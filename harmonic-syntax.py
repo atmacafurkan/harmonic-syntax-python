@@ -5,16 +5,16 @@ import csv
 import pandas as pd
 from typing import List
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QPushButton, QLabel, QFileDialog, QTableWidget, QTableWidgetItem, QHBoxLayout, QMessageBox, QScrollArea, QSizePolicy, QApplication, QDialog
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QPushButton, QLabel, QFileDialog, QTableWidget, QTableWidgetItem, QHBoxLayout, QMessageBox, QScrollArea, QSizePolicy, QApplication, QDialog, QTabWidget
 from PyQt5.QtSvg import QSvgWidget
 from anytree.exporter import UniqueDotExporter
 import sys
+import os
 from graphviz import Source
 import tempfile
 import pandas as pd
 import numpy as np
 from scipy.optimize import minimize
-import traceback
 
 agree_dict = {'case_agr': 0, 'wh_agr': 0, 'foc_agr': 0, 'cl_agr':0}
 neutral_dict = {'case': 0, 'wh': 0, 'foc' : 0,'cl':0}
@@ -41,10 +41,8 @@ explanations_dict = {'input':'The input for the derivation cycle',
                      'cl_mt': 'Empty agreement constraint for classifier, a constraint tied to the operation Agree. It is violated when the agreement features of the root node is satisfied unilaterally.'
                      }
 
-# function to import multiple evaluations
-def import_multiple_derivations(self):
-    return None
-
+# %%
+# Section: Functions for weight optimization
 # Kullback-Leibler divergence 
 def KL(p, q): 
     mask = p != 0  # Create a mask to avoid log(0)
@@ -563,24 +561,41 @@ def reorder_table(df, columns_to_move = ['input','winner','operation','output'])
     return df[new_order]
 
 # Define the PyQt5 application and main window
+# %%
+# Section: GUI
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.setWindowTitle('Harmonic Syntax Tabulator')
+        self.initUI()
+        
+    def initUI(self):
+        self.centralWidget = QWidget()
+        self.setCentralWidget(self.centralWidget)
+        self.layout = QVBoxLayout()
+        self.centralWidget.setLayout(self.layout)
+        self.createTabs()   
 
-        # Set the title and size of the main window
-        self.setWindowTitle("Harmonic Syntax Tabulator")
+    def createTabs(self):
+        self.tabs = QTabWidget()
+        self.layout.addWidget(self.tabs)
 
-        # Create the central widget
-        centralWidget = QWidget()
-        self.setCentralWidget(centralWidget)
+        self.tab1 = QWidget()
+        self.tab2 = QWidget()
 
+        self.tabs.addTab(self.tab1, "Make Derivations")
+        self.tabs.addTab(self.tab2, "Find weights for multiple evaluations")
+
+        self.addContentTab1()
+        self.addContentTab2()
+
+# %%
+# Section: The first tab
+    def addContentTab1(self):
         # main layout
-        mainLayout = QVBoxLayout()
+        mainLayout = QHBoxLayout()
 
-        # left side boxes
         left_side = QVBoxLayout()
-
-        # right side boxes
         right_side = QVBoxLayout()
 
         # selecting the numeration
@@ -596,12 +611,12 @@ class MainWindow(QMainWindow):
         # export the derivation with weights
         self.der_export = QPushButton('Export the cumulative eval with weights')
         self.der_export.setEnabled(False)
-        self.der_export.clicked.connect(self.export_derivation)
+        self.der_export.clicked.connect(lambda: self.export_derivation(self.table_eval))
 
         # run the weight optimizer
         self.find_weights = QPushButton('Run the weight optimizer')
         self.find_weights.setEnabled(False)
-        self.find_weights.clicked.connect(self.run_minimazing_KL)
+        self.find_weights.clicked.connect(lambda: self.run_minimazing_KL(self.cumulative_eval, self.table_eval))
         
         # displaying the input tree
         self.input_tree = QSvgWidget(self)
@@ -622,67 +637,15 @@ class MainWindow(QMainWindow):
         self.table_eval.cellClicked.connect(self.on_cell_clicked) # when the output is clicked, port to tree visualisation
         self.table_eval.horizontalHeader().sectionClicked.connect(self.on_header_clicked) # when the column names are clicked, connect to explanations
         self.table_eval.verticalHeader().sectionDoubleClicked.connect(self.next_cycle)# when the rows are clicked, connect to proceed cycle
+
         right_side.addWidget(self.table_eval)
 
-        # Adding both QVBoxLayouts to a QHBoxLayout
-        hLayout = QHBoxLayout()
-        hLayout.addLayout(left_side)
-        hLayout.addLayout(right_side)
+        mainLayout.addLayout(left_side)
+        mainLayout.addLayout(right_side)
 
-        # Main layout
-        mainLayout.addLayout(hLayout)
+        self.tab1.setLayout(mainLayout)
 
-        # Set the main layout on the central widget
-        centralWidget.setLayout(mainLayout)
-
-    def clear_table_widget(self, table_widget):
-        table_widget.clear()
-        table_widget.setRowCount(0)
-        table_widget.setColumnCount(0) 
-
-    def run_minimazing_KL(self):
-        self.optimization = weight_optimize(self.cumulative_eval)
-        self.label_optimal.setText(f'Was minimazing function successful? {self.optimization.success}')
-        headers = [self.table_eval.horizontalHeaderItem(i).text() for i in range(self.table_eval.columnCount())]
-        # Update headers starting from the specified column index
-        for i, value in enumerate(self.optimization.x, start=4):
-            if i < len(headers):
-                headers[i] += f"_({value:.2f})"
-
-        # Set updated headers back to the table
-        self.table_eval.setHorizontalHeaderLabels(headers)
-
-        # update the table with the new probabilities
-        my_solution = table_to_dataframe(self.table_eval)
-
-        # add the probabilities
-        _, new_solution = frequency_and_probabilities(self.optimization.x, reorder_table(my_solution).drop(columns = ['output', 'operation']), update_table= True)
-
-        probabilities = new_solution['probabilities']
-        harmonies = new_solution['harmony_score']
-        
-        self.table_eval.insertColumn(2)
-        self.table_eval.setHorizontalHeaderItem(2, QTableWidgetItem('probability'))
-
-        self.table_eval.insertColumn(3)
-        self.table_eval.setHorizontalHeaderItem(4, QTableWidgetItem('harmony'))
-
-        for row in range(len(probabilities)):
-            my_probability = QTableWidgetItem(str(probabilities[row]))
-            my_probability.setFlags(my_probability.flags() & ~Qt.ItemIsEditable)
-            self.table_eval.setItem(row, 2, my_probability)
-
-            my_harmony = QTableWidgetItem(str(harmonies[row]))
-            my_harmony.setFlags(my_harmony.flags() & ~Qt.ItemIsEditable)
-            self.table_eval.setItem(row, 3, my_harmony)
-
-        # Resize columns to content
-        self.table_eval.resizeColumnsToContents()
-
-        # enable derivation export
-        self.der_export.setEnabled(True)
-
-    def export_derivation(self):
+    def export_derivation(self, the_table):
         # Open a file dialog to ask for file name and location to save
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
@@ -691,25 +654,31 @@ class MainWindow(QMainWindow):
             # Ensure the file has a .csv extension
             if not file_name.endswith('.csv'):
                 file_name += '.csv'
-            self.save_table_as_csv(file_name)
+            self.save_table_as_csv(file_name, the_table)
 
-    def save_table_as_csv(self, file_name):
+    def save_table_as_csv(self, file_name, the_table):
         # Save the table data as a CSV file
         with open(file_name, 'w', newline='') as file:
             writer = csv.writer(file)
             # Write the headers
-            headers = [self.table_eval.horizontalHeaderItem(col).text() for col in range(self.table_eval.columnCount())]
+            headers = [the_table.horizontalHeaderItem(col).text() for col in range(the_table.columnCount())]
             writer.writerow(headers)
             # Write the data
-            for row in range(self.table_eval.rowCount()):
-                row_data = [self.table_eval.item(row, col).text() if self.table_eval.item(row, col) else '' for col in range(self.table_eval.columnCount())]
+            for row in range(the_table.rowCount()):
+                row_data = [the_table.item(row, col).text() if the_table.item(row, col) else '' for col in range(the_table.columnCount())]
                 writer.writerow(row_data)
 
     def export_eval(self):
-        # Write DataFrame to CSV file
-        # Reorder the DataFrame
-        self.cumulative_eval = reorder_table(self.cumulative_eval)
-        self.cumulative_eval.to_csv('output.csv', index=False)
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        file_name, _ = QFileDialog.getSaveFileName(self, "Save the derivation with weights", "", "CSV Files (*.csv)", options=options)
+        if file_name:
+            self.cumulative_eval = reorder_table(self.cumulative_eval)
+            # Ensure the file has a .csv extension
+            if not file_name.endswith('.csv'):
+                file_name += '.csv'
+            self.cumulative_eval.to_csv(file_name, index=False)
+        
         self.label_optimal.setText('Eval exported!')
         self.label_optimal.setStyleSheet('color : green')
 
@@ -973,13 +942,145 @@ class MainWindow(QMainWindow):
         msgBox.setStandardButtons(QMessageBox.Ok)
         msgBox.exec_()
 
+# %%
+# Section: The second tab      
+    def addContentTab2(self):
+        layout = QVBoxLayout()
+        self.tab2.setLayout(layout)
+
+        # Concatenate button
+        self.concatButton = QPushButton('Select and Concatenate Evaluations')
+        self.concatButton.clicked.connect(self.concatenate_csv)
+        layout.addWidget(self.concatButton)
+
+        # Concatenate button
+        self.find_weights2 = QPushButton('Find constraint weights')
+        self.find_weights2.setEnabled(False)
+        self.find_weights2.clicked.connect(lambda: self.run_minimazing_KL(self.combined_cumulative_eval,self.table_combined_eval))
+        layout.addWidget(self.find_weights2)
+
+        # export the derivation with weights
+        self.der_export2 = QPushButton('Export the cumulative eval with weights')
+        self.der_export2.setEnabled(False)
+        self.der_export2.clicked.connect(lambda: self.export_derivation(self.table_combined_eval))
+        layout.addWidget(self.der_export2)
+
+        # Table to display concatenated data
+        self.table_combined_eval = QTableWidget()
+        layout.addWidget(self.table_combined_eval)
+
+    def concatenate_csv(self):
+        # Open file dialog to select multiple CSV files
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        files, _ = QFileDialog.getOpenFileNames(self, "Select CSV Files", "", "CSV Files (*.csv)", options=options)
+        if files:
+            self.import_evals = files
+
+            try:
+                # List to hold the DataFrames
+                dfs = []
+
+                # Read each CSV file into a DataFrame
+                for csv_file in self.import_evals:
+                    df = pd.read_csv(csv_file)
+
+                    file_name = os.path.basename(csv_file)
+                    prefix = file_name.split('_')[0]
+
+                    # Append the prefix to the 'input' column
+                    if 'input' in df.columns:
+                        df['input'] = prefix + "_" + df['input'].astype(str)
+
+                    dfs.append(df)
+
+                # Concatenate all DataFrames in the list
+                concatenated_df = pd.concat(dfs, ignore_index=True)
+
+                # Fill NaN values with 0
+                concatenated_df = concatenated_df.fillna(0)
+
+                self.combined_cumulative_eval = concatenated_df
+
+                # Display concatenated data in the table
+                self.display_combined_eval(concatenated_df)
+
+            except Exception as e:
+                QMessageBox.critical(self, 'Error in combining csv files', str(e))
+
+    def display_combined_eval(self, df):
+        # Clear existing table
+        self.table_combined_eval.clear()
+
+        # Set number of rows and columns
+        self.table_combined_eval.setRowCount(df.shape[0])
+        self.table_combined_eval.setColumnCount(df.shape[1])
+
+        # Set headers
+        self.table_combined_eval.setHorizontalHeaderLabels(df.columns.astype(str))
+
+        # Populate table with data
+        for i in range(df.shape[0]):
+            for j in range(df.shape[1]):
+                item = QTableWidgetItem(str(df.iloc[i, j]))
+                item.setFlags(item.flags() & ~Qt.ItemIsEditable)
+                self.table_combined_eval.setItem(i, j, item)
+
+        # Resize columns to content
+        self.table_combined_eval.resizeColumnsToContents()
+
+        self.find_weights2.setEnabled(True)
+
+    def clear_table_widget(self, table_widget):
+        table_widget.clear()
+        table_widget.setRowCount(0)
+        table_widget.setColumnCount(0) 
+
+    def run_minimazing_KL(self, the_eval, the_table):
+        self.optimization = weight_optimize(the_eval)
+        headers = [the_table.horizontalHeaderItem(i).text() for i in range(the_table.columnCount())]
+        # Update headers starting from the specified column index
+        for i, value in enumerate(self.optimization.x, start=4):
+            if i < len(headers):
+                headers[i] += f"_({value:.2f})"
+
+        # Set updated headers back to the table
+        the_table.setHorizontalHeaderLabels(headers)
+
+        # update the table with the new probabilities
+        my_solution = table_to_dataframe(the_table) 
+
+        # add the probabilities
+        _, new_solution = frequency_and_probabilities(self.optimization.x, reorder_table(my_solution).drop(columns = ['output', 'operation']), update_table= True)
+
+        probabilities = new_solution['probabilities']
+        harmonies = new_solution['harmony_score']
+        
+        the_table.insertColumn(2)
+        the_table.setHorizontalHeaderItem(2, QTableWidgetItem('probability'))
+
+        the_table.insertColumn(3)
+        the_table.setHorizontalHeaderItem(3, QTableWidgetItem('harmony'))
+
+        for row in range(len(probabilities)):
+            my_probability = QTableWidgetItem(str(probabilities[row]))
+            my_probability.setFlags(my_probability.flags() & ~Qt.ItemIsEditable)
+            the_table.setItem(row, 2, my_probability)
+
+            my_harmony = QTableWidgetItem(str(harmonies[row]))
+            my_harmony.setFlags(my_harmony.flags() & ~Qt.ItemIsEditable)
+            the_table.setItem(row, 3, my_harmony)
+
+        # Resize columns to content
+        the_table.resizeColumnsToContents()
+
+        # enable derivation export
+        self.der_export.setEnabled(True)
+        self.der_export2.setEnabled(True)
+
 # Main function to run the application
-def main():
+if __name__ == '__main__':
     app = QApplication(sys.argv)
-    main_window = MainWindow()
-    main_window.show()
+    window = MainWindow()
+    window.show()
     sys.exit(app.exec_())
-
-if __name__ == "__main__":
-    main()
-
