@@ -15,6 +15,9 @@ import tempfile
 import pandas as pd
 import numpy as np
 from scipy.optimize import minimize
+from tabulate import tabulate
+from pylatexenc.latexencode import unicode_to_latex
+import re
 
 agree_dict = {'case_agr': 0, 'wh_agr': 0, 'foc_agr': 0, 'cl_agr':0}
 neutral_dict = {'case': 0, 'wh': 0, 'foc' : 0,'cl':0}
@@ -220,12 +223,12 @@ class SyntaxNode(Node):
         # add agree features
         agree_feats = [key for key, value in self.agree_feats.items() if value == "1"]
         if agree_feats:
-            my_name += " " + ", ".join(agree_feats)
+            my_name += " " + ",".join(agree_feats)
 
         # add neutral features
         neutral_feats = [key for key, value in self.neutral_feats.items() if value == "1"]
         if neutral_feats:
-            my_name += " " + ", ".join(neutral_feats)
+            my_name += " " + ",".join(neutral_feats)
                 
         result = "[" + my_name
         if self.children:
@@ -582,12 +585,15 @@ class MainWindow(QMainWindow):
 
         self.tab1 = QWidget()
         self.tab2 = QWidget()
+        self.tab3 = QWidget()
 
         self.tabs.addTab(self.tab1, "Make Derivations")
         self.tabs.addTab(self.tab2, "Find weights for multiple evaluations")
+        self.tabs.addTab(self.tab3, "Export derivations and cycles as latex tables")
 
         self.addContentTab1()
         self.addContentTab2()
+        self.addContentTab3()
 
 # %%
 # Section: The first tab
@@ -950,7 +956,7 @@ class MainWindow(QMainWindow):
 
         # Concatenate button
         self.concatButton = QPushButton('Select and Concatenate Evaluations')
-        self.concatButton.clicked.connect(self.concatenate_csv)
+        self.concatButton.clicked.connect(lambda: self.concatenate_csv(self.table_combined_eval))
         layout.addWidget(self.concatButton)
 
         # Concatenate button
@@ -969,7 +975,7 @@ class MainWindow(QMainWindow):
         self.table_combined_eval = QTableWidget()
         layout.addWidget(self.table_combined_eval)
 
-    def concatenate_csv(self):
+    def concatenate_csv(self, the_table):
         # Open file dialog to select multiple CSV files
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
@@ -1003,31 +1009,31 @@ class MainWindow(QMainWindow):
                 self.combined_cumulative_eval = concatenated_df
 
                 # Display concatenated data in the table
-                self.display_combined_eval(concatenated_df)
+                self.display_combined_eval(concatenated_df, the_table)
 
             except Exception as e:
                 QMessageBox.critical(self, 'Error in combining csv files', str(e))
 
-    def display_combined_eval(self, df):
+    def display_combined_eval(self, df, the_table):
         # Clear existing table
-        self.table_combined_eval.clear()
+        the_table.clear()
 
         # Set number of rows and columns
-        self.table_combined_eval.setRowCount(df.shape[0])
-        self.table_combined_eval.setColumnCount(df.shape[1])
+        the_table.setRowCount(df.shape[0])
+        the_table.setColumnCount(df.shape[1])
 
         # Set headers
-        self.table_combined_eval.setHorizontalHeaderLabels(df.columns.astype(str))
+        the_table.setHorizontalHeaderLabels(df.columns.astype(str))
 
         # Populate table with data
         for i in range(df.shape[0]):
             for j in range(df.shape[1]):
                 item = QTableWidgetItem(str(df.iloc[i, j]))
                 item.setFlags(item.flags() & ~Qt.ItemIsEditable)
-                self.table_combined_eval.setItem(i, j, item)
+                the_table.setItem(i, j, item)
 
         # Resize columns to content
-        self.table_combined_eval.resizeColumnsToContents()
+        the_table.resizeColumnsToContents()
 
         self.find_weights2.setEnabled(True)
 
@@ -1077,6 +1083,132 @@ class MainWindow(QMainWindow):
         # enable derivation export
         self.der_export.setEnabled(True)
         self.der_export2.setEnabled(True)
+
+    def addContentTab3(self):
+        layout = QVBoxLayout()
+        self.tab3.setLayout(layout)
+
+        # Concatenate button
+        self.read_der = QPushButton('Select the derivation')
+        self.read_der.clicked.connect(lambda: self.read_derivation_csv(self.table_derivation))
+        layout.addWidget(self.read_der)
+
+        # export latex tables 
+        self.export_latex = QPushButton('Export latex tables')
+        self.export_latex.clicked.connect(self.write_latex_tables)
+        layout.addWidget(self.export_latex)
+
+        self.label_latex = QLabel("")
+        layout.addWidget(self.label_latex)
+
+        # Table to display the imported derivation
+        self.table_derivation = QTableWidget()
+        layout.addWidget(self.table_derivation)
+
+    def read_derivation_csv(self, the_table):
+        # Open file dialog to select a single CSV file
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        file, _ = QFileDialog.getOpenFileName(self, "Select CSV File", "", "CSV Files (*.csv)", options=options)
+        if file:
+            df = pd.read_csv(file)
+
+            # Fill NaN values with 0
+            df = df.fillna(0)
+
+            self.combined_cumulative_eval = df
+
+            # Display concatenated data in the table
+            self.display_combined_eval(df, the_table)
+
+            self.label_latex.setText(f'Type of data for probability: {df['probability'].dtype}')
+            self.label_latex.setStyleSheet('color : blue')
+
+    # Function to convert a DataFrame to a LaTeX table
+    def df_to_latex(self, df, input_value):
+        table_header = f'Input={unicode_to_latex(input_value)}'
+
+        # drop unused columns and only keep violated constraints
+        dx = df.drop(columns=['input','harmony','derivation'])
+        dx = dx.loc[:, (dx != 0).any(axis=0)]
+
+        # rename columns for reducing size
+        latex_names = {'merge_cond': 'mc', 'exhaust_ws': 'xws', 'label_cons': 'lab', 'operation': 'opr.', 'winner': 'W', 'probability': 'prb.', 'LB' : 'lb'}
+
+        # Iterate over columns and rename based on the dictionary
+        for col in dx.columns:
+            for pattern, replacement in latex_names.items():
+                if re.search(pattern, col):
+                    new_col = re.sub(pattern, replacement, col)
+                    dx.rename(columns={col: new_col}, inplace=True)
+                    break
+
+        # format the output
+        # Generate LaTeX-formatted table
+        table = tabulate(dx, headers='keys', tablefmt='latex', showindex=False, floatfmt=".2f")
+        # Replace "{rrll" with "{rrlX" so that output can only extend the table upto the linewidth limit
+        table = re.sub(r'\{rrll', '{\\\\textwidth}{rrlX', table)
+        # replace weights with superscripts
+        table = re.sub(r"\\_\((\d+\.\d+)\)", r"$^{\1}$", table)
+        # replace substring names in constraints
+        table = re.sub(r"\\_([a-zA-Z0-9]+)\$\^\{([0-9\.]+)\}\$", r"$_{\1}^{\2}$", table)
+        # replace input, output substrings
+        table = re.sub(r"\\_([a-zA-Z0-9]+)", r"_{\1}", table)
+        table = re.sub(r'(\[\w+)\s([^\[\]\s]+)([\s\]])', r"\1$_{\2}$\3", table)
+
+        table_header = re.sub(r"\\_([a-zA-Z0-9]+)", r"_{\1}", table_header)
+        table_header = re.sub(r'(\[\w+)\s([^\[\]\s]+)([\s\]])', r"\1$_{\2}$\3", table_header)
+        
+        # remove .00 
+        table = table.replace(".00", "")
+        # replace 0. with .
+        table = table.replace("0.", ".")
+        # replace tabular environment
+        table = table.replace("tabular", "tabularx")
+
+        return "\\begingroup\\scriptsize " + table_header + "\\\\*\n" + table + "\\endgroup\\\\" + '\n'
+
+    def write_latex_tables(self):
+        df = self.combined_cumulative_eval
+        df[['derivation', 'input']] = df['input'].str.split('_', n = 1, expand=True)
+
+        # Get unique values of derivation and input in the order they appear
+        derivation_order = df['derivation'].unique()
+        
+        # Concatenate all tables into a single string
+        all_tables = ''
+        for my_der in derivation_order:
+            group1 = df[df['derivation'] == my_der]
+            input_order = group1['input'].unique()
+            all_tables += f'\\subsection{{The derivation={my_der}}}\n'
+            for my_input in input_order:
+                group2 = group1[group1['input'] == my_input]
+                if not group2.empty:
+                    all_tables += self.df_to_latex(group2, my_input)
+            
+        # Use QFileDialog to get the file path
+        app = QApplication([])
+        options = QFileDialog.Options()
+        file_path, _ = QFileDialog.getSaveFileName(
+            None,
+            "Save LaTeX File As",
+            "",
+            "LaTeX files (*.tex)",
+            options=options
+        )
+        app.quit()
+
+        if file_path:
+            # Write the concatenated LaTeX tables to the chosen .tex file
+            with open(file_path, 'w') as f:
+                f.write(all_tables)
+            self.set_text_color(self.label_latex, "Derivation tables are exported!", "green")
+        else:
+            self.set_text_color(self.label_latex, "Export cancelled or no file selected.", "red")
+
+    def set_text_color(self, the_label, the_text, the_color):
+        the_label.setText(the_text)
+        the_label.setStyleSheet(f'color : {the_color}')
 
 # Main function to run the application
 if __name__ == '__main__':
