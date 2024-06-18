@@ -1147,7 +1147,7 @@ class MainWindow(QMainWindow):
         # Generate LaTeX-formatted table
         table = tabulate(dx, headers='keys', tablefmt='latex', showindex=False, floatfmt=".2f")
         # Replace "{rrll" with "{rrlX" so that output can only extend the table upto the linewidth limit
-        table = re.sub(r'\{rrll', '{\\\\textwidth}{rrlX', table)
+        table = re.sub(r'\{rrll', '{\\\\linewidth}{rrlX', table)
         # replace weights with superscripts
         table = re.sub(r"\\_\((\d+\.\d+)\)", r"$^{\1}$", table)
         # replace substring names in constraints
@@ -1187,7 +1187,6 @@ class MainWindow(QMainWindow):
                     all_tables += self.df_to_latex(group2, my_input)
             
         # Use QFileDialog to get the file path
-        app = QApplication([])
         options = QFileDialog.Options()
         file_path, _ = QFileDialog.getSaveFileName(
             None,
@@ -1196,7 +1195,6 @@ class MainWindow(QMainWindow):
             "LaTeX files (*.tex)",
             options=options
         )
-        app.quit()
 
         if file_path:
             # Write the concatenated LaTeX tables to the chosen .tex file
