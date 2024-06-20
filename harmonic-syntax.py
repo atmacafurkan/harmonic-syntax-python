@@ -5,7 +5,7 @@ import csv
 import pandas as pd
 from typing import List
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QPushButton, QLabel, QFileDialog, QTableWidget, QTableWidgetItem, QHBoxLayout, QMessageBox, QScrollArea, QSizePolicy, QApplication, QDialog, QTabWidget
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QPushButton, QLabel, QFileDialog, QTableWidget, QTableWidgetItem, QHBoxLayout, QMessageBox, QScrollArea, QSizePolicy, QApplication, QDialog, QTabWidget, QSpinBox
 from PyQt5.QtSvg import QSvgWidget
 from anytree.exporter import UniqueDotExporter
 import sys
@@ -586,14 +586,17 @@ class MainWindow(QMainWindow):
         self.tab1 = QWidget()
         self.tab2 = QWidget()
         self.tab3 = QWidget()
+        self.tab4 = QWidget()
 
         self.tabs.addTab(self.tab1, "Make Derivations")
         self.tabs.addTab(self.tab2, "Find weights for multiple evaluations")
         self.tabs.addTab(self.tab3, "Export derivations and cycles as latex tables")
+        self.tabs.addTab(self.tab4, "Test markedness bias")
 
         self.addContentTab1()
         self.addContentTab2()
         self.addContentTab3()
+        self.addContentTab4()
 
 # %%
 # Section: The first tab
@@ -1167,7 +1170,7 @@ class MainWindow(QMainWindow):
         table = table.replace("tabular", "tabularx")
 
         return "\\begingroup\\scriptsize " + table_header + "\\\\*\n" + table + "\\endgroup\\\\" + '\n'
-
+    
     def write_latex_tables(self):
         df = self.combined_cumulative_eval
         df[['derivation', 'input']] = df['input'].str.split('_', n = 1, expand=True)
@@ -1207,6 +1210,66 @@ class MainWindow(QMainWindow):
     def set_text_color(self, the_label, the_text, the_color):
         the_label.setText(the_text)
         the_label.setStyleSheet(f'color : {the_color}')
+
+    def addContentTab4(self):
+        layout = QVBoxLayout()
+        self.tab4.setLayout(layout)
+
+        # Concatenate button
+        self.concatButton = QPushButton('Select and Concatenate Evaluations')
+        self.concatButton.clicked.connect(lambda: self.concatenate_csv(self.table_combined_eval))
+        layout.addWidget(self.concatButton)
+
+        # select the amount of markedness bias
+        self.label = QLabel("Enter an amount for markedness bias:")
+        layout.addWidget(self.label)
+
+        # select the amount of markedness bias
+        self.markedness_bias = QSpinBox()
+        self.markedness_bias.setRange(0, 100)  # Set min and max range to 0 and 100
+        layout.addWidget(self.markedness_bias)
+
+        # Concatenate button
+        self.apply_markedness_bias = QPushButton('Find weights and apply the markedness bias')
+        self.apply_markedness_bias.clicked.connect(self.apply_bias)
+        layout.addWidget(self.apply_markedness_bias)
+
+        # Table to display concatenated data
+        self.table_combined_eval = QTableWidget()
+        layout.addWidget(self.table_combined_eval)
+
+    def apply_bias(self):
+        self.run_minimazing_KL(self.combined_cumulative_eval,self.table_combined_eval)
+        markedness_constraints = {**agree_dict, **neutral_dict}.keys()
+        my_weights = self.optimization.x.tolist()
+        all_constraints = dict(zip(self.combined_cumulative_eval.columns.tolist(), my_weights))
+
+        # Updating the dictionary values
+        for key in all_constraints:
+            if key in markedness_constraints:
+                all_constraints[key] = all_constraints[key] + np.float64(self.markedness_bias.value())
+
+        # calculate new harmony and probabilities with markedness bias
+        _,solution_with_bias = frequency_and_probabilities(np.array(list(all_constraints.values())), reorder_table(self.combined_cumulative_eval).drop(columns=['output','operation']), update_table=True)
+        probabilities = solution_with_bias['probabilities']
+        harmonies = solution_with_bias['harmony_score']
+
+        # add the new harmony and probability values
+        the_table = self.table_combined_eval
+        the_table.insertColumn(2)
+        the_table.setHorizontalHeaderItem(2, QTableWidgetItem('probability_with_bias'))
+
+        the_table.insertColumn(4)
+        the_table.setHorizontalHeaderItem(4, QTableWidgetItem('harmony_with_bias'))
+
+        for row in range(len(probabilities)):
+            my_probability = QTableWidgetItem(str(probabilities[row]))
+            my_probability.setFlags(my_probability.flags() & ~Qt.ItemIsEditable)
+            the_table.setItem(row, 2, my_probability)
+
+            my_harmony = QTableWidgetItem(str(harmonies[row]))
+            my_harmony.setFlags(my_harmony.flags() & ~Qt.ItemIsEditable)
+            the_table.setItem(row, 4, my_harmony)
 
 # Main function to run the application
 if __name__ == '__main__':
