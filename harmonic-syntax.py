@@ -1160,11 +1160,11 @@ class MainWindow(QMainWindow):
         table_header = f'Input={unicode_to_latex(input_value)}'
 
         # drop unused columns and only keep violated constraints
-        dx = df.drop(columns=['input','harmony','derivation'])
+        dx = df.drop(columns=['input','derivation','harmony','harmonyBias'], errors = 'ignore')
         dx = dx.loc[:, (dx != 0).any(axis=0)]
 
         # rename columns for reducing size
-        latex_names = {'merge_cond': 'mc', 'exhaust_ws': 'xws', 'label_cons': 'lab', 'operation': 'opr.', 'winner': 'W', 'probability': 'prb.', 'LB' : 'lb'}
+        latex_names = {'merge_cond': 'mc', 'exhaust_ws': 'xws', 'label_cons': 'lab', 'operation': 'opr.', 'winner': 'W', 'probability': 'prb.', 'LB' : 'lb', 'harmony' : 'H'}
 
         # Iterate over columns and rename based on the dictionary
         for col in dx.columns:
@@ -1178,7 +1178,8 @@ class MainWindow(QMainWindow):
         # Generate LaTeX-formatted table
         table = tabulate(dx, headers='keys', tablefmt='latex', showindex=False, floatfmt=".2f")
         # Replace "{rrll" with "{rrlX" so that output can only extend the table upto the linewidth limit
-        table = re.sub(r'\{rrll', '{\\\\linewidth}{rrlX', table)
+        table = re.sub(r'\{tabularx\}', '\{tabularx\}{\\\\linewidth}', table)
+        table = re.sub(r'rll', 'rlX', table)
         # replace weights with superscripts
         table = re.sub(r"\\_\((\d+\.\d+)\)", r"$^{\1}$", table)
         # replace substring names in constraints
@@ -1293,10 +1294,10 @@ class MainWindow(QMainWindow):
         # add the new harmony and probability values
         the_table = self.table_combined_eval
         the_table.insertColumn(2)
-        the_table.setHorizontalHeaderItem(2, QTableWidgetItem('probability_with_bias'))
+        the_table.setHorizontalHeaderItem(2, QTableWidgetItem('probabilityBias'))
 
         the_table.insertColumn(4)
-        the_table.setHorizontalHeaderItem(4, QTableWidgetItem('harmony_with_bias'))
+        the_table.setHorizontalHeaderItem(4, QTableWidgetItem('harmonyBias'))
 
         for row in range(len(probabilities)):
             my_probability = QTableWidgetItem(str(probabilities[row]))
