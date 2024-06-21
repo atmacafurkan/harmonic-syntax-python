@@ -18,6 +18,7 @@ from scipy.optimize import minimize
 from tabulate import tabulate
 from pylatexenc.latexencode import unicode_to_latex
 import re
+import itertools
 
 agree_dict = {'case_agr': 0, 'wh_agr': 0, 'foc_agr': 0, 'cl_agr':0}
 neutral_dict = {'case': 0, 'wh': 0, 'foc' : 0,'cl':0}
@@ -458,21 +459,36 @@ def Agree(my_node):
     new_list = []    
     # empty agreement if it is a labelled node and has agreement features
     if len(my_node.name) > 0 and "1" in my_node.agree_feats.values():
-        new_node = clone_tree(my_node)
-
-        my_agr = my_node.agree_feats.copy()  # Create a copy to avoid modifying the original node's attributes
+        # Create a copy to avoid modifying the original node's attributes
+        my_agr = my_node.agree_feats.copy()
         my_empty = my_node.empty_agr.copy()
-        for key, value in my_agr.items():
-            if my_agr[key] == '1':
-                my_agr[key] = 0
-                my_empty[key.replace('_agr', '') + '_mt'] = 1
+
+        # Find all keys with value '1'
+        keys_with_one = [key for key, value in my_agr.items() if value == '1']
         
-        new_node.agree_feats = my_agr
-        new_node.empty_agr = my_empty
-        new_node.operation = "mtAgree"
-        new_node.exhaust_ws = 0
-        if my_node.agree_feats != new_node.agree_feats:
-            new_list.append(new_node)
+        # Generate all non-empty combinations of these keys
+        for r in range(1, len(keys_with_one) + 1):
+            for combination in itertools.combinations(keys_with_one, r):
+                new_node = clone_tree(my_node)
+                
+                # Create copies for modification
+                temp_agr = my_agr.copy()
+                temp_empty = my_empty.copy()
+                
+                # Update the copied dictionaries based on the current combination
+                for key in combination:
+                    temp_agr[key] = 0
+                    temp_empty[key.replace('_agr', '') + '_mt'] = 1
+                
+                # Set the new attributes and other properties
+                new_node.agree_feats = temp_agr
+                new_node.empty_agr = temp_empty
+                new_node.operation = "mtAgree"
+                new_node.exhaust_ws = 0
+
+                # Add the new node to the list if there are changes
+                if my_node.agree_feats != new_node.agree_feats:
+                    new_list.append(new_node)
                   
     if len(my_node.children) > 0 and len(my_node.name) == 0:
         # Create a new node
