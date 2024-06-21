@@ -1178,7 +1178,7 @@ class MainWindow(QMainWindow):
         # Generate LaTeX-formatted table
         table = tabulate(dx, headers='keys', tablefmt='latex', showindex=False, floatfmt=".2f")
         # Replace "{rrll" with "{rrlX" so that output can only extend the table upto the linewidth limit
-        table = re.sub(r'\{tabularx\}', '\{tabularx\}{\\\\linewidth}', table)
+        table = re.sub(r'begin\{tabular\}', 'begin{tabular}{\\\\linewidth}', table)
         table = re.sub(r'rll', 'rlX', table)
         # replace weights with superscripts
         table = re.sub(r"\\_\((\d+\.\d+)\)", r"$^{\1}$", table)
@@ -1197,6 +1197,13 @@ class MainWindow(QMainWindow):
         table = table.replace("0.", ".")
         # replace tabular environment
         table = table.replace("tabular", "tabularx")
+
+        # replace operation names
+        table = table.replace("Label","Lbl")
+        table = table.replace("xMerge","xMrg")
+        table = table.replace("iMerge","iMrg")
+        table = table.replace("rMerge","rMrg")
+        table = table.replace("Agree","Agr")
 
         return "\\begingroup\\scriptsize " + table_header + "\\\\*\n" + table + "\\endgroup\\\\" + '\n'
     
