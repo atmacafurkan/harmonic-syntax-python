@@ -5,7 +5,7 @@ import csv
 import pandas as pd
 from typing import List
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QPushButton, QLabel, QFileDialog, QTableWidget, QTableWidgetItem, QHBoxLayout, QMessageBox, QScrollArea, QSizePolicy, QApplication, QDialog, QTabWidget, QSpinBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QPushButton, QLabel, QFileDialog, QTableWidget, QTableWidgetItem, QHBoxLayout, QMessageBox, QScrollArea, QSizePolicy, QApplication, QDialog, QTabWidget, QDoubleSpinBox
 from PyQt5.QtSvg import QSvgWidget
 from anytree.exporter import UniqueDotExporter
 import sys
@@ -135,14 +135,14 @@ def weight_optimize(my_tableaux):
     # Initial guess for the weights
     initial_weights = np.zeros(n_constraint)
     
-    # Define the bounds for the weights (0 to 100)
+    # Define the bounds for the weights (0 to 200)
     bounds = [(0, 100) for _ in range(n_constraint)]
 
     # Define the objective function that takes only the weights as input
     def objective(weights):
         my_divergences, _ = frequency_and_probabilities(weights, df)
         total_KL_divergence = sum(KL_divergence(freq, prob) for freq, prob in my_divergences)
-        return total_KL_divergence
+        return total_KL_divergence ** 2
     
     # Perform the optimization using L-BFGS-B method
     result = minimize(objective, initial_weights, method='L-BFGS-B', bounds=bounds)
@@ -211,7 +211,7 @@ class SyntaxNode(Node):
         return result_feats
   
 # function to draw linear representation of the tree
-    def to_linear(self):
+    def to_linear_ex(self):
         if not self:
             return ""
         
@@ -236,16 +236,44 @@ class SyntaxNode(Node):
         result += "]"
     
         return result
-        
+
+    # function to draw linear representation of the tree
+    def to_linear(self):
+        if not self:
+            return ""
+    
+        if self.name:
+            my_name = str(self.name)
+        else:
+            my_name = ".."
+
+        # add agree features
+        agree_feats = [key for key, value in self.agree_feats.items() if value == "1"]
+        # add neutral features
+        neutral_feats = [key for key, value in self.neutral_feats.items() if value == "1"]
+
+        # combine agree and neutral features and join them with commas
+        combined_feats = agree_feats + neutral_feats
+        if combined_feats:
+            my_name += " " + ",".join(combined_feats)
+            
+        result = "[" + my_name
+        if self.children:
+            result += " " + " ".join(child.to_linear() for child in self.children)
+        result += "]"
+
+        return result        
+
 # merge condition, only checked at the root node (latest operation)
 def merge_condition(node):
     violation = 0
     if len(node.children) > 1:
-        if node.children[0].merge_feat and node.children[0].merge_feat != node.children[1].name:
+        if (node.children[0].merge_feat and node.children[0].merge_feat != node.children[1].name) or not node.children[0].name:
             violation += 1
 
-        if node.children[1].merge_feat and node.children[1].merge_feat != node.children[0].name:
+        if (node.children[1].merge_feat and node.children[1].merge_feat != node.children[0].name) or not node.children[1].name:
             violation += 1
+
     return violation
 
 # for label constraint, only checked at the root node (latest operation)
@@ -1225,14 +1253,22 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.label)
 
         # select the amount of markedness bias
-        self.markedness_bias = QSpinBox()
-        self.markedness_bias.setRange(0, 100)  # Set min and max range to 0 and 100
+        self.markedness_bias = QDoubleSpinBox()
+        self.markedness_bias.setDecimals(2)    # Set number of decimal places
+        self.markedness_bias.setRange(0.0, 100.0) # Set range
+        self.markedness_bias.setSingleStep(0.1) # Set step size
+        self.markedness_bias.setValue(0.0) 
         layout.addWidget(self.markedness_bias)
 
         # Concatenate button
         self.apply_markedness_bias = QPushButton('Find weights and apply the markedness bias')
         self.apply_markedness_bias.clicked.connect(self.apply_bias)
         layout.addWidget(self.apply_markedness_bias)
+
+        # export the derivation with weights
+        self.der_export = QPushButton('Export the cumulative eval with weights')
+        self.der_export.clicked.connect(lambda: self.export_derivation(self.table_combined_eval))
+        layout.addWidget(self.der_export)
 
         # Table to display concatenated data
         self.table_combined_eval = QTableWidget()
