@@ -269,10 +269,14 @@ class SyntaxNode(Node):
 def merge_condition(node):
     violation = 0
     if len(node.children) > 1:
-        if (node.children[0].merge_feat and node.children[0].merge_feat != node.children[1].name) or not node.children[0].name:
+        if not node.children[0].name or not node.children[1].name:
+            violation +=1
+            return violation
+
+        if (node.children[0].merge_feat and node.children[0].merge_feat != node.children[1].name):
             violation += 1
 
-        if (node.children[1].merge_feat and node.children[1].merge_feat != node.children[0].name) or not node.children[1].name:
+        if (node.children[1].merge_feat and node.children[1].merge_feat != node.children[0].name):
             violation += 1
 
     return violation

@@ -7,10 +7,10 @@ input,winner,operation,output,merge_cond,exhaust_ws,label_cons,case_agr,wh_agr,f
 [DP case_agr],0,rMerge,[DP case_agr],0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 [.. [V] [DP case_agr]],1,Label,[V [V] [DP case_agr]],0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0
 [.. [V] [DP case_agr]],0,Label,[DP case_agr [V] [DP case_agr]],0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
-[.. [V] [DP case_agr]],0,xMerge,[.. [v] [.. [V] [DP case_agr]]],2,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-[.. [V] [DP case_agr]],0,xMerge,[.. [T case] [.. [V] [DP case_agr]]],2,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-[.. [V] [DP case_agr]],0,xMerge,[.. [C] [.. [V] [DP case_agr]]],2,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-[.. [V] [DP case_agr]],0,iMerge,[.. [V] [.. [V] [DP case_agr]]],2,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+[.. [V] [DP case_agr]],0,xMerge,[.. [v] [.. [V] [DP case_agr]]],1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+[.. [V] [DP case_agr]],0,xMerge,[.. [T case] [.. [V] [DP case_agr]]],1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+[.. [V] [DP case_agr]],0,xMerge,[.. [C] [.. [V] [DP case_agr]]],1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+[.. [V] [DP case_agr]],0,iMerge,[.. [V] [.. [V] [DP case_agr]]],1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 [.. [V] [DP case_agr]],0,iMerge,[.. [DP case_agr] [.. [V] [DP case_agr]]],1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 [.. [V] [DP case_agr]],0,rMerge,[.. [V] [DP case_agr]],0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 [V [V] [DP case_agr]],1,xMerge,[.. [v] [V [V] [DP case_agr]]],0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
@@ -20,9 +20,9 @@ input,winner,operation,output,merge_cond,exhaust_ws,label_cons,case_agr,wh_agr,f
 [V [V] [DP case_agr]],0,rMerge,[V [V] [DP case_agr]],0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 [.. [v] [V [V] [DP case_agr]]],1,Label,[v [v] [V [V] [DP case_agr]]],0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0
 [.. [v] [V [V] [DP case_agr]]],0,Label,[V [v] [V [V] [DP case_agr]]],0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0
-[.. [v] [V [V] [DP case_agr]]],0,xMerge,[.. [T case] [.. [v] [V [V] [DP case_agr]]]],2,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-[.. [v] [V [V] [DP case_agr]]],0,xMerge,[.. [C] [.. [v] [V [V] [DP case_agr]]]],2,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-[.. [v] [V [V] [DP case_agr]]],0,iMerge,[.. [v] [.. [v] [V [V] [DP case_agr]]]],2,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+[.. [v] [V [V] [DP case_agr]]],0,xMerge,[.. [T case] [.. [v] [V [V] [DP case_agr]]]],1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+[.. [v] [V [V] [DP case_agr]]],0,xMerge,[.. [C] [.. [v] [V [V] [DP case_agr]]]],1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+[.. [v] [V [V] [DP case_agr]]],0,iMerge,[.. [v] [.. [v] [V [V] [DP case_agr]]]],1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 [.. [v] [V [V] [DP case_agr]]],0,iMerge,[.. [V [V] [DP case_agr]] [.. [v] [V [V] [DP case_agr]]]],1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 [.. [v] [V [V] [DP case_agr]]],0,iMerge,[.. [DP case_agr] [.. [v] [V [V] [DP case_agr]]]],1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 [.. [v] [V [V] [DP case_agr]]],0,rMerge,[.. [v] [V [V] [DP case_agr]]],0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
@@ -33,8 +33,8 @@ input,winner,operation,output,merge_cond,exhaust_ws,label_cons,case_agr,wh_agr,f
 [v [v] [V [V] [DP case_agr]]],0,rMerge,[v [v] [V [V] [DP case_agr]]],0,1,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 [.. [DP case_agr] [v [v] [V [V] [DP case_agr]]]],0,Label,[DP case_agr [DP case_agr] [v [v] [V [V] [DP case_agr]]]],0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
 [.. [DP case_agr] [v [v] [V [V] [DP case_agr]]]],1,Label,[v [DP case_agr] [v [v] [V [V] [DP case_agr]]]],0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0
-[.. [DP case_agr] [v [v] [V [V] [DP case_agr]]]],0,xMerge,[.. [T case] [.. [DP case_agr] [v [v] [V [V] [DP case_agr]]]]],2,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-[.. [DP case_agr] [v [v] [V [V] [DP case_agr]]]],0,xMerge,[.. [C] [.. [DP case_agr] [v [v] [V [V] [DP case_agr]]]]],2,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+[.. [DP case_agr] [v [v] [V [V] [DP case_agr]]]],0,xMerge,[.. [T case] [.. [DP case_agr] [v [v] [V [V] [DP case_agr]]]]],1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+[.. [DP case_agr] [v [v] [V [V] [DP case_agr]]]],0,xMerge,[.. [C] [.. [DP case_agr] [v [v] [V [V] [DP case_agr]]]]],1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 [.. [DP case_agr] [v [v] [V [V] [DP case_agr]]]],0,iMerge,[.. [DP case_agr] [.. [DP case_agr] [v [v] [V [V] [DP case_agr]]]]],1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 [.. [DP case_agr] [v [v] [V [V] [DP case_agr]]]],0,iMerge,[.. [v [v] [V [V] [DP case_agr]]] [.. [DP case_agr] [v [v] [V [V] [DP case_agr]]]]],1,1,1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 [.. [DP case_agr] [v [v] [V [V] [DP case_agr]]]],0,iMerge,[.. [V [V] [DP case_agr]] [.. [DP case_agr] [v [v] [V [V] [DP case_agr]]]]],1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
@@ -46,8 +46,8 @@ input,winner,operation,output,merge_cond,exhaust_ws,label_cons,case_agr,wh_agr,f
 [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]],0,rMerge,[v [DP case_agr] [v [v] [V [V] [DP case_agr]]]],0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 [.. [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]],1,Label,[T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]],0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
 [.. [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]],0,Label,[v [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]],0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0
-[.. [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]],0,xMerge,[.. [C] [.. [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]],2,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-[.. [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]],0,iMerge,[.. [T case] [.. [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]],2,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+[.. [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]],0,xMerge,[.. [C] [.. [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]],1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+[.. [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]],0,iMerge,[.. [T case] [.. [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]],1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 [.. [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]],0,iMerge,[.. [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]] [.. [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]],1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 [.. [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]],0,iMerge,[.. [DP case_agr] [.. [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]],1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 [.. [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]],0,iMerge,[.. [V [V] [DP case_agr]] [.. [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]],1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
@@ -60,7 +60,7 @@ input,winner,operation,output,merge_cond,exhaust_ws,label_cons,case_agr,wh_agr,f
 [.. [DP case_agr] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]],1,Agree,[.. [DP] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]],0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 [.. [DP case_agr] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]],0,Label,[DP case_agr [DP case_agr] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]],0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0
 [.. [DP case_agr] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]],0,Label,[T case [DP case_agr] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]],0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
-[.. [DP case_agr] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]],0,xMerge,[.. [C] [.. [DP case_agr] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]]],2,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+[.. [DP case_agr] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]],0,xMerge,[.. [C] [.. [DP case_agr] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]]],1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 [.. [DP case_agr] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]],0,iMerge,[.. [DP case_agr] [.. [DP case_agr] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]]],1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 [.. [DP case_agr] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]],0,iMerge,[.. [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]] [.. [DP case_agr] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]]],1,1,1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 [.. [DP case_agr] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]],0,iMerge,[.. [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]] [.. [DP case_agr] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]]],1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
@@ -68,7 +68,7 @@ input,winner,operation,output,merge_cond,exhaust_ws,label_cons,case_agr,wh_agr,f
 [.. [DP case_agr] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]],0,rMerge,[.. [DP case_agr] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]],0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 [.. [DP] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]],0,Label,[DP [DP] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]],0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0
 [.. [DP] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]],1,Label,[T [DP] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]],0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
-[.. [DP] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]],0,xMerge,[.. [C] [.. [DP] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]]],2,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+[.. [DP] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]],0,xMerge,[.. [C] [.. [DP] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]]],1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 [.. [DP] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]],0,iMerge,[.. [DP] [.. [DP] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]]],1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 [.. [DP] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]],0,iMerge,[.. [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]] [.. [DP] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]]],1,1,1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 [.. [DP] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]],0,iMerge,[.. [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]] [.. [DP] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]]],1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
@@ -81,7 +81,7 @@ input,winner,operation,output,merge_cond,exhaust_ws,label_cons,case_agr,wh_agr,f
 [T [DP] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]],0,rMerge,[T [DP] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]],0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 [.. [C] [T [DP] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]]],1,Label,[C [C] [T [DP] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]]],0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1
 [.. [C] [T [DP] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]]],0,Label,[T [C] [T [DP] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]]],0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
-[.. [C] [T [DP] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]]],0,iMerge,[.. [C] [.. [C] [T [DP] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]]]],2,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+[.. [C] [T [DP] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]]],0,iMerge,[.. [C] [.. [C] [T [DP] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]]]],1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 [.. [C] [T [DP] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]]],0,iMerge,[.. [T [DP] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]] [.. [C] [T [DP] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]]]],1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 [.. [C] [T [DP] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]]],0,iMerge,[.. [DP] [.. [C] [T [DP] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]]]],1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 [.. [C] [T [DP] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]]],0,iMerge,[.. [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]] [.. [C] [T [DP] [T case [T case] [v [DP case_agr] [v [v] [V [V] [DP case_agr]]]]]]]],1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
