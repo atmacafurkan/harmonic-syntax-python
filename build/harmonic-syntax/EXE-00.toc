@@ -91,7 +91,7 @@
  [],
  False,
  False,
- 1718753578,
+ 1719111768,
  [('run.exe',
    'C:\\Users\\furka\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python312\\site-packages\\PyInstaller\\bootloader\\Windows-64bit-intel\\run.exe',
    'EXECUTABLE')],
