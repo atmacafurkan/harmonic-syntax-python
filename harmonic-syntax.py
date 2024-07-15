@@ -22,7 +22,6 @@ import re
 #agree_dict = {'case_agr': 0, 'wh_agr': 0, 'foc_agr': 0, 'cl_agr':0}
 #neutral_dict = {'case': 0, 'wh': 0, 'foc' : 0,'cl':0}
 #empty_dict = {'case_mt': 0, 'wh_mt': 0, 'foc_mt': 0, 'cl_mt':0}
-#used_feats_dict = neutral_dict
 #constraints_dict = {'merge_cond' : 0, 'exhaust_ws': 0, 'label_cons': 0, **agree_dict, **neutral_dict, **empty_dict}
 explanations_dict = {'input':'The input for the derivation cycle',
                      'winner':'The optimal output of the derivation cycle',
@@ -652,12 +651,14 @@ class MainWindow(QMainWindow):
                 my_agree = parse_feats(row['ac'])
                 my_neutral = parse_feats(row['ft'])
                 my_empty = {key: 0 for key in replace_suffix(parse_feats(row['ac']),"agr","mt").keys()}
+                my_used = {key: 0 for key in my_neutral}
                 node = SyntaxNode(
                     name = row['it'],
                     merge_feat = str(row['mc']),
                     agree_feats = my_agree,
                     neutral_feats = my_neutral,
                     empty_agr = my_empty,
+                    used_feats = my_used,
                     result_feats =  {'merge_cond' : 0, 'exhaust_ws': 0, 'label_cons': 0, **my_agree, **my_neutral, **my_empty}
                     )
                 nodes.append(node)
