@@ -18,13 +18,12 @@ from scipy.optimize import minimize
 from tabulate import tabulate
 from pylatexenc.latexencode import unicode_to_latex
 import re
-import itertools
 
-agree_dict = {'case_agr': 0, 'wh_agr': 0, 'foc_agr': 0, 'cl_agr':0}
-neutral_dict = {'case': 0, 'wh': 0, 'foc' : 0,'cl':0}
-empty_dict = {'case_mt': 0, 'wh_mt': 0, 'foc_mt': 0, 'cl_mt':0}
-used_feats_dict = neutral_dict
-constraints_dict = {'merge_cond' : 0, 'exhaust_ws': 0, 'label_cons': 0, **agree_dict, **neutral_dict, **empty_dict}
+#agree_dict = {'case_agr': 0, 'wh_agr': 0, 'foc_agr': 0, 'cl_agr':0}
+#neutral_dict = {'case': 0, 'wh': 0, 'foc' : 0,'cl':0}
+#empty_dict = {'case_mt': 0, 'wh_mt': 0, 'foc_mt': 0, 'cl_mt':0}
+#used_feats_dict = neutral_dict
+#constraints_dict = {'merge_cond' : 0, 'exhaust_ws': 0, 'label_cons': 0, **agree_dict, **neutral_dict, **empty_dict}
 explanations_dict = {'input':'The input for the derivation cycle',
                      'winner':'The optimal output of the derivation cycle',
                      'operation': 'The operation name given for easy intrepretation. xMerge, iMerge, and rMerge are all one operation Merge.',
@@ -46,6 +45,13 @@ explanations_dict = {'input':'The input for the derivation cycle',
                      'cl_mt': 'Empty agreement constraint for classifier, a constraint tied to the operation Agree. It is violated when the agreement features of the root node is satisfied unilaterally.'
                      }
 
+def remove_keys(dictionary, specific_keys, suffix):
+    new_dict = {}
+    for key, value in dictionary.items():
+        if key in specific_keys or key.endswith(suffix):
+            continue
+        new_dict[key] = value
+    return new_dict
 # %%
 # Section: Functions for weight optimization
 # Kullback-Leibler divergence 
@@ -158,11 +164,11 @@ class SyntaxNode(Node):
         super(SyntaxNode, self).__init__(name, parent, children)
         self.label = label if label is not None else None
         self.merge_feat = merge_feat if merge_feat is not None and merge_feat != '' else None
-        self.agree_feats = agree_feats if agree_feats is not None else agree_dict
-        self.neutral_feats = neutral_feats if neutral_feats is not None else neutral_dict
-        self.used_feats = used_feats if used_feats is not None else used_feats_dict
-        self.empty_agr = empty_agr if empty_agr is not None else empty_dict
-        self.result_feats = result_feats if result_feats is not None else constraints_dict
+        self.agree_feats = agree_feats if agree_feats is not None else {}
+        self.neutral_feats = neutral_feats if neutral_feats is not None else {}
+        self.used_feats = used_feats if used_feats is not None else {}
+        self.empty_agr = empty_agr if empty_agr is not None else {} 
+        self.result_feats = result_feats if result_feats is not None else {'merge_cond' : 0, 'exhaust_ws': 0, 'label_cons': 0, **self.agree_feats, **self.neutral_feats, **self.empty_agr}
         self.operation = operation if operation is not None else None
         self.exhaust_ws = exhaust_ws if exhaust_ws is not None else None
         self.other_nodes = other_nodes if other_nodes is not None else []
@@ -184,9 +190,9 @@ class SyntaxNode(Node):
         # Return the count of distinct parent labels
         return len(parent_labels)
 
-    def evaluate_constraints(self, encountered_nodes=None, default_state = None):
+    def evaluate_constraints(self, encountered_nodes=None, initial_eval = {}):
         # Initialize a result dictionary for both agree_feats and neutral_feats
-        result_feats = constraints_dict.copy() if default_state is None else default_state
+        result_feats = initial_eval.copy()
 
         # Initialize encountered_nodes if not provided
         encountered_nodes = set() if encountered_nodes is None else encountered_nodes
@@ -211,33 +217,6 @@ class SyntaxNode(Node):
             self.children[1].evaluate_constraints(encountered_nodes, result_feats)
 
         return result_feats
-  
-# function to draw linear representation of the tree
-    def to_linear_ex(self):
-        if not self:
-            return ""
-        
-        if self.name:
-            my_name = str(self.name)
-        else:
-            my_name = ".."
-
-        # add agree features
-        agree_feats = [key for key, value in self.agree_feats.items() if value == "1"]
-        if agree_feats:
-            my_name += " " + ",".join(agree_feats)
-
-        # add neutral features
-        neutral_feats = [key for key, value in self.neutral_feats.items() if value == "1"]
-        if neutral_feats:
-            my_name += " " + ",".join(neutral_feats)
-                
-        result = "[" + my_name
-        if self.children:
-            result += " " + " ".join(child.to_linear() for child in self.children)
-        result += "]"
-    
-        return result
 
     # function to draw linear representation of the tree
     def to_linear(self):
@@ -323,33 +302,29 @@ def traverse_and_clone(node, cloned_nodes, cloned_node_names=None):
     for child in node.children or []:
         traverse_and_clone(child, cloned_nodes, cloned_node_names)
 
-def parse_feats(feat_str):
+def parse_feats_old(feat_str):
     empty_dict = {} # for some f*cked up reason return {} throws an indentation error
     if feat_str is not None and feat_str.strip():
         return dict(pair.split(':') for pair in feat_str.split('-'))
     else: 
         return empty_dict
-
-# read the csv file for nodes
-def read_nodes_csv(csv_file_path: str) -> List[SyntaxNode]:
-    nodes = []
-    with open(csv_file_path, 'r') as csvfile:
-        reader = csv.DictReader(csvfile)
-        for row in reader:
-            node = SyntaxNode(
-                name=row['it'],
-                merge_feat= str(row['mc']),
-                agree_feats=parse_feats(row['ac']),
-                neutral_feats=parse_feats(row['ft']),
-                empty_agr = None
-            )
-            nodes.append(node)
-
-    # Update the other_nodes field for each node by cloning the other nodes
-    for i, node in enumerate(nodes):
-        node.other_nodes = [clone_tree(other_node) for j, other_node in enumerate(nodes) if i != j]
     
-    return nodes
+def parse_feats(feat_str):
+    empty_dict = {}  # Placeholder empty dictionary
+    if feat_str is not None and feat_str.strip():
+        return {key: int(value) for key, value in (pair.split(':') for pair in feat_str.split('-'))}
+    else:
+        return empty_dict
+    
+def replace_suffix(dictionary, replace_me, replace_with):
+    new_dict = {}
+    for key in dictionary.keys():
+        if key.endswith(replace_me):
+            new_key = key[:-len(replace_me)] + replace_with
+            new_dict[new_key] = dictionary[key]
+        else:
+            new_dict[key] = dictionary[key]
+    return new_dict
 
 #### GEN FUNCTIONS ####
 # Merge function
@@ -458,27 +433,6 @@ def Label(my_node):
         new_2.exhaust_ws = 0
         my_nodes.append(new_2)
     return(my_nodes)
-
-# # empty agreement in one fell swoop
-# def Agree(my_node):
-#     new_list = []    
-#     # empty agreement if it is a labelled node and has agreement features
-#     if len(my_node.name) > 0 and "1" in my_node.agree_feats.values():
-#         new_node = clone_tree(my_node)
-
-#         my_agr = my_node.agree_feats.copy()  # Create a copy to avoid modifying the original node's attributes
-#         my_empty = my_node.empty_agr.copy()
-#         for key, value in my_agr.items():
-#             if my_agr[key] == '1':
-#                 my_agr[key] = 0
-#                 my_empty[key.replace('_agr', '') + '_mt'] = 1
-        
-#         new_node.agree_feats = my_agr
-#         new_node.empty_agr = my_empty
-#         new_node.operation = "mtAgree"
-#         new_node.exhaust_ws = 0
-#         if my_node.agree_feats != new_node.agree_feats:
-#             new_list.append(new_node)
 
 # # empty agreement in a combination of the agreement features
 # def Agree(my_node):
@@ -689,6 +643,40 @@ class MainWindow(QMainWindow):
         self.addContentTab3()
         self.addContentTab4()
 
+    # function to read the csv file as nodes
+    def read_nodes_csv(self, csv_file_path: str) -> List[SyntaxNode]:
+        nodes = []
+        with open(csv_file_path, 'r') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                my_agree = parse_feats(row['ac'])
+                my_neutral = parse_feats(row['ft'])
+                my_empty = {key: 0 for key in replace_suffix(parse_feats(row['ac']),"agr","mt").keys()}
+                node = SyntaxNode(
+                    name = row['it'],
+                    merge_feat = str(row['mc']),
+                    agree_feats = my_agree,
+                    neutral_feats = my_neutral,
+                    empty_agr = my_empty,
+                    result_feats =  {'merge_cond' : 0, 'exhaust_ws': 0, 'label_cons': 0, **my_agree, **my_neutral, **my_empty}
+                    )
+                nodes.append(node)
+
+        # get the list of constraints for this derivation
+        self.constraints_dict = set()
+        for node in nodes:
+            attributes = node.result_feats
+            for key in attributes.keys():
+                self.constraints_dict.add(key)
+
+        # make the explanations for the list of constraints
+
+        # Update the other_nodes field for each node by cloning the other nodes
+        for i, node in enumerate(nodes):
+            node.other_nodes = [clone_tree(other_node) for j, other_node in enumerate(nodes) if i != j]
+
+        return nodes
+
 # %%
 # Section: The first tab
     def addContentTab1(self):
@@ -733,7 +721,7 @@ class MainWindow(QMainWindow):
         # displaying eval
         # Create a QTableWidget
         self.table_eval = QTableWidget(self)
-        self.table_eval.setColumnCount(len(constraints_dict) + 1)
+        #self.table_eval.setColumnCount(len(constraints_dict) + 1)
         self.table_eval.cellClicked.connect(self.on_cell_clicked) # when the output is clicked, port to tree visualisation
         self.table_eval.horizontalHeader().sectionClicked.connect(self.on_header_clicked) # when the column names are clicked, connect to explanations
         self.table_eval.verticalHeader().sectionDoubleClicked.connect(self.next_cycle)# when the rows are clicked, connect to proceed cycle
@@ -791,11 +779,6 @@ class MainWindow(QMainWindow):
         # Clear my eval
         self.my_eval = None
 
-        # create empty eval table
-        my_columns = list(constraints_dict.keys()) + ['input', 'winner']
-
-        self.cumulative_eval = pd.DataFrame(columns = my_columns)
-
         # enable header and output selection
         self.cycle_enabled = True
 
@@ -806,13 +789,18 @@ class MainWindow(QMainWindow):
         self.der_export.setEnabled(False)
 
         self.numeration_path, _ = QFileDialog.getOpenFileName(self, 'Select Numeration', '.', 'Csv Files (*.csv)')
-        self.numeration = read_nodes_csv(self.numeration_path)
+        self.numeration = self.read_nodes_csv(self.numeration_path)
+
+        # create empty eval table
+        my_columns = list(self.constraints_dict) + ['input', 'winner']
+
+        self.cumulative_eval = pd.DataFrame(columns = my_columns)
 
         # update headers once for labelling constraints
         self.available_names = None
         self.available_names = [node.name for node in self.numeration]
         
-        self.headers = list(constraints_dict.keys()) # get the keys from constraints dict and available names
+        self.headers = list(self.constraints_dict) # get the keys from constraints dict and available names
         self.headers += ['LB_' + s for s in self.available_names] 
 
         if self.numeration_path:
@@ -839,7 +827,7 @@ class MainWindow(QMainWindow):
         self.table_eval.setRowCount(len(self.outputs))
 
         # Set the headers for the table
-        headers = ['operation'] + ['output'] + self.headers
+        headers = ['operation'] + ['output'] + [str(header) for header in self.headers]
 
         # Set the number of columns in the table
         self.table_eval.setColumnCount(len(headers))
@@ -864,7 +852,7 @@ class MainWindow(QMainWindow):
             self.table_eval.setItem(row, 1, name_item)
             
             new_node = clone_tree(node)
-            data_dict = new_node.evaluate_constraints()
+            data_dict = new_node.evaluate_constraints(initial_eval = {key: 0 for key in self.constraints_dict})
             data_dict['merge_cond'] = merge_condition(new_node) # check for merge condition
             data_dict['label_cons'] = label_constraint(new_node) # check for label constraint
             data_dict['exhaust_ws'] = new_node.exhaust_ws #exhaust workspace constraint
@@ -1347,7 +1335,7 @@ class MainWindow(QMainWindow):
 
     def apply_bias(self):
         self.run_minimazing_KL(self.combined_cumulative_eval,self.table_combined_eval)
-        markedness_constraints = {**agree_dict, **neutral_dict}.keys()
+        markedness_constraints = remove_keys(self.constraints_dict, ["merge_cond","exhaust_ws", "label_cons"], "_mt") # remove GEN constraints 
         my_weights = self.optimization.x.tolist()
         all_constraints = dict(zip(self.combined_cumulative_eval.columns.tolist(), my_weights))
 
