@@ -388,8 +388,6 @@ def Label(my_node):
 
         # check agreement
         new_2_neutral = new_2.children[1].neutral_feats.copy()  # Make a copy to modify
-        print(new_2_neutral)
-        print(new_2.children[1].used_feats)
         for key, value in new_2_neutral.items():
             if value == 1 and new_2.children[1].used_feats[key] == 1:
                 new_2_neutral[key] = 0  # Reset to 0
