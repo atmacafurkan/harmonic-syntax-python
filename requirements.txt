@@ -1,0 +1,11 @@
+anytree
+pandas
+numpy
+PyQt5
+PyQtWebEngine
+markdown2
+PyInstaller
+graphviz
+scipy
+tabulate
+pylatexenc

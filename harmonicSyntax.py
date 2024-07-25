@@ -1,7 +1,6 @@
 # Using anytree in Python
 import copy
 import pandas as pd
-from typing import List
 from anytree.exporter import UniqueDotExporter
 from graphviz import Source
 import tempfile
@@ -9,8 +8,9 @@ import pandas as pd
 import numpy as np
 from scipy.optimize import minimize
 from anytree import Node
+from typing import Self, List
 
-def remove_keys(dictionary: dict, specific_keys: list, suffix: str):
+def remove_keys(dictionary: dict, specific_keys: list, suffix: str) -> dict:
     new_dict = {}
     for key, value in dictionary.items():
         if key in specific_keys or key.endswith(suffix):
@@ -53,7 +53,7 @@ def KL_divergence(p, q):
 
     return kl_divergence
 
-def frequency_and_probabilities(x, df, update_table = False):
+def frequency_and_probabilities(x, df: pd.DataFrame, update_table = False):
     # get weights
     constraint_weights = x[np.newaxis,:]
 
@@ -125,7 +125,9 @@ def weight_optimize(my_tableaux):
 
 # Custom node class with a named list field
 class SyntaxNode(Node):
-    def __init__(self, name, label: str = None, merge_feat: str = None, neutral_feats: dict = None, empty_agr: dict = None, result_feats: dict = None, agree_feats: dict = None, used_feats: dict = None, other_nodes= None, operation = None, exhaust_ws = None, parent = None, children = None):
+    def __init__(self, name, label: str = None, merge_feat: str = None, 
+                 neutral_feats: dict = None, empty_agr: dict = None, result_feats: dict = None, agree_feats: dict = None, used_feats: dict = None,
+                 other_nodes= None, operation: str = None, exhaust_ws = None, parent = None, children = None):
         super(SyntaxNode, self).__init__(name, parent, children)
         self.label = label if label is not None else None
         self.merge_feat = merge_feat if merge_feat is not None and merge_feat != '' else None
