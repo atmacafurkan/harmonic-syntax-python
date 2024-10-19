@@ -17,6 +17,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('Harmonic Syntax Tabulator')
+        self.resize(1920,1080)
         self.initUI()
         
     def initUI(self):
