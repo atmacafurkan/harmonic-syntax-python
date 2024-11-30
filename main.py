@@ -745,7 +745,13 @@ class MainWindow(QMainWindow):
 
     def apply_bias(self):
         self.run_minimazing_KL(self.combined_cumulative_eval,self.table_combined_eval)
-        markedness_constraints = remove_keys({key:0 for key in self.constraints_set}, ["merge_cond","exhaust_ws", "label_cons"], "_mt") # remove GEN constraints 
+
+        exclude_columns = ["input","winner","operation","output","merge_cond","exhaust_ws","label_cons"]
+        markedness_constraints =  [
+            col for col in self.combined_cumulative_eval.columns 
+            if col not in exclude_columns and not col.endswith("_mt")
+            ]
+        
         my_weights = self.optimization.x.tolist()
         all_constraints = dict(zip(self.combined_cumulative_eval.columns.tolist(), my_weights))
 
