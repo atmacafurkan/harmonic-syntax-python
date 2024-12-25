@@ -1,0 +1,905 @@
+\subsection{The derivation=acc}
+\begingroup\scriptsize Input=[DP$_{case_{agr}}$]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.    & output                            &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{mt}^{59.20}$ &   mc$^{62.43}$ \\
+\hline
+   0 &       0 &   0 & mtAgr & [DP]                              &             0 &             0 &                 1 &            0 \\
+   1 &       1 &   1 & xMrg  & [.. [V] [DP$_{case_{agr}}$]]            &             1 &             0 &                 0 &            0 \\
+   0 &       0 &   0 & xMrg  & [.. [v$_{case}$] [DP$_{case_{agr}}$]]       &             1 &             0 &                 0 &            1 \\
+   0 &       0 &   0 & xMrg  & [.. [DP2$_{case_{agr}}$] [DP$_{case_{agr}}$]] &             1 &             0 &                 0 &            1 \\
+   0 &       0 &   0 & xMrg  & [.. [T$_{case}$] [DP$_{case_{agr}}$]]       &             1 &             0 &                 0 &            1 \\
+   0 &       0 &   0 & xMrg  & [.. [C] [DP$_{case_{agr}}$]]            &             1 &             0 &                 0 &            1 \\
+   0 &       0 &   0 & rMrg  & [DP$_{case_{agr}}$]                     &             0 &             1 &                 0 &            0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[.. [V] [DP$_{case_{agr}}$]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                     &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ &   lb$_{DP}^{100}$ &   lb$_{V}^{61.96}$ \\
+\hline
+   1 &       1 &   1 & Lbl  & [V [V] [DP$_{case_{agr}}$]]                      &             0 &             0 &                  1 &            0 &                0 &              1 \\
+   0 &       0 &   0 & Lbl  & [DP$_{case_{agr}}$ [V] [DP$_{case_{agr}}$]]            &             0 &             0 &                  0 &            0 &                1 &              0 \\
+   0 &       0 &   0 & xMrg & [.. [v$_{case}$] [.. [V] [DP$_{case_{agr}}$]]]       &             1 &             0 &                  0 &            1 &                0 &              0 \\
+   0 &       0 &   0 & xMrg & [.. [DP2$_{case_{agr}}$] [.. [V] [DP$_{case_{agr}}$]]] &             1 &             0 &                  0 &            1 &                0 &              0 \\
+   0 &       0 &   0 & xMrg & [.. [T$_{case}$] [.. [V] [DP$_{case_{agr}}$]]]       &             1 &             0 &                  0 &            1 &                0 &              0 \\
+   0 &       0 &   0 & xMrg & [.. [C] [.. [V] [DP$_{case_{agr}}$]]]            &             1 &             0 &                  0 &            1 &                0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [V] [.. [V] [DP$_{case_{agr}}$]]]            &             1 &             1 &                  0 &            1 &                0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [DP$_{case_{agr}}$] [.. [V] [DP$_{case_{agr}}$]]]  &             1 &             1 &                  0 &            1 &                0 &              0 \\
+   0 &       0 &   0 & rMrg & [.. [V] [DP$_{case_{agr}}$]]                     &             1 &             1 &                  0 &            0 &                0 &              0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[V [V] [DP$_{case_{agr}}$]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                    &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ \\
+\hline
+   1 &       1 &   1 & xMrg & [.. [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]       &             1 &             0 &                  1 &            0 \\
+   0 &       0 &   0 & xMrg & [.. [DP2$_{case_{agr}}$] [V [V] [DP$_{case_{agr}}$]]] &             1 &             0 &                  1 &            1 \\
+   0 &       0 &   0 & xMrg & [.. [T$_{case}$] [V [V] [DP$_{case_{agr}}$]]]       &             1 &             0 &                  1 &            1 \\
+   0 &       0 &   0 & xMrg & [.. [C] [V [V] [DP$_{case_{agr}}$]]]            &             1 &             0 &                  1 &            1 \\
+   0 &       0 &   0 & iMrg & [.. [DP$_{case_{agr}}$] [V [V] [DP$_{case_{agr}}$]]]  &             1 &             1 &                  0 &            0 \\
+   0 &       0 &   0 & rMrg & [V [V] [DP$_{case_{agr}}$]]                     &             0 &             1 &                  1 &            0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[.. [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                         &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ &   case$^{72.84}$ &   lb$_{V}^{61.96}$ &   lb$_{v}^{25.67}$ \\
+\hline
+   1 &       1 &   1 & Lbl  & [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]                        &             0 &             0 &                  2 &            0 &              0 &              0 &              1 \\
+   0 &       0 &   0 & Lbl  & [V [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]                             &             0 &             0 &                  1 &            0 &              1 &              1 &              0 \\
+   0 &       0 &   0 & xMrg & [.. [DP2$_{case_{agr}}$] [.. [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]        &             1 &             0 &                  1 &            1 &              0 &              0 &              0 \\
+   0 &       0 &   0 & xMrg & [.. [T$_{case}$] [.. [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]              &             1 &             0 &                  1 &            1 &              0 &              0 &              0 \\
+   0 &       0 &   0 & xMrg & [.. [C] [.. [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]                   &             1 &             0 &                  1 &            1 &              0 &              0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [v$_{case}$] [.. [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]              &             1 &             1 &                  1 &            1 &              0 &              0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [.. [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]] &             1 &             1 &                  1 &            1 &              0 &              0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [DP$_{case_{agr}}$] [.. [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]         &             1 &             1 &                  0 &            1 &              0 &              0 &              0 \\
+   0 &       0 &   0 & rMrg & [.. [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]                            &             1 &             1 &                  1 &            0 &              0 &              0 &              0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                             &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ \\
+\hline
+   0 &       0 &   0 & xMrg & [.. [DP2$_{case_{agr}}$] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]        &             1 &             0 &                  2 &            0 \\
+   0 &       0 &   0 & xMrg & [.. [T$_{case}$] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]              &             1 &             0 &                  2 &            1 \\
+   0 &       0 &   0 & xMrg & [.. [C] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]                   &             1 &             0 &                  2 &            1 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]] &             1 &             1 &                  1 &            0 \\
+   1 &       1 &   1 & iMrg & [.. [DP$_{case_{agr}}$] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]         &             1 &             1 &                  0 &            0 \\
+   0 &       0 &   0 & rMrg & [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]                            &             0 &             1 &                  2 &            0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[.. [DP$_{case_{agr}}$] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                                  &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ &   case$^{72.84}$ &   lb$_{DP}^{100}$ &   lb$_{v}^{25.67}$ \\
+\hline
+   1 &       1 &   1 & Agr  & [.. [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]                                                       &             0 &             0 &                  0 &            0 &              0 &                0 &              0 \\
+   0 &       0 &   0 & Lbl  & [DP$_{case_{agr}}$ [DP$_{case_{agr}}$] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]                                     &             0 &             0 &                  0 &            0 &              1 &                1 &              0 \\
+   0 &       0 &   0 & Lbl  & [v$_{case}$ [DP$_{case_{agr}}$] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]                                          &             0 &             0 &                  1 &            0 &              0 &                0 &              1 \\
+   0 &       0 &   0 & xMrg & [.. [DP2$_{case_{agr}}$] [.. [DP$_{case_{agr}}$] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]                          &             1 &             0 &                  0 &            1 &              0 &                0 &              0 \\
+   0 &       0 &   0 & xMrg & [.. [T$_{case}$] [.. [DP$_{case_{agr}}$] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]                                &             1 &             0 &                  0 &            1 &              0 &                0 &              0 \\
+   0 &       0 &   0 & xMrg & [.. [C] [.. [DP$_{case_{agr}}$] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]                                     &             1 &             0 &                  0 &            1 &              0 &                0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [DP$_{case_{agr}}$] [.. [DP$_{case_{agr}}$] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]                           &             1 &             1 &                  0 &            1 &              0 &                0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]] [.. [DP$_{case_{agr}}$] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]] &             1 &             1 &                  2 &            1 &              0 &                0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [.. [DP$_{case_{agr}}$] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]                   &             1 &             1 &                  1 &            1 &              0 &                0 &              0 \\
+   0 &       0 &   0 & rMrg & [.. [DP$_{case_{agr}}$] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]                                              &             1 &             1 &                  0 &            0 &              0 &                0 &              0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[.. [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                         &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ &   case$^{72.84}$ &   lb$_{DP}^{100}$ &   lb$_{v}^{25.67}$ \\
+\hline
+   0 &       0 &   0 & Lbl  & [DP [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]                                              &             0 &             0 &                  0 &            0 &              1 &                1 &              0 \\
+   1 &       1 &   1 & Lbl  & [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]                                               &             0 &             0 &                  0 &            0 &              0 &                0 &              1 \\
+   0 &       0 &   0 & xMrg & [.. [DP2$_{case_{agr}}$] [.. [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]                          &             1 &             0 &                  0 &            1 &              0 &                0 &              0 \\
+   0 &       0 &   0 & xMrg & [.. [T$_{case}$] [.. [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]                                &             1 &             0 &                  0 &            1 &              0 &                0 &              0 \\
+   0 &       0 &   0 & xMrg & [.. [C] [.. [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]                                     &             1 &             0 &                  0 &            1 &              0 &                0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [DP] [.. [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]                                    &             1 &             1 &                  0 &            1 &              0 &                0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]] [.. [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]] &             1 &             1 &                  2 &            1 &              0 &                0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [.. [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]                   &             1 &             1 &                  1 &            1 &              0 &                0 &              0 \\
+   0 &       0 &   0 & rMrg & [.. [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]                                              &             1 &             1 &                  0 &            0 &              0 &                0 &              0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                      &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ \\
+\hline
+   1 &       1 &   1 & xMrg & [.. [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]        &             1 &             0 &                  0 &            0 \\
+   0 &       0 &   0 & xMrg & [.. [T$_{case}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]              &             1 &             0 &                  0 &            1 \\
+   0 &       0 &   0 & xMrg & [.. [C] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]                   &             1 &             0 &                  0 &            1 \\
+   0 &       0 &   0 & iMrg & [.. [DP] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]                  &             1 &             1 &                  0 &            0 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]] &             1 &             1 &                  1 &            0 \\
+   0 &       0 &   0 & rMrg & [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]                            &             0 &             1 &                  0 &            0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[.. [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                                                     &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ &   lb$_{v}^{25.67}$ &   lb$_{DP2}^{1.82}$ \\
+\hline
+   1 &       1 &   1 & Lbl  & [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]                                             &             0 &             0 &                  0 &            0 &              0 &             1 \\
+   0 &       0 &   0 & Lbl  & [v [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]                                                        &             0 &             0 &                  1 &            0 &              1 &             0 \\
+   0 &       0 &   0 & xMrg & [.. [T$_{case}$] [.. [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]                                         &             1 &             0 &                  0 &            1 &              0 &             0 \\
+   0 &       0 &   0 & xMrg & [.. [C] [.. [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]                                              &             1 &             0 &                  0 &            1 &              0 &             0 \\
+   0 &       0 &   0 & iMrg & [.. [DP2$_{case_{agr}}$] [.. [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]                                   &             1 &             1 &                  0 &            1 &              0 &             0 \\
+   0 &       0 &   0 & iMrg & [.. [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]] [.. [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]] &             1 &             1 &                  0 &            1 &              0 &             0 \\
+   0 &       0 &   0 & iMrg & [.. [DP] [.. [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]                                             &             1 &             1 &                  0 &            1 &              0 &             0 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [.. [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]                            &             1 &             1 &                  1 &            1 &              0 &             0 \\
+   0 &       0 &   0 & rMrg & [.. [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]                                                       &             1 &             1 &                  0 &            0 &              0 &             0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.    & output                                                                                                                               &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   case$_{mt}^{59.20}$ &   mc$^{62.43}$ \\
+\hline
+   0 &       0 &   0 & mtAgr & [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]                                                                &             0 &             0 &                  0 &                 1 &            0 \\
+   1 &       1 &   1 & xMrg  & [.. [T$_{case}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]                                         &             1 &             0 &                  0 &                 0 &            0 \\
+   0 &       0 &   0 & xMrg  & [.. [C] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]                                              &             1 &             0 &                  0 &                 0 &            1 \\
+   0 &       0 &   0 & iMrg  & [.. [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]] &             1 &             1 &                  0 &                 0 &            0 \\
+   0 &       0 &   0 & iMrg  & [.. [DP] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]                                             &             1 &             1 &                  0 &                 0 &            0 \\
+   0 &       0 &   0 & iMrg  & [.. [V [V] [DP$_{case_{agr}}$]] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]                            &             1 &             1 &                  1 &                 0 &            0 \\
+   0 &       0 &   0 & rMrg  & [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]                                                       &             0 &             1 &                  0 &                 0 &            0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[.. [T$_{case}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                                                                                                           &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ &   case$^{72.84}$ &   lb$_{DP2}^{1.82}$ &   lb$_{T}^{45.35}$ \\
+\hline
+   1 &       1 &   1 & Agr  & [.. [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]                                                                                              &             0 &             0 &                  0 &            0 &              0 &             0 &              0 \\
+   0 &       0 &   0 & Lbl  & [T$_{case}$ [T$_{case}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]                                                                                 &             0 &             0 &                  1 &            0 &              0 &             0 &              1 \\
+   0 &       0 &   0 & Lbl  & [DP2$_{case_{agr}}$ [T$_{case}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]                                                                           &             0 &             0 &                  0 &            0 &              1 &             1 &              0 \\
+   0 &       0 &   0 & xMrg & [.. [C] [.. [T$_{case}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                                            &             1 &             0 &                  0 &            1 &              0 &             0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [T$_{case}$] [.. [T$_{case}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                                       &             1 &             1 &                  0 &            1 &              0 &             0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]] [.. [T$_{case}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]] &             1 &             1 &                  0 &            1 &              0 &             0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]] [.. [T$_{case}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                               &             1 &             1 &                  0 &            1 &              0 &             0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [DP] [.. [T$_{case}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                                           &             1 &             1 &                  0 &            1 &              0 &             0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [.. [T$_{case}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                          &             1 &             1 &                  1 &            1 &              0 &             0 &              0 \\
+   0 &       0 &   0 & rMrg & [.. [T$_{case}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]                                                                                     &             1 &             1 &                  0 &            0 &              0 &             0 &              0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[.. [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                                                                                         &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ &   case$^{72.84}$ &   lb$_{DP2}^{1.82}$ &   lb$_{T}^{45.35}$ \\
+\hline
+   1 &       1 &   1 & Lbl  & [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]                                                                             &             0 &             0 &                  0 &            0 &              0 &             0 &              1 \\
+   0 &       0 &   0 & Lbl  & [DP2 [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]                                                                           &             0 &             0 &                  0 &            0 &              1 &             1 &              0 \\
+   0 &       0 &   0 & xMrg & [.. [C] [.. [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                                   &             1 &             0 &                  0 &            1 &              0 &             0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [T$_{case}$] [.. [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                              &             1 &             1 &                  0 &            1 &              0 &             0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]] [.. [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]] &             1 &             1 &                  0 &            1 &              0 &             0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]] [.. [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                      &             1 &             1 &                  0 &            1 &              0 &             0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [DP] [.. [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                                  &             1 &             1 &                  0 &            1 &              0 &             0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [.. [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                 &             1 &             1 &                  1 &            1 &              0 &             0 &              0 \\
+   0 &       0 &   0 & rMrg & [.. [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]                                                                            &             1 &             1 &                  0 &            0 &              0 &             0 &              0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                                                                                        &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ \\
+\hline
+   1 &       1 &   1 & xMrg & [.. [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                                   &             1 &             0 &                  0 \\
+   0 &       0 &   0 & iMrg & [.. [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]] &             1 &             1 &                  0 \\
+   0 &       0 &   0 & iMrg & [.. [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                      &             1 &             1 &                  0 \\
+   0 &       0 &   0 & iMrg & [.. [DP] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                                  &             1 &             1 &                  0 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                 &             1 &             1 &                  1 \\
+   0 &       0 &   0 & rMrg & [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]                                                                            &             0 &             1 &                  0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[.. [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                                                                                                              &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ &   lb$_{T}^{45.35}$ &   lb$_{C}^{0}$ \\
+\hline
+   1 &       1 &   1 & Lbl  & [C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                                                          &             0 &             0 &                  0 &            0 &              0 &             1 \\
+   0 &       0 &   0 & Lbl  & [T [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                                                          &             0 &             0 &                  0 &            0 &              1 &             0 \\
+   0 &       0 &   0 & iMrg & [.. [C] [.. [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]                                                                                &             1 &             1 &                  0 &            1 &              0 &             0 \\
+   0 &       0 &   0 & iMrg & [.. [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]] [.. [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]]] &             1 &             1 &                  0 &            1 &              0 &             0 \\
+   0 &       0 &   0 & iMrg & [.. [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]] [.. [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]              &             1 &             1 &                  0 &            1 &              0 &             0 \\
+   0 &       0 &   0 & iMrg & [.. [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]] [.. [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]                                   &             1 &             1 &                  0 &            1 &              0 &             0 \\
+   0 &       0 &   0 & iMrg & [.. [DP] [.. [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]                                                                               &             1 &             1 &                  0 &            1 &              0 &             0 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [.. [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]                                                              &             1 &             1 &                  1 &            1 &              0 &             0 \\
+   0 &       0 &   0 & rMrg & [.. [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                                                         &             1 &             1 &                  0 &            0 &              0 &             0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                                                                                                             &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ \\
+\hline
+   0 &       0 &   0 & iMrg & [.. [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]] [C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]]] &             1 &             1 &                  0 \\
+   0 &       0 &   0 & iMrg & [.. [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]] [C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]              &             1 &             1 &                  0 \\
+   0 &       0 &   0 & iMrg & [.. [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]] [C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]                                   &             1 &             1 &                  0 \\
+   0 &       0 &   0 & iMrg & [.. [DP] [C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]                                                                               &             1 &             1 &                  0 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]                                                              &             1 &             1 &                  1 \\
+   1 &       1 &   1 & rMrg & [C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v [DP] [v$_{case}$ [v$_{case}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                                                         &             0 &             1 &                  0 \\
+\hline
+\end{tabularx}\endgroup\\
+\subsection{The derivation=unacc}
+\begingroup\scriptsize Input=[DP$_{case_{agr}}$]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.    & output                      &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{mt}^{59.20}$ &   mc$^{62.43}$ \\
+\hline
+   0 &       0 &   0 & mtAgr & [DP]                        &             0 &             0 &                 1 &            0 \\
+   1 &       1 &   1 & xMrg  & [.. [V] [DP$_{case_{agr}}$]]      &             1 &             0 &                 0 &            0 \\
+   0 &       0 &   0 & xMrg  & [.. [v] [DP$_{case_{agr}}$]]      &             1 &             0 &                 0 &            1 \\
+   0 &       0 &   0 & xMrg  & [.. [T$_{case}$] [DP$_{case_{agr}}$]] &             1 &             0 &                 0 &            1 \\
+   0 &       0 &   0 & xMrg  & [.. [C] [DP$_{case_{agr}}$]]      &             1 &             0 &                 0 &            1 \\
+   0 &       0 &   0 & rMrg  & [DP$_{case_{agr}}$]               &             0 &             1 &                 0 &            0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[.. [V] [DP$_{case_{agr}}$]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                    &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ &   lb$_{DP}^{100}$ &   lb$_{V}^{61.96}$ \\
+\hline
+   1 &       1 &   1 & Lbl  & [V [V] [DP$_{case_{agr}}$]]                     &             0 &             0 &                  1 &            0 &                0 &              1 \\
+   0 &       0 &   0 & Lbl  & [DP$_{case_{agr}}$ [V] [DP$_{case_{agr}}$]]           &             0 &             0 &                  0 &            0 &                1 &              0 \\
+   0 &       0 &   0 & xMrg & [.. [v] [.. [V] [DP$_{case_{agr}}$]]]           &             1 &             0 &                  0 &            1 &                0 &              0 \\
+   0 &       0 &   0 & xMrg & [.. [T$_{case}$] [.. [V] [DP$_{case_{agr}}$]]]      &             1 &             0 &                  0 &            1 &                0 &              0 \\
+   0 &       0 &   0 & xMrg & [.. [C] [.. [V] [DP$_{case_{agr}}$]]]           &             1 &             0 &                  0 &            1 &                0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [V] [.. [V] [DP$_{case_{agr}}$]]]           &             1 &             1 &                  0 &            1 &                0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [DP$_{case_{agr}}$] [.. [V] [DP$_{case_{agr}}$]]] &             1 &             1 &                  0 &            1 &                0 &              0 \\
+   0 &       0 &   0 & rMrg & [.. [V] [DP$_{case_{agr}}$]]                    &             1 &             1 &                  0 &            0 &                0 &              0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[V [V] [DP$_{case_{agr}}$]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                   &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ \\
+\hline
+   1 &       1 &   1 & xMrg & [.. [v] [V [V] [DP$_{case_{agr}}$]]]           &             1 &             0 &                  1 &            0 \\
+   0 &       0 &   0 & xMrg & [.. [T$_{case}$] [V [V] [DP$_{case_{agr}}$]]]      &             1 &             0 &                  1 &            1 \\
+   0 &       0 &   0 & xMrg & [.. [C] [V [V] [DP$_{case_{agr}}$]]]           &             1 &             0 &                  1 &            1 \\
+   0 &       0 &   0 & iMrg & [.. [DP$_{case_{agr}}$] [V [V] [DP$_{case_{agr}}$]]] &             1 &             1 &                  0 &            0 \\
+   0 &       0 &   0 & rMrg & [V [V] [DP$_{case_{agr}}$]]                    &             0 &             1 &                  1 &            0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[.. [v] [V [V] [DP$_{case_{agr}}$]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                    &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ &   lb$_{V}^{61.96}$ &   lb$_{v}^{25.67}$ \\
+\hline
+   1 &       1 &   1 & Lbl  & [v [v] [V [V] [DP$_{case_{agr}}$]]]                             &             0 &             0 &                  2 &            0 &              0 &              1 \\
+   0 &       0 &   0 & Lbl  & [V [v] [V [V] [DP$_{case_{agr}}$]]]                             &             0 &             0 &                  1 &            0 &              1 &              0 \\
+   0 &       0 &   0 & xMrg & [.. [T$_{case}$] [.. [v] [V [V] [DP$_{case_{agr}}$]]]]              &             1 &             0 &                  1 &            1 &              0 &              0 \\
+   0 &       0 &   0 & xMrg & [.. [C] [.. [v] [V [V] [DP$_{case_{agr}}$]]]]                   &             1 &             0 &                  1 &            1 &              0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [v] [.. [v] [V [V] [DP$_{case_{agr}}$]]]]                   &             1 &             1 &                  1 &            1 &              0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [.. [v] [V [V] [DP$_{case_{agr}}$]]]] &             1 &             1 &                  1 &            1 &              0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [DP$_{case_{agr}}$] [.. [v] [V [V] [DP$_{case_{agr}}$]]]]         &             1 &             1 &                  0 &            1 &              0 &              0 \\
+   0 &       0 &   0 & rMrg & [.. [v] [V [V] [DP$_{case_{agr}}$]]]                            &             1 &             1 &                  1 &            0 &              0 &              0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[v [v] [V [V] [DP$_{case_{agr}}$]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                   &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ \\
+\hline
+   0 &       0 &   0 & xMrg & [.. [T$_{case}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]              &             1 &             0 &                  2 &            0 \\
+   0 &       0 &   0 & xMrg & [.. [C] [v [v] [V [V] [DP$_{case_{agr}}$]]]]                   &             1 &             0 &                  2 &            1 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [v [v] [V [V] [DP$_{case_{agr}}$]]]] &             1 &             1 &                  1 &            0 \\
+   1 &       1 &   1 & iMrg & [.. [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]         &             1 &             1 &                  0 &            0 \\
+   0 &       0 &   0 & rMrg & [v [v] [V [V] [DP$_{case_{agr}}$]]]                            &             0 &             1 &                  2 &            0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[.. [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                              &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ &   lb$_{DP}^{100}$ &   lb$_{v}^{25.67}$ \\
+\hline
+   0 &       0 &   0 & Lbl  & [DP$_{case_{agr}}$ [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]                           &             0 &             0 &                  0 &            0 &                1 &              0 \\
+   1 &       1 &   1 & Lbl  & [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]                                     &             0 &             0 &                  1 &            0 &                0 &              1 \\
+   0 &       0 &   0 & xMrg & [.. [T$_{case}$] [.. [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]                      &             1 &             0 &                  0 &            1 &                0 &              0 \\
+   0 &       0 &   0 & xMrg & [.. [C] [.. [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]                           &             1 &             0 &                  0 &            1 &                0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [DP$_{case_{agr}}$] [.. [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]                 &             1 &             1 &                  0 &            1 &                0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [v [v] [V [V] [DP$_{case_{agr}}$]]] [.. [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]] &             1 &             1 &                  2 &            1 &                0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [.. [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]         &             1 &             1 &                  1 &            1 &                0 &              0 \\
+   0 &       0 &   0 & rMrg & [.. [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]                                    &             1 &             1 &                  0 &            0 &                0 &              0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                     &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ \\
+\hline
+   1 &       1 &   1 & xMrg & [.. [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]              &             1 &             0 &                  1 &            0 \\
+   0 &       0 &   0 & xMrg & [.. [C] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]                   &             1 &             0 &                  1 &            1 \\
+   0 &       0 &   0 & iMrg & [.. [DP$_{case_{agr}}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]         &             1 &             1 &                  0 &            0 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]] &             1 &             1 &                  1 &            0 \\
+   0 &       0 &   0 & rMrg & [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]                            &             0 &             1 &                  1 &            0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[.. [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                                             &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ &   case$^{72.84}$ &   lb$_{v}^{25.67}$ &   lb$_{T}^{45.35}$ \\
+\hline
+   1 &       1 &   1 & Lbl  & [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]                                                  &             0 &             0 &                  2 &            0 &              0 &              0 &              1 \\
+   0 &       0 &   0 & Lbl  & [v [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]                                                       &             0 &             0 &                  1 &            0 &              1 &              1 &              0 \\
+   0 &       0 &   0 & xMrg & [.. [C] [.. [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]                                             &             1 &             0 &                  1 &            1 &              0 &              0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [T$_{case}$] [.. [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]                                        &             1 &             1 &                  1 &            1 &              0 &              0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]] [.. [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]] &             1 &             1 &                  1 &            1 &              0 &              0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [DP$_{case_{agr}}$] [.. [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]                                   &             1 &             1 &                  0 &            1 &              0 &              0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [.. [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]                           &             1 &             1 &                  1 &            1 &              0 &              0 &              0 \\
+   0 &       0 &   0 & rMrg & [.. [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]                                                      &             1 &             1 &                  1 &            0 &              0 &              0 &              0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                                                 &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ \\
+\hline
+   0 &       0 &   0 & xMrg & [.. [C] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]                                             &             1 &             0 &                  2 \\
+   0 &       0 &   0 & iMrg & [.. [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]] &             1 &             1 &                  1 \\
+   1 &       1 &   1 & iMrg & [.. [DP$_{case_{agr}}$] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]                                   &             1 &             1 &                  0 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]                           &             1 &             1 &                  1 \\
+   0 &       0 &   0 & rMrg & [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]                                                      &             0 &             1 &                  2 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[.. [DP$_{case_{agr}}$] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                                                                                      &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ &   case$^{72.84}$ &   lb$_{DP}^{100}$ &   lb$_{T}^{45.35}$ \\
+\hline
+   1 &       1 &   1 & Agr  & [.. [DP] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]                                                                                 &             0 &             0 &                  0 &            0 &              0 &                0 &              0 \\
+   0 &       0 &   0 & Lbl  & [DP$_{case_{agr}}$ [DP$_{case_{agr}}$] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]                                                               &             0 &             0 &                  0 &            0 &              1 &                1 &              0 \\
+   0 &       0 &   0 & Lbl  & [T$_{case}$ [DP$_{case_{agr}}$] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]                                                                    &             0 &             0 &                  1 &            0 &              0 &                0 &              1 \\
+   0 &       0 &   0 & xMrg & [.. [C] [.. [DP$_{case_{agr}}$] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                               &             1 &             0 &                  0 &            1 &              0 &                0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [DP$_{case_{agr}}$] [.. [DP$_{case_{agr}}$] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                     &             1 &             1 &                  0 &            1 &              0 &                0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]] [.. [DP$_{case_{agr}}$] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]] &             1 &             1 &                  2 &            1 &              0 &                0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]] [.. [DP$_{case_{agr}}$] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]]                   &             1 &             1 &                  1 &            1 &              0 &                0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [.. [DP$_{case_{agr}}$] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]]                                             &             1 &             1 &                  1 &            1 &              0 &                0 &              0 \\
+   0 &       0 &   0 & rMrg & [.. [DP$_{case_{agr}}$] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]                                                                        &             1 &             1 &                  0 &            0 &              0 &                0 &              0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[.. [DP] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                                                                             &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ &   case$^{72.84}$ &   lb$_{DP}^{100}$ &   lb$_{T}^{45.35}$ \\
+\hline
+   0 &       0 &   0 & Lbl  & [DP [DP] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]                                                                        &             0 &             0 &                  0 &            0 &              1 &                1 &              0 \\
+   1 &       1 &   1 & Lbl  & [T [DP] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]                                                                         &             0 &             0 &                  0 &            0 &              0 &                0 &              1 \\
+   0 &       0 &   0 & xMrg & [.. [C] [.. [DP] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                               &             1 &             0 &                  0 &            1 &              0 &                0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [DP] [.. [DP] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                              &             1 &             1 &                  0 &            1 &              0 &                0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]] [.. [DP] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]] &             1 &             1 &                  2 &            1 &              0 &                0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]] [.. [DP] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]]                   &             1 &             1 &                  1 &            1 &              0 &                0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [.. [DP] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]]                                             &             1 &             1 &                  1 &            1 &              0 &                0 &              0 \\
+   0 &       0 &   0 & rMrg & [.. [DP] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]                                                                        &             1 &             1 &                  0 &            0 &              0 &                0 &              0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[T [DP] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                                                          &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ \\
+\hline
+   1 &       1 &   1 & xMrg & [.. [C] [T [DP] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]]                                             &             1 &             0 &                  0 \\
+   0 &       0 &   0 & iMrg & [.. [DP] [T [DP] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]]                                            &             1 &             1 &                  0 \\
+   0 &       0 &   0 & iMrg & [.. [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]] [T [DP] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]] &             1 &             1 &                  1 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [T [DP] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]]                           &             1 &             1 &                  1 \\
+   0 &       0 &   0 & rMrg & [T [DP] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]                                                      &             0 &             1 &                  0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[.. [C] [T [DP] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                                                                                              &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ &   lb$_{T}^{45.35}$ &   lb$_{C}^{0}$ \\
+\hline
+   1 &       1 &   1 & Lbl  & [C [C] [T [DP] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                                                  &             0 &             0 &                  0 &            0 &              0 &             1 \\
+   0 &       0 &   0 & Lbl  & [T [C] [T [DP] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                                                  &             0 &             0 &                  0 &            0 &              1 &             0 \\
+   0 &       0 &   0 & iMrg & [.. [C] [.. [C] [T [DP] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]]]                                                                        &             1 &             1 &                  0 &            1 &              0 &             0 \\
+   0 &       0 &   0 & iMrg & [.. [T [DP] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]] [.. [C] [T [DP] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]]] &             1 &             1 &                  0 &            1 &              0 &             0 \\
+   0 &       0 &   0 & iMrg & [.. [DP] [.. [C] [T [DP] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]]]                                                                       &             1 &             1 &                  0 &            1 &              0 &             0 \\
+   0 &       0 &   0 & iMrg & [.. [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]] [.. [C] [T [DP] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]]]                            &             1 &             1 &                  1 &            1 &              0 &             0 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [.. [C] [T [DP] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]]]                                                      &             1 &             1 &                  1 &            1 &              0 &             0 \\
+   0 &       0 &   0 & rMrg & [.. [C] [T [DP] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                                                 &             1 &             1 &                  0 &            0 &              0 &             0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[C [C] [T [DP] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                                                                                             &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ \\
+\hline
+   0 &       0 &   0 & iMrg & [.. [T [DP] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]] [C [C] [T [DP] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]]] &             1 &             1 &                  0 \\
+   0 &       0 &   0 & iMrg & [.. [DP] [C [C] [T [DP] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]]]                                                                       &             1 &             1 &                  0 \\
+   0 &       0 &   0 & iMrg & [.. [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]] [C [C] [T [DP] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]]]                            &             1 &             1 &                  1 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [C [C] [T [DP] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]]]                                                      &             1 &             1 &                  1 \\
+   1 &       1 &   1 & rMrg & [C [C] [T [DP] [T$_{case}$ [T$_{case}$] [v [DP$_{case_{agr}}$] [v [v] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                                                 &             0 &             1 &                  0 \\
+\hline
+\end{tabularx}\endgroup\\
+\subsection{The derivation=phrasal}
+\begingroup\scriptsize Input=[DP$_{case_{agr}}$]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.    & output                            &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{mt}^{59.20}$ &   mc$^{62.43}$ \\
+\hline
+   0 &       0 &   0 & mtAgr & [DP]                              &             0 &             0 &                 1 &            0 \\
+   1 &       1 &   1 & xMrg  & [.. [V] [DP$_{case_{agr}}$]]            &             1 &             0 &                 0 &            0 \\
+   0 &       0 &   0 & xMrg  & [.. [v$_{case,foc}$] [DP$_{case_{agr}}$]]   &             1 &             0 &                 0 &            1 \\
+   0 &       0 &   0 & xMrg  & [.. [DP2$_{case_{agr}}$] [DP$_{case_{agr}}$]] &             1 &             0 &                 0 &            1 \\
+   0 &       0 &   0 & xMrg  & [.. [T$_{case}$] [DP$_{case_{agr}}$]]       &             1 &             0 &                 0 &            1 \\
+   0 &       0 &   0 & xMrg  & [.. [C] [DP$_{case_{agr}}$]]            &             1 &             0 &                 0 &            1 \\
+   0 &       0 &   0 & rMrg  & [DP$_{case_{agr}}$]                     &             0 &             1 &                 0 &            0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[.. [V] [DP$_{case_{agr}}$]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                     &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ &   lb$_{DP}^{100}$ &   lb$_{V}^{61.96}$ \\
+\hline
+   1 &       1 &   1 & Lbl  & [V [V] [DP$_{case_{agr}}$]]                      &             0 &             0 &                  1 &            0 &                0 &              1 \\
+   0 &       0 &   0 & Lbl  & [DP$_{case_{agr}}$ [V] [DP$_{case_{agr}}$]]            &             0 &             0 &                  0 &            0 &                1 &              0 \\
+   0 &       0 &   0 & xMrg & [.. [v$_{case,foc}$] [.. [V] [DP$_{case_{agr}}$]]]   &             1 &             0 &                  0 &            1 &                0 &              0 \\
+   0 &       0 &   0 & xMrg & [.. [DP2$_{case_{agr}}$] [.. [V] [DP$_{case_{agr}}$]]] &             1 &             0 &                  0 &            1 &                0 &              0 \\
+   0 &       0 &   0 & xMrg & [.. [T$_{case}$] [.. [V] [DP$_{case_{agr}}$]]]       &             1 &             0 &                  0 &            1 &                0 &              0 \\
+   0 &       0 &   0 & xMrg & [.. [C] [.. [V] [DP$_{case_{agr}}$]]]            &             1 &             0 &                  0 &            1 &                0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [V] [.. [V] [DP$_{case_{agr}}$]]]            &             1 &             1 &                  0 &            1 &                0 &              0 \\
+   0 &       0 &   0 & iMrg & [.. [DP$_{case_{agr}}$] [.. [V] [DP$_{case_{agr}}$]]]  &             1 &             1 &                  0 &            1 &                0 &              0 \\
+   0 &       0 &   0 & rMrg & [.. [V] [DP$_{case_{agr}}$]]                     &             1 &             1 &                  0 &            0 &                0 &              0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[V [V] [DP$_{case_{agr}}$]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                    &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ \\
+\hline
+   1 &       1 &   1 & xMrg & [.. [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]   &             1 &             0 &                  1 &            0 \\
+   0 &       0 &   0 & xMrg & [.. [DP2$_{case_{agr}}$] [V [V] [DP$_{case_{agr}}$]]] &             1 &             0 &                  1 &            1 \\
+   0 &       0 &   0 & xMrg & [.. [T$_{case}$] [V [V] [DP$_{case_{agr}}$]]]       &             1 &             0 &                  1 &            1 \\
+   0 &       0 &   0 & xMrg & [.. [C] [V [V] [DP$_{case_{agr}}$]]]            &             1 &             0 &                  1 &            1 \\
+   0 &       0 &   0 & iMrg & [.. [DP$_{case_{agr}}$] [V [V] [DP$_{case_{agr}}$]]]  &             1 &             1 &                  0 &            0 \\
+   0 &       0 &   0 & rMrg & [V [V] [DP$_{case_{agr}}$]]                     &             0 &             1 &                  1 &            0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[.. [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                             &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ &   case$^{72.84}$ &   lb$_{V}^{61.96}$ &   lb$_{v}^{25.67}$ &   foc$^{2.01}$ \\
+\hline
+   1 &       1 &   1 & Lbl  & [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]                    &             0 &             0 &                  2 &            0 &              0 &              0 &              1 &          0 \\
+   0 &       0 &   0 & Lbl  & [V [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]                             &             0 &             0 &                  1 &            0 &              1 &              1 &              0 &          1 \\
+   0 &       0 &   0 & xMrg & [.. [DP2$_{case_{agr}}$] [.. [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]        &             1 &             0 &                  1 &            1 &              0 &              0 &              0 &          0 \\
+   0 &       0 &   0 & xMrg & [.. [T$_{case}$] [.. [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]              &             1 &             0 &                  1 &            1 &              0 &              0 &              0 &          0 \\
+   0 &       0 &   0 & xMrg & [.. [C] [.. [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]                   &             1 &             0 &                  1 &            1 &              0 &              0 &              0 &          0 \\
+   0 &       0 &   0 & iMrg & [.. [v$_{case,foc}$] [.. [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]          &             1 &             1 &                  1 &            1 &              0 &              0 &              0 &          0 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [.. [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]] &             1 &             1 &                  1 &            1 &              0 &              0 &              0 &          0 \\
+   0 &       0 &   0 & iMrg & [.. [DP$_{case_{agr}}$] [.. [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]         &             1 &             1 &                  0 &            1 &              0 &              0 &              0 &          0 \\
+   0 &       0 &   0 & rMrg & [.. [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]                            &             1 &             1 &                  1 &            0 &              0 &              0 &              0 &          0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                     &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ \\
+\hline
+   0 &       0 &   0 & xMrg & [.. [DP2$_{case_{agr}}$] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]        &             1 &             0 &                  2 &            0 \\
+   0 &       0 &   0 & xMrg & [.. [T$_{case}$] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]              &             1 &             0 &                  2 &            1 \\
+   0 &       0 &   0 & xMrg & [.. [C] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]                   &             1 &             0 &                  2 &            1 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]] &             1 &             1 &                  1 &            0 \\
+   1 &       1 &   1 & iMrg & [.. [DP$_{case_{agr}}$] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]         &             1 &             1 &                  0 &            0 \\
+   0 &       0 &   0 & rMrg & [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]                            &             0 &             1 &                  2 &            0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[.. [DP$_{case_{agr}}$] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                                                  &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ &   case$^{72.84}$ &   lb$_{DP}^{100}$ &   lb$_{v}^{25.67}$ &   foc$^{2.01}$ \\
+\hline
+   1 &       1 &   1 & Agr  & [.. [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]                                                               &             0 &             0 &                  0 &            0 &              0 &                0 &              0 &          0 \\
+   0 &       0 &   0 & Lbl  & [DP$_{case_{agr}}$ [DP$_{case_{agr}}$] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]                                             &             0 &             0 &                  0 &            0 &              1 &                1 &              0 &          1 \\
+   0 &       0 &   0 & Lbl  & [v$_{case,foc}$ [DP$_{case_{agr}}$] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]                                              &             0 &             0 &                  1 &            0 &              0 &                0 &              1 &          0 \\
+   0 &       0 &   0 & xMrg & [.. [DP2$_{case_{agr}}$] [.. [DP$_{case_{agr}}$] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]                                  &             1 &             0 &                  0 &            1 &              0 &                0 &              0 &          0 \\
+   0 &       0 &   0 & xMrg & [.. [T$_{case}$] [.. [DP$_{case_{agr}}$] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]                                        &             1 &             0 &                  0 &            1 &              0 &                0 &              0 &          0 \\
+   0 &       0 &   0 & xMrg & [.. [C] [.. [DP$_{case_{agr}}$] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]                                             &             1 &             0 &                  0 &            1 &              0 &                0 &              0 &          0 \\
+   0 &       0 &   0 & iMrg & [.. [DP$_{case_{agr}}$] [.. [DP$_{case_{agr}}$] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]                                   &             1 &             1 &                  0 &            1 &              0 &                0 &              0 &          0 \\
+   0 &       0 &   0 & iMrg & [.. [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]] [.. [DP$_{case_{agr}}$] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]] &             1 &             1 &                  2 &            1 &              0 &                0 &              0 &          0 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [.. [DP$_{case_{agr}}$] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]                           &             1 &             1 &                  1 &            1 &              0 &                0 &              0 &          0 \\
+   0 &       0 &   0 & rMrg & [.. [DP$_{case_{agr}}$] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]                                                      &             1 &             1 &                  0 &            0 &              0 &                0 &              0 &          0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[.. [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                                         &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ &   case$^{72.84}$ &   lb$_{DP}^{100}$ &   lb$_{v}^{25.67}$ &   foc$^{2.01}$ \\
+\hline
+   0 &       0 &   0 & Lbl  & [DP [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]                                                      &             0 &             0 &                  0 &            0 &              1 &                1 &              0 &          1 \\
+   1 &       1 &   1 & Lbl  & [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]                                                   &             0 &             0 &                  0 &            0 &              0 &                0 &              1 &          0 \\
+   0 &       0 &   0 & xMrg & [.. [DP2$_{case_{agr}}$] [.. [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]                                  &             1 &             0 &                  0 &            1 &              0 &                0 &              0 &          0 \\
+   0 &       0 &   0 & xMrg & [.. [T$_{case}$] [.. [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]                                        &             1 &             0 &                  0 &            1 &              0 &                0 &              0 &          0 \\
+   0 &       0 &   0 & xMrg & [.. [C] [.. [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]                                             &             1 &             0 &                  0 &            1 &              0 &                0 &              0 &          0 \\
+   0 &       0 &   0 & iMrg & [.. [DP] [.. [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]                                            &             1 &             1 &                  0 &            1 &              0 &                0 &              0 &          0 \\
+   0 &       0 &   0 & iMrg & [.. [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]] [.. [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]] &             1 &             1 &                  2 &            1 &              0 &                0 &              0 &          0 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [.. [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]                           &             1 &             1 &                  1 &            1 &              0 &                0 &              0 &          0 \\
+   0 &       0 &   0 & rMrg & [.. [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]                                                      &             1 &             1 &                  0 &            0 &              0 &                0 &              0 &          0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                  &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ \\
+\hline
+   1 &       1 &   1 & xMrg & [.. [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]        &             1 &             0 &                  0 &            0 \\
+   0 &       0 &   0 & xMrg & [.. [T$_{case}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]              &             1 &             0 &                  0 &            1 \\
+   0 &       0 &   0 & xMrg & [.. [C] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]                   &             1 &             0 &                  0 &            1 \\
+   0 &       0 &   0 & iMrg & [.. [DP] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]                  &             1 &             1 &                  0 &            0 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]] &             1 &             1 &                  1 &            0 \\
+   0 &       0 &   0 & rMrg & [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]                            &             0 &             1 &                  0 &            0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[.. [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                                                                             &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ &   lb$_{v}^{25.67}$ &   lb$_{DP2}^{1.82}$ &   foc$^{2.01}$ \\
+\hline
+   1 &       1 &   1 & Lbl  & [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]                                                         &             0 &             0 &                  0 &            0 &              0 &             1 &          1 \\
+   0 &       0 &   0 & Lbl  & [v$_{foc}$ [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]                                                                &             0 &             0 &                  1 &            0 &              1 &             0 &          0 \\
+   0 &       0 &   0 & xMrg & [.. [T$_{case}$] [.. [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]                                                     &             1 &             0 &                  0 &            1 &              0 &             0 &          0 \\
+   0 &       0 &   0 & xMrg & [.. [C] [.. [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]                                                          &             1 &             0 &                  0 &            1 &              0 &             0 &          0 \\
+   0 &       0 &   0 & iMrg & [.. [DP2$_{case_{agr}}$] [.. [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]                                               &             1 &             1 &                  0 &            1 &              0 &             0 &          0 \\
+   0 &       0 &   0 & iMrg & [.. [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]] [.. [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]] &             1 &             1 &                  0 &            1 &              0 &             0 &          0 \\
+   0 &       0 &   0 & iMrg & [.. [DP] [.. [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]                                                         &             1 &             1 &                  0 &            1 &              0 &             0 &          0 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [.. [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]                                        &             1 &             1 &                  1 &            1 &              0 &             0 &          0 \\
+   0 &       0 &   0 & rMrg & [.. [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]                                                                   &             1 &             1 &                  0 &            0 &              0 &             0 &          0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.    & output                                                                                                                                                       &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   case$_{mt}^{59.20}$ &   mc$^{62.43}$ &   foc$^{2.01}$ \\
+\hline
+   0 &       0 &   0 & mtAgr & [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]                                                                            &             0 &             0 &                  0 &                 1 &            0 &          1 \\
+   1 &       1 &   1 & xMrg  & [.. [T$_{case}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]                                                     &             1 &             0 &                  0 &                 0 &            0 &          1 \\
+   0 &       0 &   0 & xMrg  & [.. [C] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]                                                          &             1 &             0 &                  0 &                 0 &            1 &          1 \\
+   0 &       0 &   0 & iMrg  & [.. [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]] &             1 &             1 &                  0 &                 0 &            0 &          0 \\
+   0 &       0 &   0 & iMrg  & [.. [DP] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]                                                         &             1 &             1 &                  0 &                 0 &            0 &          1 \\
+   0 &       0 &   0 & iMrg  & [.. [V [V] [DP$_{case_{agr}}$]] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]                                        &             1 &             1 &                  1 &                 0 &            0 &          1 \\
+   0 &       0 &   0 & rMrg  & [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]                                                                   &             0 &             1 &                  0 &                 0 &            0 &          1 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[.. [T$_{case}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                                                                                                                                   &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ &   case$^{72.84}$ &   lb$_{DP2}^{1.82}$ &   lb$_{T}^{45.35}$ &   foc$^{2.01}$ \\
+\hline
+   1 &       1 &   1 & Agr  & [.. [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]                                                                                                          &             0 &             0 &                  0 &            0 &              0 &             0 &              0 &          1 \\
+   0 &       0 &   0 & Lbl  & [T$_{case}$ [T$_{case}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]                                                                                             &             0 &             0 &                  1 &            0 &              0 &             0 &              1 &          2 \\
+   0 &       0 &   0 & Lbl  & [DP2$_{case_{agr}}$ [T$_{case}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]                                                                                       &             0 &             0 &                  0 &            0 &              1 &             1 &              0 &          1 \\
+   0 &       0 &   0 & xMrg & [.. [C] [.. [T$_{case}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                                                        &             1 &             0 &                  0 &            1 &              0 &             0 &              0 &          1 \\
+   0 &       0 &   0 & iMrg & [.. [T$_{case}$] [.. [T$_{case}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                                                   &             1 &             1 &                  0 &            1 &              0 &             0 &              0 &          1 \\
+   0 &       0 &   0 & iMrg & [.. [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]] [.. [T$_{case}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]] &             1 &             1 &                  0 &            1 &              0 &             0 &              0 &          1 \\
+   0 &       0 &   0 & iMrg & [.. [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]] [.. [T$_{case}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                               &             1 &             1 &                  0 &            1 &              0 &             0 &              0 &          0 \\
+   0 &       0 &   0 & iMrg & [.. [DP] [.. [T$_{case}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                                                       &             1 &             1 &                  0 &            1 &              0 &             0 &              0 &          1 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [.. [T$_{case}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                                      &             1 &             1 &                  1 &            1 &              0 &             0 &              0 &          1 \\
+   0 &       0 &   0 & rMrg & [.. [T$_{case}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]                                                                                                 &             1 &             1 &                  0 &            0 &              0 &             0 &              0 &          1 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[.. [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                                                                                                                 &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ &   case$^{72.84}$ &   lb$_{DP2}^{1.82}$ &   lb$_{T}^{45.35}$ &   foc$^{2.01}$ \\
+\hline
+   1 &       1 &   1 & Lbl  & [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]                                                                                         &             0 &             0 &                  0 &            0 &              0 &             0 &              1 &          2 \\
+   0 &       0 &   0 & Lbl  & [DP2 [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]                                                                                       &             0 &             0 &                  0 &            0 &              1 &             1 &              0 &          1 \\
+   0 &       0 &   0 & xMrg & [.. [C] [.. [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                                               &             1 &             0 &                  0 &            1 &              0 &             0 &              0 &          1 \\
+   0 &       0 &   0 & iMrg & [.. [T$_{case}$] [.. [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                                          &             1 &             1 &                  0 &            1 &              0 &             0 &              0 &          1 \\
+   0 &       0 &   0 & iMrg & [.. [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]] [.. [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]] &             1 &             1 &                  0 &            1 &              0 &             0 &              0 &          1 \\
+   0 &       0 &   0 & iMrg & [.. [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]] [.. [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                      &             1 &             1 &                  0 &            1 &              0 &             0 &              0 &          0 \\
+   0 &       0 &   0 & iMrg & [.. [DP] [.. [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                                              &             1 &             1 &                  0 &            1 &              0 &             0 &              0 &          1 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [.. [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                             &             1 &             1 &                  1 &            1 &              0 &             0 &              0 &          1 \\
+   0 &       0 &   0 & rMrg & [.. [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]                                                                                        &             1 &             1 &                  0 &            0 &              0 &             0 &              0 &          1 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                                                                                                                &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   foc$^{2.01}$ \\
+\hline
+   1 &       1 &   1 & xMrg & [.. [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                                               &             1 &             0 &                  0 &          2 \\
+   0 &       0 &   0 & iMrg & [.. [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]] &             1 &             1 &                  0 &          1 \\
+   0 &       0 &   0 & iMrg & [.. [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                      &             1 &             1 &                  0 &          0 \\
+   0 &       0 &   0 & iMrg & [.. [DP] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                                              &             1 &             1 &                  0 &          2 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                             &             1 &             1 &                  1 &          2 \\
+   0 &       0 &   0 & rMrg & [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]                                                                                        &             0 &             1 &                  0 &          2 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[.. [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                                                                                                                                      &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ &   lb$_{T}^{45.35}$ &   lb$_{C}^{0}$ &   foc$^{2.01}$ \\
+\hline
+   1 &       1 &   1 & Lbl  & [C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                                                                      &             0 &             0 &                  0 &            0 &              0 &             1 &          3 \\
+   0 &       0 &   0 & Lbl  & [T [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                                                                      &             0 &             0 &                  0 &            0 &              1 &             0 &          2 \\
+   0 &       0 &   0 & iMrg & [.. [C] [.. [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]                                                                                            &             1 &             1 &                  0 &            1 &              0 &             0 &          2 \\
+   0 &       0 &   0 & iMrg & [.. [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]] [.. [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]] &             1 &             1 &                  0 &            1 &              0 &             0 &          2 \\
+   0 &       0 &   0 & iMrg & [.. [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]] [.. [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]              &             1 &             1 &                  0 &            1 &              0 &             0 &          1 \\
+   0 &       0 &   0 & iMrg & [.. [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]] [.. [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]                                   &             1 &             1 &                  0 &            1 &              0 &             0 &          0 \\
+   0 &       0 &   0 & iMrg & [.. [DP] [.. [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]                                                                                           &             1 &             1 &                  0 &            1 &              0 &             0 &          2 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [.. [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]                                                                          &             1 &             1 &                  1 &            1 &              0 &             0 &          2 \\
+   0 &       0 &   0 & rMrg & [.. [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                                                                     &             1 &             1 &                  0 &            0 &              0 &             0 &          2 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                                                                                                                                     &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   foc$^{2.01}$ \\
+\hline
+   0 &       0 &   0 & iMrg & [.. [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]] [C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]] &             1 &             1 &                  0 &          2 \\
+   0 &       0 &   0 & iMrg & [.. [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]] [C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]              &             1 &             1 &                  0 &          1 \\
+   1 &       1 &   1 & iMrg & [.. [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]] [C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]                                   &             1 &             1 &                  0 &          0 \\
+   0 &       0 &   0 & iMrg & [.. [DP] [C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]                                                                                           &             1 &             1 &                  0 &          3 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]                                                                          &             1 &             1 &                  1 &          3 \\
+   0 &       0 &   0 & rMrg & [C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]                                                                                                     &             0 &             1 &                  0 &          3 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[.. [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]] [C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                                                                                                                                                                                                               &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ &   lb$_{v}^{25.67}$ &   lb$_{C}^{0}$ &   foc$^{2.01}$ \\
+\hline
+   0 &       0 &   0 & Lbl  & [v$_{foc}$ [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]] [C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]                                                                                                          &             0 &             0 &                  0 &            0 &              1 &             0 &          0 \\
+   1 &       1 &   1 & Lbl  & [C [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]] [C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]                                                                                                              &             0 &             0 &                  0 &            0 &              0 &             1 &          1 \\
+   0 &       0 &   0 & iMrg & [.. [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]] [.. [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]] [C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]]                                           &             1 &             1 &                  0 &            1 &              0 &             0 &          0 \\
+   0 &       0 &   0 & iMrg & [.. [DP] [.. [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]] [C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]]                                                                                                   &             1 &             1 &                  0 &            1 &              0 &             0 &          0 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [.. [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]] [C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]]                                                                                  &             1 &             1 &                  1 &            1 &              0 &             0 &          0 \\
+   0 &       0 &   0 & iMrg & [.. [C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]] [.. [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]] [C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]] &             1 &             1 &                  0 &            1 &              0 &             0 &          3 \\
+   0 &       0 &   0 & iMrg & [.. [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]] [.. [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]] [C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]]         &             1 &             1 &                  0 &            1 &              0 &             0 &          2 \\
+   0 &       0 &   0 & iMrg & [.. [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]] [.. [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]] [C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]]                      &             1 &             1 &                  0 &            1 &              0 &             0 &          1 \\
+   0 &       0 &   0 & rMrg & [.. [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]] [C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]                                                                                                             &             1 &             1 &                  0 &            0 &              0 &             0 &          0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[C [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]] [C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                                                                                                                                                                                                      &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   foc$^{2.01}$ \\
+\hline
+   0 &       0 &   0 & iMrg & [.. [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]] [C [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]] [C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]]                                   &             1 &             1 &                  0 &          0 \\
+   0 &       0 &   0 & iMrg & [.. [DP] [C [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]] [C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]]                                                                                           &             1 &             1 &                  0 &          1 \\
+   0 &       0 &   0 & iMrg & [.. [V [V] [DP$_{case_{agr}}$]] [C [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]] [C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]]                                                                          &             1 &             1 &                  1 &          1 \\
+   0 &       0 &   0 & iMrg & [.. [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]] [C [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]] [C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]] &             1 &             1 &                  0 &          2 \\
+   0 &       0 &   0 & iMrg & [.. [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]] [C [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]] [C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]]              &             1 &             1 &                  0 &          1 \\
+   1 &       1 &   1 & rMrg & [C [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]] [C [C] [T [T$_{case}$] [DP2 [DP2$_{case_{agr}}$] [v$_{foc}$ [DP] [v$_{case,foc}$ [v$_{case,foc}$] [V [V] [DP$_{case_{agr}}$]]]]]]]]                                                                                                     &             0 &             1 &                  0 &          1 \\
+\hline
+\end{tabularx}\endgroup\\
+\subsection{The derivation=remnant}
+\begingroup\scriptsize Input=[DP$_{foc}$]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                       &   lab$^{45.87}$ &   xws$^{54.19}$ &   mc$^{62.43}$ \\
+\hline
+   1 &       1 &   1 & xMrg & [.. [V$_{wh}$] [DP$_{foc}$]]         &             1 &             0 &            0 \\
+   0 &       0 &   0 & xMrg & [.. [v] [DP$_{foc}$]]            &             1 &             0 &            1 \\
+   0 &       0 &   0 & xMrg & [.. [DP2$_{case_{agr}}$] [DP$_{foc}$]] &             1 &             0 &            1 \\
+   0 &       0 &   0 & xMrg & [.. [T$_{case}$] [DP$_{foc}$]]       &             1 &             0 &            1 \\
+   0 &       0 &   0 & xMrg & [.. [C] [DP$_{foc}$]]            &             1 &             0 &            1 \\
+   0 &       0 &   0 & rMrg & [DP$_{foc}$]                     &             0 &             1 &            0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[.. [V$_{wh}$] [DP$_{foc}$]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                   &   lab$^{45.87}$ &   xws$^{54.19}$ &   mc$^{62.43}$ &   lb$_{DP}^{100}$ &   lb$_{V}^{61.96}$ &   foc$^{2.01}$ &   wh$^{6.78}$ \\
+\hline
+   1 &       1 &   1 & Lbl  & [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]                   &             0 &             0 &            0 &                0 &              1 &          1 &        0 \\
+   0 &       0 &   0 & Lbl  & [DP$_{foc}$ [V$_{wh}$] [DP$_{foc}$]]                 &             0 &             0 &            0 &                1 &              0 &          0 &        1 \\
+   0 &       0 &   0 & xMrg & [.. [v] [.. [V$_{wh}$] [DP$_{foc}$]]]            &             1 &             0 &            1 &                0 &              0 &          0 &        0 \\
+   0 &       0 &   0 & xMrg & [.. [DP2$_{case_{agr}}$] [.. [V$_{wh}$] [DP$_{foc}$]]] &             1 &             0 &            1 &                0 &              0 &          0 &        0 \\
+   0 &       0 &   0 & xMrg & [.. [T$_{case}$] [.. [V$_{wh}$] [DP$_{foc}$]]]       &             1 &             0 &            1 &                0 &              0 &          0 &        0 \\
+   0 &       0 &   0 & xMrg & [.. [C] [.. [V$_{wh}$] [DP$_{foc}$]]]            &             1 &             0 &            1 &                0 &              0 &          0 &        0 \\
+   0 &       0 &   0 & iMrg & [.. [V$_{wh}$] [.. [V$_{wh}$] [DP$_{foc}$]]]         &             1 &             1 &            1 &                0 &              0 &          0 &        0 \\
+   0 &       0 &   0 & iMrg & [.. [DP$_{foc}$] [.. [V$_{wh}$] [DP$_{foc}$]]]       &             1 &             1 &            1 &                0 &              0 &          0 &        0 \\
+   0 &       0 &   0 & rMrg & [.. [V$_{wh}$] [DP$_{foc}$]]                     &             1 &             1 &            0 &                0 &              0 &          0 &        0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                     &   lab$^{45.87}$ &   xws$^{54.19}$ &   mc$^{62.43}$ &   foc$^{2.01}$ \\
+\hline
+   1 &       1 &   1 & xMrg & [.. [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]            &             1 &             0 &            0 &          1 \\
+   0 &       0 &   0 & xMrg & [.. [DP2$_{case_{agr}}$] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]] &             1 &             0 &            1 &          1 \\
+   0 &       0 &   0 & xMrg & [.. [T$_{case}$] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]       &             1 &             0 &            1 &          1 \\
+   0 &       0 &   0 & xMrg & [.. [C] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]            &             1 &             0 &            1 &          1 \\
+   0 &       0 &   0 & iMrg & [.. [DP$_{foc}$] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]       &             1 &             1 &            0 &          0 \\
+   0 &       0 &   0 & rMrg & [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]                     &             0 &             1 &            0 &          1 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[.. [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                      &   lab$^{45.87}$ &   xws$^{54.19}$ &   mc$^{62.43}$ &   lb$_{V}^{61.96}$ &   lb$_{v}^{25.67}$ &   foc$^{2.01}$ &   wh$^{6.78}$ \\
+\hline
+   1 &       1 &   1 & Lbl  & [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]                              &             0 &             0 &            0 &              0 &              1 &          2 &        1 \\
+   0 &       0 &   0 & Lbl  & [V$_{wh}$ [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]                           &             0 &             0 &            0 &              1 &              0 &          1 &        0 \\
+   0 &       0 &   0 & xMrg & [.. [DP2$_{case_{agr}}$] [.. [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]         &             1 &             0 &            1 &              0 &              0 &          1 &        0 \\
+   0 &       0 &   0 & xMrg & [.. [T$_{case}$] [.. [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]               &             1 &             0 &            1 &              0 &              0 &          1 &        0 \\
+   0 &       0 &   0 & xMrg & [.. [C] [.. [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]                    &             1 &             0 &            1 &              0 &              0 &          1 &        0 \\
+   0 &       0 &   0 & iMrg & [.. [v] [.. [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]                    &             1 &             1 &            1 &              0 &              0 &          1 &        0 \\
+   0 &       0 &   0 & iMrg & [.. [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]] [.. [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]] &             1 &             1 &            1 &              0 &              0 &          1 &        0 \\
+   0 &       0 &   0 & iMrg & [.. [DP$_{foc}$] [.. [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]               &             1 &             1 &            1 &              0 &              0 &          0 &        0 \\
+   0 &       0 &   0 & rMrg & [.. [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]                             &             1 &             1 &            0 &              0 &              0 &          1 &        0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                     &   lab$^{45.87}$ &   xws$^{54.19}$ &   mc$^{62.43}$ &   foc$^{2.01}$ &   wh$^{6.78}$ \\
+\hline
+   1 &       1 &   1 & xMrg & [.. [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]         &             1 &             0 &            0 &          2 &        1 \\
+   0 &       0 &   0 & xMrg & [.. [T$_{case}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]               &             1 &             0 &            1 &          2 &        1 \\
+   0 &       0 &   0 & xMrg & [.. [C] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]                    &             1 &             0 &            1 &          2 &        1 \\
+   0 &       0 &   0 & iMrg & [.. [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]] &             1 &             1 &            0 &          1 &        0 \\
+   0 &       0 &   0 & iMrg & [.. [DP$_{foc}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]               &             1 &             1 &            0 &          0 &        1 \\
+   0 &       0 &   0 & rMrg & [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]                             &             0 &             1 &            0 &          2 &        1 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[.. [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                 &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ &   lb$_{v}^{25.67}$ &   lb$_{DP2}^{1.82}$ &   foc$^{2.01}$ &   wh$^{6.78}$ \\
+\hline
+   1 &       1 &   1 & Lbl  & [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]                           &             0 &             0 &                  0 &            0 &              0 &             1 &          3 &        2 \\
+   0 &       0 &   0 & Lbl  & [v [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]                                      &             0 &             0 &                  1 &            0 &              1 &             0 &          2 &        1 \\
+   0 &       0 &   0 & xMrg & [.. [T$_{case}$] [.. [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]                       &             1 &             0 &                  0 &            1 &              0 &             0 &          2 &        1 \\
+   0 &       0 &   0 & xMrg & [.. [C] [.. [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]                            &             1 &             0 &                  0 &            1 &              0 &             0 &          2 &        1 \\
+   0 &       0 &   0 & iMrg & [.. [DP2$_{case_{agr}}$] [.. [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]                 &             1 &             1 &                  0 &            1 &              0 &             0 &          2 &        1 \\
+   0 &       0 &   0 & iMrg & [.. [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]] [.. [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]] &             1 &             1 &                  0 &            1 &              0 &             0 &          2 &        1 \\
+   0 &       0 &   0 & iMrg & [.. [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]] [.. [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]         &             1 &             1 &                  0 &            1 &              0 &             0 &          1 &        0 \\
+   0 &       0 &   0 & iMrg & [.. [DP$_{foc}$] [.. [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]                       &             1 &             1 &                  0 &            1 &              0 &             0 &          0 &        1 \\
+   0 &       0 &   0 & rMrg & [.. [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]                                     &             1 &             1 &                  0 &            0 &              0 &             0 &          2 &        1 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.    & output                                                                                           &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{mt}^{59.20}$ &   mc$^{62.43}$ &   foc$^{2.01}$ &   wh$^{6.78}$ \\
+\hline
+   0 &       0 &   0 & mtAgr & [DP2 [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]                                              &             0 &             0 &                 1 &            0 &          3 &        2 \\
+   0 &       0 &   0 & xMrg  & [.. [T$_{case}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]                       &             1 &             0 &                 0 &            0 &          3 &        2 \\
+   0 &       0 &   0 & xMrg  & [.. [C] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]                            &             1 &             0 &                 0 &            1 &          3 &        2 \\
+   0 &       0 &   0 & iMrg  & [.. [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]] &             1 &             1 &                 0 &            0 &          2 &        1 \\
+   0 &       0 &   0 & iMrg  & [.. [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]         &             1 &             1 &                 0 &            0 &          1 &        0 \\
+   1 &       1 &   1 & iMrg  & [.. [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]                       &             1 &             1 &                 0 &            0 &          0 &        2 \\
+   0 &       0 &   0 & rMrg  & [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]                                     &             0 &             1 &                 0 &            0 &          3 &        2 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[.. [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                                                                       &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ &   lb$_{DP}^{100}$ &   lb$_{DP2}^{1.82}$ &   foc$^{2.01}$ &   wh$^{6.78}$ \\
+\hline
+   0 &       0 &   0 & Lbl  & [DP$_{foc}$ [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]                                                               &             0 &             0 &                  1 &            0 &                1 &             0 &          0 &        3 \\
+   1 &       1 &   1 & Lbl  & [DP2$_{case_{agr}}$ [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]                                                         &             0 &             0 &                  0 &            0 &                0 &             1 &          1 &        2 \\
+   0 &       0 &   0 & xMrg & [.. [T$_{case}$] [.. [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]                                                     &             1 &             0 &                  0 &            1 &                0 &             0 &          0 &        2 \\
+   0 &       0 &   0 & xMrg & [.. [C] [.. [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]                                                          &             1 &             0 &                  0 &            1 &                0 &             0 &          0 &        2 \\
+   0 &       0 &   0 & iMrg & [.. [DP$_{foc}$] [.. [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]                                                     &             1 &             1 &                  0 &            1 &                0 &             0 &          0 &        2 \\
+   0 &       0 &   0 & iMrg & [.. [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]] [.. [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]] &             1 &             1 &                  0 &            1 &                0 &             0 &          3 &        2 \\
+   0 &       0 &   0 & iMrg & [.. [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]] [.. [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]                               &             1 &             1 &                  0 &            1 &                0 &             0 &          2 &        1 \\
+   0 &       0 &   0 & iMrg & [.. [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]] [.. [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]                                       &             1 &             1 &                  0 &            1 &                0 &             0 &          1 &        0 \\
+   0 &       0 &   0 & rMrg & [.. [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]                                                                   &             1 &             1 &                  0 &            0 &                0 &             0 &          0 &        2 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[DP2$_{case_{agr}}$ [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.    & output                                                                                                                   &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{mt}^{59.20}$ &   mc$^{62.43}$ &   foc$^{2.01}$ &   wh$^{6.78}$ \\
+\hline
+   0 &       0 &   0 & mtAgr & [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]                                              &             0 &             0 &                 1 &            0 &          1 &        2 \\
+   1 &       1 &   1 & xMrg  & [.. [T$_{case}$] [DP2$_{case_{agr}}$ [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]                       &             1 &             0 &                 0 &            0 &          1 &        2 \\
+   0 &       0 &   0 & xMrg  & [.. [C] [DP2$_{case_{agr}}$ [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]                            &             1 &             0 &                 0 &            1 &          1 &        2 \\
+   0 &       0 &   0 & iMrg  & [.. [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]                       &             1 &             1 &                 0 &            0 &          0 &        2 \\
+   0 &       0 &   0 & iMrg  & [.. [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]] [DP2$_{case_{agr}}$ [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]] &             1 &             1 &                 0 &            0 &          2 &        1 \\
+   0 &       0 &   0 & iMrg  & [.. [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]] [DP2$_{case_{agr}}$ [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]         &             1 &             1 &                 0 &            0 &          1 &        0 \\
+   0 &       0 &   0 & rMrg  & [DP2$_{case_{agr}}$ [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]                                     &             0 &             1 &                 0 &            0 &          1 &        2 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[.. [T$_{case}$] [DP2$_{case_{agr}}$ [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                                                                                                                       &   lab$^{45.87}$ &   xws$^{54.19}$ &   case$_{agr}^{3.62}$ &   mc$^{62.43}$ &   case$^{72.84}$ &   lb$_{DP2}^{1.82}$ &   lb$_{T}^{45.35}$ &   foc$^{2.01}$ &   wh$^{6.78}$ \\
+\hline
+   1 &       1 &   1 & Agr  & [.. [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]                                                                                                    &             0 &             0 &                  0 &            0 &              0 &             0 &              0 &          1 &        2 \\
+   0 &       0 &   0 & Lbl  & [T$_{case}$ [T$_{case}$] [DP2$_{case_{agr}}$ [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]                                                                                       &             0 &             0 &                  1 &            0 &              0 &             0 &              1 &          2 &        3 \\
+   0 &       0 &   0 & Lbl  & [DP2$_{case_{agr}}$ [T$_{case}$] [DP2$_{case_{agr}}$ [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]                                                                                 &             0 &             0 &                  0 &            0 &              1 &             1 &              0 &          1 &        2 \\
+   0 &       0 &   0 & xMrg & [.. [C] [.. [T$_{case}$] [DP2$_{case_{agr}}$ [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]                                                                                  &             1 &             0 &                  0 &            1 &              0 &             0 &              0 &          1 &        2 \\
+   0 &       0 &   0 & iMrg & [.. [T$_{case}$] [.. [T$_{case}$] [DP2$_{case_{agr}}$ [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]                                                                             &             1 &             1 &                  0 &            1 &              0 &             0 &              0 &          1 &        2 \\
+   0 &       0 &   0 & iMrg & [.. [DP2$_{case_{agr}}$ [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]] [.. [T$_{case}$] [DP2$_{case_{agr}}$ [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]] &             1 &             1 &                  0 &            1 &              0 &             0 &              0 &          1 &        2 \\
+   0 &       0 &   0 & iMrg & [.. [DP$_{foc}$] [.. [T$_{case}$] [DP2$_{case_{agr}}$ [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]                                                                             &             1 &             1 &                  0 &            1 &              0 &             0 &              0 &          0 &        2 \\
+   0 &       0 &   0 & iMrg & [.. [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]] [.. [T$_{case}$] [DP2$_{case_{agr}}$ [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]                                                       &             1 &             1 &                  0 &            1 &              0 &             0 &              0 &          2 &        1 \\
+   0 &       0 &   0 & iMrg & [.. [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]] [.. [T$_{case}$] [DP2$_{case_{agr}}$ [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]                                                               &             1 &             1 &                  0 &            1 &              0 &             0 &              0 &          1 &        0 \\
+   0 &       0 &   0 & rMrg & [.. [T$_{case}$] [DP2$_{case_{agr}}$ [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]                                                                                           &             1 &             1 &                  0 &            0 &              0 &             0 &              0 &          1 &        2 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[.. [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                                                                                                     &   lab$^{45.87}$ &   xws$^{54.19}$ &   mc$^{62.43}$ &   case$^{72.84}$ &   lb$_{DP2}^{1.82}$ &   lb$_{T}^{45.35}$ &   foc$^{2.01}$ &   wh$^{6.78}$ \\
+\hline
+   1 &       1 &   1 & Lbl  & [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]                                                                                   &             0 &             0 &            0 &              0 &             0 &              1 &          2 &        3 \\
+   0 &       0 &   0 & Lbl  & [DP2 [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]                                                                                 &             0 &             0 &            0 &              1 &             1 &              0 &          1 &        2 \\
+   0 &       0 &   0 & xMrg & [.. [C] [.. [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]                                                                         &             1 &             0 &            1 &              0 &             0 &              0 &          1 &        2 \\
+   0 &       0 &   0 & iMrg & [.. [T$_{case}$] [.. [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]                                                                    &             1 &             1 &            1 &              0 &             0 &              0 &          1 &        2 \\
+   0 &       0 &   0 & iMrg & [.. [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]] [.. [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]] &             1 &             1 &            1 &              0 &             0 &              0 &          1 &        2 \\
+   0 &       0 &   0 & iMrg & [.. [DP$_{foc}$] [.. [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]                                                                    &             1 &             1 &            1 &              0 &             0 &              0 &          0 &        2 \\
+   0 &       0 &   0 & iMrg & [.. [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]] [.. [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]                                              &             1 &             1 &            1 &              0 &             0 &              0 &          2 &        1 \\
+   0 &       0 &   0 & iMrg & [.. [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]] [.. [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]                                                      &             1 &             1 &            1 &              0 &             0 &              0 &          1 &        0 \\
+   0 &       0 &   0 & rMrg & [.. [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]                                                                                  &             1 &             1 &            0 &              0 &             0 &              0 &          1 &        2 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                                                                                                    &   lab$^{45.87}$ &   xws$^{54.19}$ &   foc$^{2.01}$ &   wh$^{6.78}$ \\
+\hline
+   1 &       1 &   1 & xMrg & [.. [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]                                                                         &             1 &             0 &          2 &        3 \\
+   0 &       0 &   0 & iMrg & [.. [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]] &             1 &             1 &          1 &        2 \\
+   0 &       0 &   0 & iMrg & [.. [DP$_{foc}$] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]                                                                    &             1 &             1 &          0 &        3 \\
+   0 &       0 &   0 & iMrg & [.. [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]                                              &             1 &             1 &          2 &        1 \\
+   0 &       0 &   0 & iMrg & [.. [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]                                                      &             1 &             1 &          1 &        0 \\
+   0 &       0 &   0 & rMrg & [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]                                                                                  &             0 &             1 &          2 &        3 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[.. [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                                                                                                                          &   lab$^{45.87}$ &   xws$^{54.19}$ &   mc$^{62.43}$ &   lb$_{T}^{45.35}$ &   lb$_{C}^{0}$ &   foc$^{2.01}$ &   wh$^{6.78}$ \\
+\hline
+   1 &       1 &   1 & Lbl  & [C [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]                                                                                                &             0 &             0 &            0 &              0 &             1 &          3 &        4 \\
+   0 &       0 &   0 & Lbl  & [T [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]                                                                                                &             0 &             0 &            0 &              1 &             0 &          2 &        3 \\
+   0 &       0 &   0 & iMrg & [.. [C] [.. [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]]                                                                                      &             1 &             1 &            1 &              0 &             0 &          2 &        3 \\
+   0 &       0 &   0 & iMrg & [.. [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]] [.. [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]] &             1 &             1 &            1 &              0 &             0 &          2 &        3 \\
+   0 &       0 &   0 & iMrg & [.. [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]] [.. [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]]              &             1 &             1 &            1 &              0 &             0 &          1 &        2 \\
+   0 &       0 &   0 & iMrg & [.. [DP$_{foc}$] [.. [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]]                                                                                 &             1 &             1 &            1 &              0 &             0 &          0 &        3 \\
+   0 &       0 &   0 & iMrg & [.. [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]] [.. [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]]                                                           &             1 &             1 &            1 &              0 &             0 &          2 &        1 \\
+   0 &       0 &   0 & iMrg & [.. [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]] [.. [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]]                                                                   &             1 &             1 &            1 &              0 &             0 &          1 &        0 \\
+   0 &       0 &   0 & rMrg & [.. [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]                                                                                               &             1 &             1 &            0 &              0 &             0 &          2 &        3 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[C [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                                                                                                                         &   lab$^{45.87}$ &   xws$^{54.19}$ &   foc$^{2.01}$ &   wh$^{6.78}$ \\
+\hline
+   0 &       0 &   0 & iMrg & [.. [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]] [C [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]] &             1 &             1 &          2 &        3 \\
+   0 &       0 &   0 & iMrg & [.. [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]] [C [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]]              &             1 &             1 &          1 &        2 \\
+   0 &       0 &   0 & iMrg & [.. [DP$_{foc}$] [C [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]]                                                                                 &             1 &             1 &          0 &        4 \\
+   0 &       0 &   0 & iMrg & [.. [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]] [C [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]]                                                           &             1 &             1 &          2 &        1 \\
+   1 &       1 &   1 & iMrg & [.. [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]] [C [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]]                                                                   &             1 &             1 &          1 &        0 \\
+   0 &       0 &   0 & rMrg & [C [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]                                                                                               &             0 &             1 &          3 &        4 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[.. [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]] [C [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                                                                                                                                                             &   lab$^{45.87}$ &   xws$^{54.19}$ &   mc$^{62.43}$ &   lb$_{V}^{61.96}$ &   lb$_{C}^{0}$ &   foc$^{2.01}$ &   wh$^{6.78}$ \\
+\hline
+   0 &       0 &   0 & Lbl  & [V$_{wh}$ [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]] [C [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]]                                                                                                     &             0 &             0 &            0 &              1 &             0 &          1 &        0 \\
+   1 &       1 &   1 & Lbl  & [C [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]] [C [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]]                                                                                                        &             0 &             0 &            0 &              0 &             1 &          2 &        1 \\
+   0 &       0 &   0 & iMrg & [.. [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]] [.. [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]] [C [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]]]                                                                           &             1 &             1 &            1 &              0 &             0 &          1 &        0 \\
+   0 &       0 &   0 & iMrg & [.. [DP$_{foc}$] [.. [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]] [C [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]]]                                                                                         &             1 &             1 &            1 &              0 &             0 &          0 &        0 \\
+   0 &       0 &   0 & iMrg & [.. [C [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]] [.. [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]] [C [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]]] &             1 &             1 &            1 &              0 &             0 &          3 &        4 \\
+   0 &       0 &   0 & iMrg & [.. [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]] [.. [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]] [C [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]]]         &             1 &             1 &            1 &              0 &             0 &          2 &        3 \\
+   0 &       0 &   0 & iMrg & [.. [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]] [.. [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]] [C [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]]]                      &             1 &             1 &            1 &              0 &             0 &          1 &        2 \\
+   0 &       0 &   0 & iMrg & [.. [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]] [.. [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]] [C [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]]]                                                                   &             1 &             1 &            1 &              0 &             0 &          2 &        1 \\
+   0 &       0 &   0 & rMrg & [.. [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]] [C [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]]                                                                                                       &             1 &             1 &            0 &              0 &             0 &          1 &        0 \\
+\hline
+\end{tabularx}\endgroup\\
+\begingroup\scriptsize Input=[C [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]] [C [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]]\\*
+\begin{tabularx}{\linewidth}{rrrlXrrrr}
+\hline
+   W &   prb.Bias &   prb. & opr.   & output                                                                                                                                                                                                                    &   lab$^{45.87}$ &   xws$^{54.19}$ &   foc$^{2.01}$ &   wh$^{6.78}$ \\
+\hline
+   0 &       0 &   0 & iMrg & [.. [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]] [C [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]] [C [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]]]                                                                   &             1 &             1 &          1 &        0 \\
+   0 &       0 &   0 & iMrg & [.. [DP$_{foc}$] [C [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]] [C [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]]]                                                                                 &             1 &             1 &          0 &        1 \\
+   0 &       0 &   0 & iMrg & [.. [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]] [C [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]] [C [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]]] &             1 &             1 &          2 &        3 \\
+   0 &       0 &   0 & iMrg & [.. [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]] [C [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]] [C [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]]]              &             1 &             1 &          1 &        2 \\
+   0 &       0 &   0 & iMrg & [.. [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]] [C [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]] [C [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]]]                                                           &             1 &             1 &          2 &        1 \\
+   1 &       1 &   1 & rMrg & [C [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]] [C [C] [T [T$_{case}$] [DP2 [DP$_{foc}$] [DP2$_{case_{agr}}$ [DP2$_{case_{agr}}$] [v [v] [V$_{wh}$ [V$_{wh}$] [DP$_{foc}$]]]]]]]]                                                                                               &             0 &             1 &          2 &        1 \\
+\hline
+\end{tabularx}\endgroup\\
